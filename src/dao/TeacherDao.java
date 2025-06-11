@@ -3,54 +3,44 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Optional;
 
-import model.Teacher;
-import util.DbUtil;
+import Bean.Teacher;
 
 public class TeacherDao extends Dao {
 
-    /**
-     * ID で教師を取得。
-     * SQLException を呼び出し元に伝播。
-     */
-    public Optional<Teacher> get(String id) throws SQLException {
-        String sql = "SELECT id, password, name, school_id FROM teacher WHERE id = ?";
-        Connection conn = DbUtil.getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, id);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            return Optional.of(new Teacher(
-                rs.getString("id"),
-                rs.getString("password"),
-                rs.getString("name"),
-                rs.getString("school_id")
-            ));
+	public Teacher findAll() throws Exception {
+        try (Connection con = getConnection()) {
+            String sql = "SELECT * FROM school ORDER BY id ASC";
+            PreparedStatement st = con.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+
+            if (rs.next()) {
+                Teacher c = new Teacher();
+                c.setId(rs.getString("id"));
+                c.setName(rs.getString("name"));
+                c.setPassword(rs.getString("password"));
+                c.setschool(rs.school("school"));
+            }
         }
-        return Optional.empty();
+        return c;
     }
 
-    /**
-     * ID／パスワードでログイン認証。
-     * SQLException を上位に伝える。
-     */
-    public Optional<Teacher> login(String id, String password) throws SQLException {
-        String sql = "SELECT id, name, school_id FROM teacher WHERE id = ? AND password = ?";
-        Connection conn = DbUtil.getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, id);
-        ps.setString(2, password);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            return Optional.of(new Teacher(
-                rs.getString("id"),
-                null,
-                rs.getString("name"),
-                rs.getString("school_id")
-            ));
+    public Teacher findById(int id) throws Exception {
+        Teacher c = null;
+
+        try (Connection con = getConnection()) {
+            String sql = "SELECT * FROM school WHERE id = ?";
+            PreparedStatement st = con.prepareStatement(sql);
+            st.setInt(1, id);
+            ResultSet rs = st.executeQuery();
+
+            if (rs.next()) {
+                c = new Teacher();
+                c.setId(rs.getString("id"));
+                c.setName(rs.getString("name"));
+            }
         }
-        return Optional.empty();
-    }
-}
+
+        return c;
+    }}
+public class TeacherDao extends Dao
