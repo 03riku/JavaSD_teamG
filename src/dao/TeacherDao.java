@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import Bean.School;
 import Bean.Teacher;
 
 public class TeacherDao extends Dao {
@@ -14,15 +15,42 @@ public class TeacherDao extends Dao {
             PreparedStatement st = con.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
 
+            Teacher c = new Teacher();
             if (rs.next()) {
-                Teacher c = new Teacher();
-                c.setId(rs.getString("id"));
-                c.setName(rs.getString("name"));
-                c.setPassword(rs.getString("password"));
-                c.setSchool(rs.getString("school"));
+
+            	rs.getString("id");
+            	rs.getString("name");
+            	rs.getString("password");
+            	rs.getString("school");
+
+                c.setId();
+                c.setName();
+                c.setPassword();
             }
+
+//			schoolの検索
+            String sql2 = "SELECT * FROM school ORDER BY id ASC";
+            PreparedStatement st2 = con.prepareStatement(sql2);
+            ResultSet rs2 = st2.executeQuery();
+
+            School school = new School();
+            if (rs.next()) {
+
+            	rs.getString("id");
+            	rs.getString("name");
+            	rs.getString("password");
+            	rs.getString("school");
+
+            	school.setCd(cd);
+            	school.setName(name);
+
+            	c.setSchool(school);
+            }
+
+
+            return c;
         }
-        return c;
+        return null;
     }
 
     public Teacher findById(int id) throws Exception {
