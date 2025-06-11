@@ -21,11 +21,14 @@ public class TeacherDao extends Dao {
             	rs.getString("id");
             	rs.getString("name");
             	rs.getString("password");
+<<<<<<< HEAD
 
+=======
+>>>>>>> branch 'master' of https://github.com/03riku/JavaSD_teamG.git
 
-                c.setId();
-                c.setName();
-                c.setPassword();
+                c.setId("id");
+                c.setName("name");
+                c.setPassword("password");
             }
 
 //			schoolの検索
@@ -36,21 +39,16 @@ public class TeacherDao extends Dao {
             School school = new School();
             if (rs.next()) {
 
-            	rs.getString("id");
-            	rs.getString("name");
-            	rs.getString("password");
-            	rs.getString("school");
+            	rs.getString("SCHOOL_CD");
+            	rs.getString("SCHOOL_NAME");
 
-            	school.setCd(cd);
-            	school.setName(name);
+            	school.setCd("cd");
+            	school.setName("name");
 
             	c.setSchool(school);
             }
-
-
             return c;
         }
-        return null;
     }
 
     public Teacher findById(int id) throws Exception {
@@ -70,4 +68,5 @@ public class TeacherDao extends Dao {
         }
 
         return c;
-    }}
+    }
+}
