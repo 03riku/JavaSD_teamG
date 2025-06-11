@@ -14,21 +14,16 @@
     </tr>
   </table>
 
-  <table align="center" cellpadding="10" cellspacing="10" border="0">
-    <tr>
-      <td>
-        <a href="StudentListServlet">学生管理</a>
-      </td>
-      <td>
-        <a href="GradeManageServlet">成績管理</a><br>
-        <a href="GradeSearchServlet">成績参照検索</a>
-      </td>
-      <td>
-        <a href="SubjectListServlet">科目管理</a>
-      </td>
-    </tr>
-  </table>
+  <div style="float:left; width:15%; height:100vh; border-right:2px solid black; padding:10px;">
+  <ul>
+      <li><a href="StudentListServlet">学生管理</a></li>
+      <li><a href="GradeManageServlet">成績管理</a><br></li>
+      <li><a href="GradeSearchServlet">成績参照検索</a></li>
+      <li><a href="SubjectListServlet">科目管理</a></li>
+  </ul>
+  </div>
 
+<h2> メニュー </h2>
   <!-- フッター -->
   <hr>
   <footer style="text-align:center; font-size:small;">
