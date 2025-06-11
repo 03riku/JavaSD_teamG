@@ -6,7 +6,7 @@ public class Teacher extends HttpServlet {
 	private String id;
 	private String name;
 	private String password;
-	private School school;
+	private String school;
 
 	public String getId() {
 		return id;
@@ -20,7 +20,7 @@ public class Teacher extends HttpServlet {
 		return password;
 	}
 
-	public School getSchool() {
+	public String getSchool() {
 		return school;
 	}
 
@@ -36,7 +36,7 @@ public class Teacher extends HttpServlet {
 		this.password = password;
 	}
 
-	public void setSchool(School school) {
+	public void setSchool(String school) {
 		this.school = school;
 	}
 }

@@ -19,7 +19,7 @@ public class TeacherDao extends Dao {
                 c.setId(rs.getString("id"));
                 c.setName(rs.getString("name"));
                 c.setPassword(rs.getString("password"));
-                c.setschool(rs.school("school"));
+                c.setSchool(rs.getString("school"));
             }
         }
         return c;
@@ -43,4 +43,3 @@ public class TeacherDao extends Dao {
 
         return c;
     }}
-public class TeacherDao extends Dao
