@@ -21,10 +21,6 @@ public class TeacherDao extends Dao {
             	rs.getString("id");
             	rs.getString("name");
             	rs.getString("password");
-<<<<<<< HEAD
-
-=======
->>>>>>> branch 'master' of https://github.com/03riku/JavaSD_teamG.git
 
                 c.setId("id");
                 c.setName("name");
