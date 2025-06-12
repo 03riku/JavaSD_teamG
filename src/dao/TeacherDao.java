@@ -11,7 +11,7 @@ public class TeacherDao extends Dao {
 
 	public Teacher findAll() throws Exception {
         try (Connection con = getConnection()) {
-            String sql = "SELECT * FROM school ORDER BY id ASC";
+            String sql = "SELECT * FROM Teacher ORDER BY id ASC";
             PreparedStatement st = con.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
 
@@ -28,7 +28,7 @@ public class TeacherDao extends Dao {
             }
 
 //			schoolの検索
-            String sql2 = "SELECT * FROM school ORDER BY id ASC";
+            String sql2 = "SELECT * FROM school WHERE ORDER BY id ASC";
             PreparedStatement st2 = con.prepareStatement(sql2);
             ResultSet rs2 = st2.executeQuery();
 
@@ -45,6 +45,7 @@ public class TeacherDao extends Dao {
             }
             return c;
         }
+
     }
 
     public Teacher findById(int id) throws Exception {
