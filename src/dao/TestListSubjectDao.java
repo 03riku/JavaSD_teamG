@@ -8,41 +8,48 @@ import java.util.List;
 
 import Bean.School;
 import Bean.Subject;
-import Bean.TestListSubject;
+import Bean.Test;
 
 public class TestListSubjectDao extends Dao {
 
-    private String baseSql = "SELECT * FROM test_list_subject "
-            + "WHERE ent_year = ? AND class_num = ? AND subject_id = ? AND school_id = ?";
+    private final String baseSql =
+        "SELECT t.student, t.class_num, t.subject, t.school_code, t.no, t.point " +
+        "FROM test t " +
+        "JOIN student s ON t.student = s.student_id " +
+        "WHERE s.ent_year = ? AND t.class_num = ? AND t.subject = ? AND t.school_code = ?";
 
-    // データベースから取得したResultSetをTestListSubjectのリストに変換
-    private List<TestListSubject> postFilter(ResultSet rset) throws Exception {
-        List<TestListSubject> list = new ArrayList<>();
+    private List<Test> postFilter(ResultSet rset) throws Exception {
+        List<Test> list = new ArrayList<>();
 
         while (rset.next()) {
-            TestListSubject subject = new TestListSubject();
-            subject.setId(rset.getInt("id"));
-            subject.setEntYear(rset.getInt("ent_year"));
-            subject.setClassNum(rset.getString("class_num"));
-            subject.setSubjectId(rset.getInt("subject_id"));
-            subject.setSchoolId(rset.getInt("school_id"));
-            subject.setName(rset.getString("name")); // 例: nameカラムが存在する場合
-            list.add(subject);
+            Test test = new Test();
+            test.setStudent(rset.getString("student"));
+            test.setClassNum(rset.getString("class_num"));
+            test.setSubject(rset.getString("subject"));
+
+            School school = new School();
+            school.setCd(rset.getString("school_code")); // Schoolクラスにgetter/setterが必要
+            test.setSchool(school);
+
+            test.setNo(rset.getInt("no"));
+            test.setPoint(rset.getInt("point"));
+
+            list.add(test);
         }
 
         return list;
     }
 
-    public List<TestListSubject> filter(int entYear, String classNum, Subject subject, School school) {
-        List<TestListSubject> result = new ArrayList<>();
+    public List<Test> filter(int entYear, String classNum, Subject subject, School school) {
+        List<Test> result = new ArrayList<>();
 
         try (Connection con = getConnection();
              PreparedStatement stmt = con.prepareStatement(baseSql)) {
 
             stmt.setInt(1, entYear);
             stmt.setString(2, classNum);
-            stmt.setInt(3, subject.getId());
-            stmt.setInt(4, school.getId());
+            stmt.setString(3, subject.getCd()); // Subjectクラスにgetterが必要
+            stmt.setString(4, school.getCd());   // Schoolクラスにgetterが必要
 
             ResultSet rset = stmt.executeQuery();
             result = postFilter(rset);
