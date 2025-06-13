@@ -4,7 +4,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServlet;
 
-public class TestlistSubject extends HttpServlet {
+public class TestListSubject extends HttpServlet {
 	private int entYear;
 	private String studentNo;
 	private String studentName;

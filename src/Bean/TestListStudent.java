@@ -2,7 +2,7 @@ package Bean;
 
 import javax.servlet.http.HttpServlet;
 
-public class TestlistStudent extends HttpServlet {
+public class TestListStudent extends HttpServlet {
 	private String subjectName;
 	private String subjectCd;
 	private int num ;
