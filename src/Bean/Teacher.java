@@ -24,7 +24,7 @@ public class Teacher extends HttpServlet {
 		return school;
 	}
 
-	public void setCd(String id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

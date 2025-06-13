@@ -4,53 +4,81 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Optional;
 
-import model.Teacher;
-import util.DbUtil;
+import Bean.School;
+import Bean.Teacher;
 
 public class TeacherDao extends Dao {
 
-    /**
-     * ID で教師を取得。
-     * SQLException を呼び出し元に伝播。
-     */
-    public Optional<Teacher> get(String id) throws SQLException {
-        String sql = "SELECT id, password, name, school_id FROM teacher WHERE id = ?";
-        Connection conn = DbUtil.getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, id);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            return Optional.of(new Teacher(
-                rs.getString("id"),
-                rs.getString("password"),
-                rs.getString("name"),
-                rs.getString("school_id")
-            ));
-        }
-        return Optional.empty();
-    }
+	public Teacher findAll() throws Exception {
+        try (Connection con = getConnection()) {
+            String sql = "SELECT * FROM Teacher ORDER BY id ASC";
+            PreparedStatement st = con.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
 
-    /**
-     * ID／パスワードでログイン認証。
-     * SQLException を上位に伝える。
-     */
-    public Optional<Teacher> login(String id, String password) throws SQLException {
-        String sql = "SELECT id, name, school_id FROM teacher WHERE id = ? AND password = ?";
-        Connection conn = DbUtil.getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, id);
-        ps.setString(2, password);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            return Optional.of(new Teacher(
-                rs.getString("id"),
-                null,
-                rs.getString("name"),
-                rs.getString("school_id")
-            ));
+            Teacher c = new Teacher();
+            if (rs.next()) {
+
+            	rs.getString("id");
+            	rs.getString("name");
+            	rs.getString("password");
+
+                c.setId("id");
+                c.setName("name");
+                c.setPassword("password");
+            }
+
+//			schoolの検索
+            String sql2 = "SELECT * FROM school WHERE  ORDER BY id ASC";
+            PreparedStatement st2 = con.prepareStatement(sql2);
+            ResultSet rs2 = st2.executeQuery();
+            st.setInt(1, );
+
+            School school = new School();
+            if (rs.next()) {
+
+            	rs.getString("SCHOOL_CD");
+            	rs.getString("SCHOOL_NAME");
+
+            	school.setCd("cd");
+            	school.setName("name");
+
+            	c.setSchool(school);
+            }
+            return c;
         }
-        return Optional.empty();
+
     }
+//Teacher オブジェクトに関連する School 情報を設定するため
+//	getメソッド
+	public Teacher get(String id) throws Exception {
+		Teacher Teacher = new Teacher();
+//	sql作成
+		try (Connection con = getConnection()) {
+			String sql = "SELECT * FROM Teacher WHERE id = ?";
+			PreparedStatement st = con.prepareStatement(sql);
+			st.setString(1, id);
+			ResultSet rs = st.executeQuery();
+//	sql結果受け取り
+			String teacher_id = rs.getString("id");
+			String teacher_password = rs.getString("password");
+			String teacher_name = rs.getString("name");
+			String teacher_school_cd = rs.getString("school_cd");
+//	beanにセット
+			Teacher.setId(teacher_id);
+			Teacher.setPassword(teacher_password);
+			Teacher.setName(teacher_name);
+
+			School school = new School();
+			String sql2 = "SELECT * FROM SCHOOL WHERE SCHOOL_CD = ?";
+			PreparedStatement st2 = con.prepareStatement(sql2);
+			st2.setString(1, teacher_school_cd);
+	        ResultSet rs2 = st2.executeQuery();
+			Teacher.setSchool(teacher_school_cd);
+			String school_cd = rs2.getString("school_cd");
+			String school_name = rs2.getString("school_name");
+
+		}
+		return Teacher;
+	}
 }
