@@ -16,13 +16,6 @@ public class TestlistStudent extends HttpServlet {
 		return subjectCd;
 	}
 
-	public void setSubjectName(String subjectName){
-		this.subjectName = subjectName;
-	}
-
-	public void setSubjectCd(String subjectCd){
-		this.subjectCd = subjectCd;
-	}
 	public int getNum(){
 		return num;
 	}
@@ -37,5 +30,13 @@ public class TestlistStudent extends HttpServlet {
 
 	public void setPoint(int point){
 		this.point = point;
+	}
+
+	public void setSubjectName(String subjectName){
+		this.subjectName = subjectName;
+	}
+
+	public void setSubjectCd(String subjectCd){
+		this.subjectCd = subjectCd;
 	}
 }
