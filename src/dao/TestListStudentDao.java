@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Bean.Student;
+import Bean.TestListStudent;
 
 /**
  * TestListStudentDao クラス。
