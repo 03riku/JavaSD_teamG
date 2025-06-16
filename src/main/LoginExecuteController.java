@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 import Bean.Student;
 import dao.StudentDao;
 
-@WebServlet("/LoginServlet")
+@WebServlet("/log/LoginServlet")  // JSPのactionに合わせて修正
 public class LoginExecuteController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -31,14 +31,16 @@ public class LoginExecuteController extends HttpServlet {
         Student student = null;
 
         try {
+            // 1. IDでStudentを取得（パスワードなし）
             student = studentDao.get(id);
 
             if (student == null) {
-                // IDがない場合はログイン画面へ戻す
-                response.sendRedirect("log/LOGI.jsp");
+                // IDがない → ログイン画面に戻す（エラーメッセージ無し）
+                request.getRequestDispatcher("/log/LOGI.jsp").forward(request, response);
                 return;
             }
 
+            // 2. パスワードだけ別で取得
             String dbPassword = null;
             String sql = "SELECT password FROM Student WHERE no = ?";
 
@@ -54,19 +56,23 @@ public class LoginExecuteController extends HttpServlet {
                 }
             }
 
+            // 3. パスワードチェック
             if (dbPassword != null && dbPassword.equals(password)) {
+                // ログイン成功 → セッションにStudentをセット
                 HttpSession session = request.getSession();
                 session.setAttribute("student", student);
-                response.sendRedirect("log/MMNU001.jsp");
+
+                // メインメニュー画面へリダイレクト
+                response.sendRedirect(request.getContextPath() + "/log/MMNU001.jsp");
             } else {
-                // パスワード不一致はログイン画面にリダイレクト
-                response.sendRedirect("log/LOGI.jsp");
+                // パスワード不一致 → ログイン画面に戻す（エラーメッセージ無し）
+                request.getRequestDispatcher("/log/LOGI.jsp").forward(request, response);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            // システムエラー時もログイン画面へリダイレクト
-            response.sendRedirect("log/LOGI001.jsp");
+            // システムエラーでもログイン画面に戻す（エラーメッセージ無し）
+            request.getRequestDispatcher("/log/LOGI.jsp").forward(request, response);
         }
     }
 }
