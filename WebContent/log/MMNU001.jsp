@@ -19,7 +19,7 @@
   <ul>
       <li><a href="StudentListServlet">学生管理</a></li>
       <li><a href="GradeManageServlet">成績管理</a><br></li>
-      <li><a href="GradeSearchServlet">成績参照検索</a></li>
+      <li><a href="GradeSearchServlet">成績参照</a></li>
       <li><a href="SubjectListServlet">科目管理</a></li>
   </ul>
   </div>
