@@ -3,9 +3,8 @@ package dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.security.auth.Subject;
-
 import Bean.School;
+import Bean.Subject;
 
 public class SubjectDao extends Dao {
 

@@ -57,4 +57,5 @@ public class Test extends HttpServlet {
 	public void setPoint(int point){
 		this.point = point;
 	}
+
 }
