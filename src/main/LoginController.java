@@ -16,7 +16,7 @@ public class LoginController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // login.jspの場所に合わせてパスを変更
-        request.getRequestDispatcher("/log/LOGI.jsp").forward(request, response);
+        request.getRequestDispatcher("/log/LOGI001.jsp").forward(request, response);
     }
 
     // POSTリクエストが来た場合はGETへ委譲

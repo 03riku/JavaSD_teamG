@@ -66,7 +66,7 @@ public class LoginExecuteController extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
             // システムエラー時もログイン画面へリダイレクト
-            response.sendRedirect("log/LOGI.jsp");
+            response.sendRedirect("log/LOGI001.jsp");
         }
     }
 }
