@@ -6,7 +6,10 @@ import Bean.Test;
 
 public class TestDao extends Dao {
 
-	String basesql;
+	private String basesql;
+	public TestDao() {
+		
+	}
 
 	public Test get(Student student,Subject subject,School school,int no) throws Exception {
 
