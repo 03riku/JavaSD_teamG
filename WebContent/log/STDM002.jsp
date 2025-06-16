@@ -1,38 +1,69 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
-
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
 <html>
 <head>
-    <title>学生追加</title>
+    <title>学生情報登録</title>
 </head>
-<body style="margin:0; padding:0;">
-    <!-- 共通メニューの読み込み -->
-    <jsp:include page="MMNU001.jsp" />
+<body>
+    <h2>学生情報登録</h2> <!-- ① -->
 
-    <div style="margin-left:17%; padding:20px;">
-    <p>追加する学生の情報を入力してください。</p>
-    　<form action="<%= request.getContextPath() %>/StudentAdd" method="post">
-        <table>
-           <tr>
-             <td>学生番号:</td>
-             <td><input type="number" name="studentId" required></td>
-           </tr>
-             <tr>
-              <td>学生名:</td>
-              <td><input type="text" name="studentName" required></td>
-           </tr>
-             <tr>
-               <td>コース名:</td>
-               <td>
-                 <select name="courseId" required>
-                   <option value="1">システム開発コース</option>
-                   <option value="2">ネットワークセキュリティコース</option>
-                   <option value="3">AIシステム・データサイエンスコース</option>
-                 </select>
-               </td>
-             </tr>
-              </table>
-              <input type="submit" value="送信">
-              </form>
-              </div>
+    <table width="100%" cellpadding="5" cellspacing="0" border="0">
+    <tr>
+      <td align="left">得点管理システム</td>
+      <td align="right"><a href="LOGO001.jsp">ログアウト</a></td>
+    </tr>
+  </table>
+
+  <div style="float:left; width:15%; height:100vh; border-right:2px solid black; padding:10px;">
+  <ul>
+      <li><a href="StudentListServlet">学生管理</a></li>
+      <li><label>成績管理</label></li>
+      <li><a href="GradeSearchRegisterServlet">成績登録</a><br></li>
+      <li><a href="GradeSearchServlet">成績検索</a></li>
+      <li><a href="SubjectListServlet">科目管理</a></li>
+  </ul>
+  </div>
+
+  <h2>学生情報登録</h2>
+
+    <form action="StudentRegisterServlet" method="post">
+        <!-- 入学年度 -->
+        <label>入学年度</label> <!-- ② -->
+        <select name="ent_year"> <!-- ③ -->
+            <%
+                int currentYear = java.time.Year.now().getValue();
+                for (int i = currentYear - 10; i <= currentYear + 10; i++) {
+            %>
+                <option value="<%= i %>"><%= i %></option>
+            <% } %>
+        </select>
+        <br><br>
+
+        <!-- 学生番号 -->
+        <label>学生番号</label> <!-- ④ -->
+        <input type="text" name="no" value="${no}" placeholder="学生番号を入力してください" required /> <!-- ⑤ -->
+        <br><br>
+
+        <!-- 氏名 -->
+        <label>氏名</label> <!-- ⑥ -->
+        <input type="text" name="name" value="${name}" placeholder="氏名を入力してください" required /> <!-- ⑦ -->
+        <br><br>
+
+        <!-- クラス -->
+        <label>クラス</label> <!-- ⑧ -->
+        <select name="class_num"> <!-- ⑨ -->
+            <option value="101">101</option>
+            <option value="102">102</option>
+            <option value="103">103</option>
+            <!-- 他のクラスも必要に応じて追加 -->
+        </select>
+        <br><br>
+
+        <!-- 登録ボタン -->
+        <button type="submit" name="end">登録して終了</button> <!-- ⑩ -->
+    </form>
+
+    <!-- 戻るリンク -->
+    <a href="StudentListServlet">戻る</a> <!-- ⑪ -->
 </body>
 </html>
