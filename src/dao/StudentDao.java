@@ -31,7 +31,7 @@ public class StudentDao extends Dao {
                 if (rs.next()) {
                     // School 情報を取得するため DAO or bean で取得すると想定
                     School school = new School();
-                    school.setSchoolCd(rs.getString("school_cd"));
+                    school.setCd(rs.getString("school_cd"));
                     // school.setName(…); // 必要なら追加の DB クエリ
 
                     return postFilter(rs, school).get(0);
@@ -66,7 +66,7 @@ public class StudentDao extends Dao {
         String sql = basesql + " WHERE s.school_cd = ? AND s.ent_year = ? AND s.class_num = ? AND s.attend = ?";
         try (Connection con = getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
-            st.setString(1, school.getSchoolCd());
+            st.setString(1, school.getCd());
             st.setInt(2, entYear);
             st.setString(3, classNum);
             st.setBoolean(4, isAttend);
@@ -94,7 +94,7 @@ public class StudentDao extends Dao {
         String sql = basesql + " WHERE s.school_cd = ? AND s.attend = ?";
         try (Connection con = getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
-            st.setString(1, school.getSchoolCd());
+            st.setString(1, school.getCd());
             st.setBoolean(2, isAttend);
             try (ResultSet rs = st.executeQuery()) {
                 List<Student> result = new ArrayList<>();
