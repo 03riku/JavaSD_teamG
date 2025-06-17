@@ -53,29 +53,10 @@
   </style>
 </head>
 <body>
-<<<<<<< HEAD
-  <!-- ヘッダー -->
-  <table width="100%" cellpadding="5" cellspacing="0" border="0">
-    <tr>
-      <td align="left">得点管理システム</td>
-      <td align="right"><a href="LOGO001.jsp">ログアウト</a></td>
-    </tr>
-  </table>
-
-  <div style="float:left; width:15%; height:100vh; border-right:2px solid black; padding:10px;">
-  <ul>
-      <li><a href="STDM001.jsp">学生管理</a></li>
-      <li><label>成績管理</label></li>
-      <li><a href="STDM002.jsp">成績登録</a><br></li>
-      <li><a href="GRMR001">成績参照</a></li>
-      <li><a href="SBJM001">科目管理</a></li>
-  </ul>
-=======
   <!-- ① ヘッダー -->
   <div class="header">
     <div><strong>得点管理システム</strong></div>
     <div><a href="LOGO001.jsp">ログアウト</a></div>
->>>>>>> branch 'master' of https://github.com/03riku/JavaSD_teamG.git
   </div>
 
   <!-- サイドバー -->
