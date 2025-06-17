@@ -39,8 +39,8 @@
 <body>
   <div class="login-container">
     <div class="logo">得点管理システム</div>
-    <form action="${pageContext.request.contextPath}/log/LoginServlet" method="post">
-          <div class="mb-3">
+    <form action="LoginServlet" method="post">
+      <div class="mb-3">
         <label for="id" class="form-label">ID</label>
         <input type="text" class="form-control" id="id" name="id"
                placeholder="admin" required>

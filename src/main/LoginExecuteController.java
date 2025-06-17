@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
 import Bean.Teacher;
 import dao.TeacherDao;
 
-@WebServlet("/log/LoginServlet")  // JSPの<form action>に合わせる
+@WebServlet("/LoginServlet")  // JSPの<form action>に合わせて修正
 public class LoginExecuteController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -28,31 +28,24 @@ public class LoginExecuteController extends HttpServlet {
         Teacher teacher = null;
 
         try {
-            // Teacher情報を取得
             teacher = teacherDao.get(id);
 
             if (teacher == null) {
-                // IDが存在しない場合、ログイン画面（LOGI001.jsp）へ戻す
+                // IDが存在しない場合はログイン画面に戻す
                 request.getRequestDispatcher("/log/LOGI001.jsp").forward(request, response);
                 return;
             }
 
-            // パスワードチェック
             if (teacher.getPassword() != null && teacher.getPassword().equals(password)) {
-                // ログイン成功：セッションにteacherを保存
                 HttpSession session = request.getSession();
                 session.setAttribute("teacher", teacher);
-
-                // メインメニュー画面へリダイレクト
                 response.sendRedirect(request.getContextPath() + "/log/MMNU001.jsp");
             } else {
-                // パスワード不一致：ログイン画面へ戻す
                 request.getRequestDispatcher("/log/LOGI001.jsp").forward(request, response);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            // エラー時もログイン画面へ戻す
             request.getRequestDispatcher("/log/LOGI001.jsp").forward(request, response);
         }
     }
