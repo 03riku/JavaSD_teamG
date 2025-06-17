@@ -62,11 +62,11 @@
   <!-- サイドバー -->
   <div class="sidebar">
     <ul>
-      <li><a href="StudentListServlet">学生管理</a></li>
+      <li><a href="STDM001.jsp">学生管理</a></li>
       <li><label>成績管理</label></li>
-      <li><a href="STDM002.jsp">成績登録</a></li>
-      <li><a href="GradeSearchServlet">成績参照</a></li>
-      <li><a href="SubjectListServlet">科目管理</a></li>
+      <li><a href="GRMU001.jsp">成績登録</a><br></li>
+      <li><a href="GRMR001.jsp">成績検索</a></li>
+      <li><a href="SBJM002.jsp">科目管理</a></li>
     </ul>
   </div>
 
@@ -89,7 +89,7 @@
 
       <!-- ⑥ -->
       <div class="box box-blue">
-        <a href="SubjectListServlet">⑥ 科目管理</a>
+        <a href="SBJM002.jsp">⑥ 科目管理</a>
       </div>
     </div>
   </div>
