@@ -77,26 +77,26 @@
     <div class="menu-box">
       <!-- ② -->
       <div class="box box-red">
-        <a href="StudentListServlet">② 学生管理</a>
+        <a href="StudentListServlet"> 学生管理</a>
       </div>
 
       <!-- ③～⑤ -->
       <div class="box box-green">
-        <div>③ 成績管理</div>
-        <a href="STDM002.jsp">④ 成績登録</a>
-        <a href="GradeSearchServlet">⑤ 成績参照</a>
+        <div> 成績管理</div>
+        <a href="STDM002.jsp"> 成績登録</a>
+        <a href="GradeSearchServlet"> 成績参照</a>
       </div>
 
       <!-- ⑥ -->
       <div class="box box-blue">
-        <a href="SubjectListServlet">⑥ 科目管理</a>
+        <a href="SubjectListServlet"> 科目管理</a>
       </div>
     </div>
   </div>
 
   <!-- フッター -->
   <footer>
-    &copy; 2023 TIC
+    &copy; 20 TIC
   </footer>
 </body>
 </html>
