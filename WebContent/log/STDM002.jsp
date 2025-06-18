@@ -43,11 +43,23 @@
         <!-- 学生番号 -->
         <label>学生番号</label> <!-- ④ -->
         <input type="text" name="no" value="${no}" placeholder="学生番号を入力してください" required /> <!-- ⑤ -->
+        <%-- 学生番号未入力エラーメッセージ --%>
+        <c:if test="${not empty errorStudentNoEmpty}">
+            <div style="color: red; font-size: 0.9em; margin-top: 5px;">${errorStudentNoEmpty}</div>
+        </c:if>
+        <%-- 学生番号重複エラーメッセージ --%>
+        <c:if test="${not empty errorStudentNoDuplicate}">
+            <div style="color: red; font-size: 0.9em; margin-top: 5px;">${errorStudentNoDuplicate}</div>
+        </c:if>
         <br><br>
 
         <!-- 氏名 -->
         <label>氏名</label> <!-- ⑥ -->
         <input type="text" name="name" value="${name}" placeholder="氏名を入力してください" required /> <!-- ⑦ -->
+        <%-- 氏名未入力エラーメッセージ --%>
+        <c:if test="${not empty errorStudentNameEmpty}">
+           <div style="color: red; font-size: 0.9em; margin-top: 5px;">${errorStudentNameEmpty}</div>
+        </c:if>
         <br><br>
 
         <!-- クラス -->
