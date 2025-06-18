@@ -39,16 +39,16 @@
 <body>
   <div class="login-container">
     <div class="logo">得点管理システム</div>
-    <form action="LoginServlet" method="post">
+    <form action="MMNU001" method="post">
       <div class="mb-3">
         <label for="id" class="form-label">ID</label>
         <input type="text" class="form-control" id="id" name="id"
-               placeholder="admin" required>
+               placeholder="" required>
       </div>
       <div class="mb-3">
         <label for="password" class="form-label">パスワード</label>
         <input type="password" class="form-control" id="password"
-               name="password" placeholder="••••••" required>
+               name="password" placeholder="" required>
       </div>
       <div class="form-check mb-3">
         <input type="checkbox" class="form-check-input" id="remember"
