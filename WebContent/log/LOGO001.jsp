@@ -81,7 +81,7 @@
     <div class="message-box">ログアウトしました</div>
 
     <div class="login-link">
-        <a href="login.jsp">ログイン</a>
+        <a href="LOGI.jsp">ログイン</a>
     </div>
 </div>
 
