@@ -31,19 +31,31 @@
         <!-- 科目コード -->
         <label>科目コード</label> <!-- ④ -->
         <input type="text" name="no" value="${no}" placeholder="科目コードを入力してください" required /> <!-- ⑤ -->
+        <%-- 科目コード未入力エラーメッセージ --%>
+        <c:if test="${not empty errorSubjectNoEmpty}">
+                <div class="error-message">${errorSubjectNoEmpty}</div>
+        </c:if>
+            <%-- 科目コード文字数エラーメッセージ --%>
+        <c:if test="${not empty errorSubjectNoLength}">
+                <div class="error-message">${errorSubjectNoLength}</div>
+        </c:if>
         <br><br>
 
         <!-- 科目名 -->
         <label>科目名</label> <!-- ④ -->
         <input type="text" name="no" value="${no}" placeholder="科目名を入力してください" required /> <!-- ⑤ -->
+        <%-- 科目名未入力エラーメッセージ (必要であれば追加) --%>
+        <c:if test="${not empty errorSubjectNameEmpty}">
+                <div class="error-message">${errorSubjectNameEmpty}</div>
+        </c:if>
         <br><br>
 
 
         <!-- 登録ボタン -->
-        <button type="submit" name="end">登録して終了</button> <!-- ⑩ -->
+        <button type="submit" name="end">登録</button> <!-- ⑩ -->
     </form>
 
     <!-- 戻るリンク -->
-    <a href="StudentListServlet">戻る</a> <!-- ⑪ -->
+    <a href="SRJM001.jsp">戻る</a> <!-- ⑪ -->
 </body>
 </html>
