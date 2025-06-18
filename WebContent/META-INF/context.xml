@@ -1,0 +1,11 @@
+<Context reloadable="true">
+	<Resource
+		name="jdbc/kaihatsu"
+		auth="Container"
+		type="javax.sql.DataSource"
+		driverClassName="org.h2.Driver"
+		url="jdbc:h2:tcp://localhost/~/kaihatsu"
+		username="sa"
+		password=""
+	/>
+</Context>
