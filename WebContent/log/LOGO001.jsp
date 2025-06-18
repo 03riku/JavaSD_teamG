@@ -49,6 +49,21 @@
     <div> <a href="login.jsp">ログイン</a></div>
 </div>
 
+<<<<<<< HEAD
+=======
+<!-- コンテンツ -->
+<div class="container">
+    <p class="label">ログアウト</p>
+
+    <div class="message-box">ログアウトしました</div>
+
+    <div class="login-link">
+        <a href="LOGI.jsp">ログイン</a>
+    </div>
+</div>
+
+<!-- フッター -->
+>>>>>>> branch 'master' of https://github.com/03riku/JavaSD_teamG.git
 <div class="footer">
     © 2023 TIC<br>大学学園
 </div>

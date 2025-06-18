@@ -7,22 +7,22 @@ import java.sql.ResultSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import Bean.Student;
 import dao.StudentDao;
+import tool.CommonServlet;
 
-@WebServlet("/log/LoginServlet")  // JSPのactionに合わせて修正
-public class LoginExecuteController extends HttpServlet {
+@WebServlet(urlPatterns={"/log/MMNU001"})  // JSPのactionに合わせて修正
+public class LoginExecuteController extends CommonServlet {
     private static final long serialVersionUID = 1L;
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void post(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        request.setCharacterEncoding("UTF-8");
+    	System.out.println("debug-chk002");
+    	request.setCharacterEncoding("UTF-8");
 
         String id = request.getParameter("id");
         String password = request.getParameter("password");
@@ -36,7 +36,8 @@ public class LoginExecuteController extends HttpServlet {
 
             if (student == null) {
                 // IDがない → ログイン画面に戻す（エラーメッセージ無し）
-                request.getRequestDispatcher("/log/LOGI.jsp").forward(request, response);
+            	System.out.println("debug-chk001");
+                request.getRequestDispatcher("/log/LOGI001").forward(request, response);
                 return;
             }
 
@@ -66,13 +67,18 @@ public class LoginExecuteController extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/log/MMNU001.jsp");
             } else {
                 // パスワード不一致 → ログイン画面に戻す（エラーメッセージ無し）
-                request.getRequestDispatcher("/log/LOGI.jsp").forward(request, response);
+                request.getRequestDispatcher("/log/LOGI001.jsp").forward(request, response);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            // システムエラーでもログイン画面に戻す（エラーメッセージ無し）
-            request.getRequestDispatcher("/log/LOGI.jsp").forward(request, response);
+            //メニューに続く
+            request.getRequestDispatcher("/log/MMNU001.jsp").forward(request, response);
         }
+
+    }
+    protected void get(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
     }
 }
