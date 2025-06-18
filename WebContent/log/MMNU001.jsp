@@ -100,7 +100,7 @@
 
   <!-- フッター -->
   <footer>
-    &copy; 20 TIC
+    &copy; 2023 TIC
   </footer>
 </body>
 </html>
