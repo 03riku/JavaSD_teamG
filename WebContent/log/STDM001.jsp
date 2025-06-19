@@ -4,123 +4,146 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>得点管理システム - 学生管理</title>
+    <title>得点管理システム - 学生管理一覧</title>
     <style>
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: sans-serif;
+        }
+        .layout {
+            display: flex;
         }
         .sidebar {
-            width: 200px;
+            width: 180px;
+            background-color: #f9f9f9;
             height: 100vh;
-            background-color: #f0f0f0;
-            float: left;
             padding: 20px;
             box-sizing: border-box;
+            border-right: 1px solid #ccc;
         }
         .sidebar a {
             display: block;
-            margin-bottom: 15px;
+            margin: 10px 0;
+            color: #333;
             text-decoration: none;
-            color: black;
         }
-        .main-content {
-            margin-left: 200px;
+        .content {
+            flex: 1;
             padding: 20px;
         }
-        table, th, td {
-            border: 1px solid black;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        h2 {
+            margin: 0;
+        }
+        form {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        label {
+            margin-right: 5px;
+        }
+        table {
+            width: 100%;
             border-collapse: collapse;
+            margin-top: 10px;
         }
         th, td {
+            border: 1px solid #999;
             padding: 5px 10px;
             text-align: center;
         }
-        form {
-            margin-bottom: 20px;
+        .no-data {
+            margin-top: 20px;
+            font-weight: bold;
+            color: red;
         }
     </style>
 </head>
 <body>
 
-    <!-- 左メニュー -->
+<div class="layout">
+    <!-- ⑪：左リンク -->
     <div class="sidebar">
-        <h3>メニュー</h3>
-        <a href="STDM001">学生管理</a>
-        <a href="TESTM001">成績管理</a>
+        <a href="STDM001">学生管理</a>  <!-- ⑪ -->
+        <a href="TESTM001">成績管理</a> <!-- ⑧ -->
     </div>
 
-    <!-- メインコンテンツ -->
-    <div class="main-content">
-        <h2>得点管理システム</h2>
-        <div>
-            <span>ようこそ <strong>○○高校 教員</strong> さん</span> |
-            <a href="logout.jsp">ログアウト</a>
+    <div class="content">
+        <!-- タイトルとログアウト -->
+        <div class="header">
+            <h2>得点管理システム</h2> <!-- 画面タイトル -->
+            <div>大阪 第一高校 教員さん | <a href="logout.jsp">ログアウト</a> <!-- ⑯ --> </div>
         </div>
 
-        <h3>学生管理</h3>
+        <h3>学生管理</h3> <!-- ① -->
 
-        <!-- 絞り込みフォーム -->
-        <form action="STDM001" method="get">
-            <label for="entYear">入学年度：</label>
-            <select name="entYear" id="entYear">
+        <!-- 検索フォーム（②〜⑨） -->
+        <form method="get" action="STDM001">
+            <label>入学年度</label> <!-- ② -->
+            <select name="entYear">
                 <option value="">--</option>
                 <option value="2021">2021</option>
                 <option value="2022">2022</option>
                 <option value="2023">2023</option>
-            </select>
+            </select> <!-- ③ -->
 
-            <label for="classNum">クラス：</label>
-            <select name="classNum" id="classNum">
+            <label>クラス</label> <!-- ④ -->
+            <select name="classNum">
                 <option value="">--</option>
                 <option value="1">1組</option>
                 <option value="2">2組</option>
                 <option value="3">3組</option>
-            </select>
+            </select> <!-- ⑤ -->
 
-            <label>在学中：</label>
-            <input type="checkbox" name="isAttend" value="true" checked>
+            <label>在学中</label> <!-- ⑥ -->
+            <input type="checkbox" name="isAttend" value="true" checked> <!-- ⑦ -->
 
-            <button type="submit">絞り込み</button>
+            <button type="submit">絞り込み</button> <!-- ⑨ -->
         </form>
 
-        <!-- 学生一覧テーブル -->
+        <!-- テーブル（⑩〜㉓） -->
         <table>
             <thead>
                 <tr>
-                    <th>入学年度</th>
-                    <th>学籍番号</th>
-                    <th>氏名</th>
-                    <th>高校名</th>
-                    <th>学年</th>
-                    <th>クラス</th>
-                    <th>在学</th>
-                    <th>詳細</th>
+                    <th>入学年度</th>    <!-- ⑫ -->
+                    <th>学籍番号</th>    <!-- ⑬ -->
+                    <th>氏名</th>        <!-- ⑭ -->
+                    <th>高校名</th>      <!-- ⑮ -->
+                    <th>学年</th>        <!-- ⑯ -->
+                    <th>クラス</th>      <!-- ⑰ -->
+                    <th>在学</th>        <!-- ⑱ -->
+                    <th>詳細</th>        <!-- ⑲ -->
                 </tr>
             </thead>
             <tbody>
                 <c:forEach var="s" items="${students}">
                     <tr>
-                        <td>${s.entYear}</td>
-                        <td>${s.studentNo}</td>
-                        <td>${s.studentName}</td>
-                        <td>${s.schoolName}</td>
+                        <td>${s.entYear}</td>        <!-- ⑳ -->
+                        <td>${s.studentNo}</td>      <!-- ㉑ -->
+                        <td>${s.studentName}</td>    <!-- ㉒ -->
+                        <td>${s.schoolName}</td>     <!-- ㉓ -->
                         <td>${s.grade}</td>
                         <td>${s.classNum}</td>
                         <td><input type="radio" <c:if test="${s.isAttend}">checked</c:if> disabled></td>
                         <td><a href="STDM002?studentId=${s.studentNo}">詳細</a></td>
                     </tr>
                 </c:forEach>
-
-                <!-- 一致する学生がいない場合 -->
                 <c:if test="${empty students}">
                     <tr>
-                        <td colspan="8">※絞り込み条件に該当する学生情報がありません</td>
+                        <td colspan="8">※絞り込み条件に該当する学生情報がありません</td> <!-- ㉔ -->
                     </tr>
                 </c:if>
             </tbody>
         </table>
     </div>
+</div>
 
 </body>
 </html>
