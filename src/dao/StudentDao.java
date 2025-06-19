@@ -105,4 +105,9 @@ public class StudentDao extends Dao {
             }
         }
     }
+
+	public List<Student> findAll() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
 }

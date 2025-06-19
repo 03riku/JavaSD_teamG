@@ -1,10 +1,10 @@
-<<<<<<< HEAD
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>得点管理システム - 学生管理一覧</title>
+    <title>得点管理システム - 学生管理</title>
     <style>
         body {
             margin: 0;
@@ -12,8 +12,8 @@
         }
         .sidebar {
             width: 200px;
-            background-color: #f0f0f0;
             height: 100vh;
+            background-color: #f0f0f0;
             float: left;
             padding: 20px;
             box-sizing: border-box;
@@ -36,15 +36,21 @@
             padding: 5px 10px;
             text-align: center;
         }
+        form {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
+
+    <!-- 左メニュー -->
     <div class="sidebar">
         <h3>メニュー</h3>
-        <a href="STDM001.jsp">学生管理</a>
-        <a href="TESTM001.jsp">成績管理</a>
+        <a href="STDM001">学生管理</a>
+        <a href="TESTM001">成績管理</a>
     </div>
 
+    <!-- メインコンテンツ -->
     <div class="main-content">
         <h2>得点管理システム</h2>
         <div>
@@ -54,16 +60,18 @@
 
         <h3>学生管理</h3>
 
+        <!-- 絞り込みフォーム -->
         <form action="STDM001" method="get">
             <label for="entYear">入学年度：</label>
             <select name="entYear" id="entYear">
+                <option value="">--</option>
                 <option value="2021">2021</option>
                 <option value="2022">2022</option>
                 <option value="2023">2023</option>
             </select>
 
-            <label for="class">クラス：</label>
-            <select name="class" id="class">
+            <label for="classNum">クラス：</label>
+            <select name="classNum" id="classNum">
                 <option value="">--</option>
                 <option value="1">1組</option>
                 <option value="2">2組</option>
@@ -71,13 +79,12 @@
             </select>
 
             <label>在学中：</label>
-            <input type="checkbox" name="isAttend" id="isAttend" checked>
+            <input type="checkbox" name="isAttend" value="true" checked>
 
             <button type="submit">絞り込み</button>
         </form>
 
-        <br>
-
+        <!-- 学生一覧テーブル -->
         <table>
             <thead>
                 <tr>
@@ -92,21 +99,28 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- JSTLで繰り返し -->
-                <tr>
-                    <td>2021</td>
-                    <td>2123456</td>
-                    <td>山田 太郎</td>
-                    <td>大阪 第一高校</td>
-                    <td>3</td>
-                    <td>1</td>
-                    <td><input type="radio" checked></td>
-                    <td><a href="STDM002?studentId=2123456">詳細</a></td>
-                </tr>
-                <!-- 条件に該当しない場合 -->
-                <!-- <tr><td colspan="8">※絞り込み条件に該当する学生情報がありません</td></tr> -->
+                <c:forEach var="s" items="${students}">
+                    <tr>
+                        <td>${s.entYear}</td>
+                        <td>${s.studentNo}</td>
+                        <td>${s.studentName}</td>
+                        <td>${s.schoolName}</td>
+                        <td>${s.grade}</td>
+                        <td>${s.classNum}</td>
+                        <td><input type="radio" <c:if test="${s.isAttend}">checked</c:if> disabled></td>
+                        <td><a href="STDM002?studentId=${s.studentNo}">詳細</a></td>
+                    </tr>
+                </c:forEach>
+
+                <!-- 一致する学生がいない場合 -->
+                <c:if test="${empty students}">
+                    <tr>
+                        <td colspan="8">※絞り込み条件に該当する学生情報がありません</td>
+                    </tr>
+                </c:if>
             </tbody>
         </table>
     </div>
+
 </body>
 </html>
