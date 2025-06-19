@@ -35,7 +35,7 @@
 <body>
     <div class="header">
         <h1>得点管理システム</h1>
-        <p style="text-align: right;"> <a href="#">ログアウト</a>)</p>
+        <p style="text-align: right;"> <a href="#">ログアウト</a></p>
         <hr/>
     </div>
 
