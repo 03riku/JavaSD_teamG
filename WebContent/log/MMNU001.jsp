@@ -77,13 +77,13 @@
     <div class="menu-box">
 <!-- ② -->
 <div class="box box-red">
-<a href="StudentListServlet"> 学生管理</a>
+<a href="STDM001.jsp"> 学生管理</a>
 </div>
 
       <!-- ③～⑤ -->
 <div class="box box-green">
 <div> 成績管理</div>
-<a href="STDM001.jsp"> 成績登録</a>
+<a href="#"> 成績登録</a>
 <a href="GradeSearchServlet"> 成績参照</a>
 </div>
 
