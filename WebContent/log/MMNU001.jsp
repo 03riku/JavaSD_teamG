@@ -96,7 +96,6 @@
 
   <!-- フッター -->
   <footer>
-    &copy; 2023 TIC
   </footer>
 </body>
 </html>
