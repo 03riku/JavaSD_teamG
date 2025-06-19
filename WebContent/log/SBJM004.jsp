@@ -68,6 +68,6 @@
         <button type="submit" name="execute">変更</button> <%-- ⑥ 変更ボタン --%>
     </form>
 
-    <a href="SRJM001.jsp">戻る</a> <%-- ⑦ 戻るリンク --%>
+    <a href="SRJM002.jsp">戻る</a> <%-- ⑦ 戻るリンク --%>
 </body>
 </html>

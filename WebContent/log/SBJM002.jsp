@@ -70,5 +70,35 @@
     </form>
 
     <a href="SRJM001.jsp">戻る</a> <%-- ⑪ --%>
+
+    <br><br>
+     <h2>科目情報一覧</h2>
+    <div style="margin-left: 17%;"> <%-- 左のメニューバーとコンテンツが重ならないように調整 --%>
+        <c:choose>
+            <%-- 科目リストが空の場合、メッセージを表示 --%>
+            <c:when test="${empty subjects}">
+                <p>登録されている科目情報はありません。</p>
+            </c:when>
+            <%-- 科目リストにデータがある場合、テーブルで表示 --%>
+            <c:otherwise>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>科目コード</th>
+                            <th>科目名</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="subject" items="${subjects}">
+                            <tr>
+                                <td><c:out value="${subject.cd}"/></td>
+                                <td><c:out value="${subject.name}"/></td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </c:otherwise>
+        </c:choose>
+    </div>
 </body>
 </html>
