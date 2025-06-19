@@ -43,7 +43,7 @@ public class LoginExecuteController extends CommonServlet {
 
             // 2. パスワードだけ別で取得
             String dbPassword = null;
-            String sql = "SELECT password FROM Student WHERE no = ?";
+            String sql = "SELECT password FROM Teacher WHERE no = ?";
 
             try (Connection con = studentDao.getConnection();
                  PreparedStatement ps = con.prepareStatement(sql)) {
