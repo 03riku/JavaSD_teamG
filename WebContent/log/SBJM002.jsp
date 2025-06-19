@@ -1,61 +1,104 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%-- Teacher BeanとSchool Beanがセッションスコープに保存されていることを前提とします --%>
+<%-- 例: session.setAttribute("teacher", teacherObject); --%>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>学生情報登録</title>
+    <meta charset="UTF-8">
+    <title>科目情報登録</title>
+    <style>
+        /* エラーメッセージ用のスタイル（ご提示のコードに合わせるため追加） */
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        /* 必要に応じて、その他のスタイル（success-messageなど）も追加してください */
+    </style>
 </head>
 <body>
-    <h2>学生情報登録</h2> <!-- ① -->
-
     <table width="100%" cellpadding="5" cellspacing="0" border="0">
-    <tr>
-      <td align="left">得点管理システム</td>
-      <td align="right"><a href="LOGO001.jsp">ログアウト</a></td>
-    </tr>
-  </table>
+        <tr>
+            <td align="left">得点管理システム</td>
+            <td align="right">
+                <%-- ユーザー情報とログアウトリンクの表示 --%>
+                <c:if test="${not empty teacher}">
+                    ${teacher.school.name} ${teacher.name}様&nbsp;
+                </c:if>
+                <a href="LOGO001.jsp">ログアウト</a>
+            </td>
+        </tr>
+    </table>
 
-  <div style="float:left; width:15%; height:100vh; border-right:2px solid black; padding:10px;">
-  <ul>
-      <li><a href="MMNU001.jsp">メニュー</a></li>
-      <li><a href="STDM001.jsp">学生管理</a></li>
-      <li><label>成績管理</label></li>
-      <li><a href="GRMU001.jsp">成績登録</a><br></li>
-      <li><a href="GRMR001.jsp">成績検索</a></li>
-      <li><a href="SRJM002.jsp">科目管理</a></li>
-  </ul>
-  </div>
+    <div style="float:left; width:15%; height:100vh; border-right:2px solid black; padding:10px;">
+        <ul>
+            <li><a href="MMNU001.jsp">メニュー</a></li>
+            <li><a href="STDM001.jsp">学生管理</a></li>
+            <li><label>成績管理</label></li> <%-- これはリンクではなくラベルです --%>
+            <li><a href="GRMU001.jsp">成績登録</a><br></li>
+            <li><a href="GRMR001.jsp">成績検索</a></li>
+            <li><a href="SRJM002.jsp">科目管理</a></li> <%-- 科目管理のリンク先 --%>
+        </ul>
+    </div>
 
-  <h2>科目情報登録</h2>
+    <%-- メインコンテンツのタイトル --%>
+    <h2>科目情報登録</h2>
 
-    <form action="StudentRegisterServlet" method="post">
-        <!-- 科目コード -->
-        <label>科目コード</label> <!-- ④ -->
-        <input type="text" name="no" value="${no}" placeholder="科目コードを入力してください" required /> <!-- ⑤ -->
-        <%-- 科目コード未入力エラーメッセージ --%>
-        <c:if test="${not empty errorSubjectNoEmpty}">
-                <div class="error-message">${errorSubjectNoEmpty}</div>
+    <%-- 登録成功メッセージの表示（必要であれば追加） --%>
+    <c:if test="${not empty successMessage}">
+        <div class="success-message">${successMessage}</div>
+    </c:if>
+
+    <form action="SubjectRegisterServlet" method="post"> <%-- サーブレット名を適宜変更してください (StudentRegisterServlet -> SubjectRegisterServlet) --%>
+        <label>科目コード</label> <input type="text" name="cd" value="${subject.cd}" placeholder="科目コードを入力してください" required /> <%-- 科目コード関連のエラーメッセージ --%>
+        <c:if test="${not empty errorSubjectCdEmpty}">
+            <div class="error-message">${errorSubjectCdEmpty}</div>
         </c:if>
-            <%-- 科目コード文字数エラーメッセージ --%>
-        <c:if test="${not empty errorSubjectNoLength}">
-                <div class="error-message">${errorSubjectNoLength}</div>
+        <c:if test="${not empty errorSubjectCdLength}">
+            <div class="error-message">${errorSubjectCdLength}</div>
         </c:if>
         <br><br>
 
-        <!-- 科目名 -->
-        <label>科目名</label> <!-- ④ -->
-        <input type="text" name="no" value="${no}" placeholder="科目名を入力してください" required /> <!-- ⑤ -->
-        <%-- 科目名未入力エラーメッセージ (必要であれば追加) --%>
+        <label>科目名</label> <input type="text" name="name" value="${subject.name}" placeholder="科目名を入力してください" required /> <%-- 科目名関連のエラーメッセージ --%>
         <c:if test="${not empty errorSubjectNameEmpty}">
-                <div class="error-message">${errorSubjectNameEmpty}</div>
+            <div class="error-message">${errorSubjectNameEmpty}</div>
         </c:if>
         <br><br>
 
-
-        <!-- 登録ボタン -->
-        <button type="submit" name="end">登録</button> <!-- ⑩ -->
+        <button type="submit" name="execute">登録</button> <%-- ⑩ name="end" から name="execute" に変更することが多いですが、ここはご提示に合わせて変更しました --%>
     </form>
 
-    <!-- 戻るリンク -->
-    <a href="SRJM001.jsp">戻る</a> <!-- ⑪ -->
+    <a href="SRJM001.jsp">戻る</a> <%-- ⑪ --%>
+
+    <br><br>
+     <h2>科目情報一覧</h2>
+    <div style="margin-left: 17%;"> <%-- 左のメニューバーとコンテンツが重ならないように調整 --%>
+        <c:choose>
+            <%-- 科目リストが空の場合、メッセージを表示 --%>
+            <c:when test="${empty subjects}">
+                <p>登録されている科目情報はありません。</p>
+            </c:when>
+            <%-- 科目リストにデータがある場合、テーブルで表示 --%>
+            <c:otherwise>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>科目コード</th>
+                            <th>科目名</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="subject" items="${subjects}">
+                            <tr>
+                                <td><c:out value="${subject.cd}"/></td>
+                                <td><c:out value="${subject.name}"/></td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </c:otherwise>
+        </c:choose>
+    </div>
 </body>
 </html>
