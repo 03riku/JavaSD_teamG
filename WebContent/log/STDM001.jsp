@@ -197,6 +197,10 @@
             max-width: 150px; /* セレクトボックスの幅を調整 */
             min-width: 100px; /* 最小幅 */
         }
+        .filter-form input[type="checkbox"] {
+            transform: scale(1.2); /* チェックボックスのサイズを少し大きくする */
+            margin-right: 5px; /* ラベルとの間隔 */
+        }
 
         /* 絞込みボタンのスタイル */
         .filter-button {
@@ -334,14 +338,7 @@
                             <option value="203">203</option>
                         </select>
 
-                        <label for="filterStatus">在学中/休学中</label>
-                        <select id="filterStatus" name="filterStatus">
-                            <option value="">------</option>
-                            <option value="在学中">在学中</option>
-                            <option value="休学中">休学中</option>
-                        </select>
-
-                        <button type="submit" class="filter-button">絞込み</button>
+                        <label for="filterActive">在学中</label> <input type="checkbox" id="filterActive" name="filterActive" value="true"> <button type="submit" class="filter-button">絞込み</button>
                     </div>
                 </form>
 
@@ -354,7 +351,7 @@
                                 <th>学生番号</th>
                                 <th>氏名</th>
                                 <th>クラス</th>
-                                <th>在学中/休学中</th>
+                                <th>在学中</th>
                                 <th></th> </tr>
                         </thead>
                         <tbody>
@@ -398,6 +395,20 @@
                                 <td class="center-text">〇</td>
                                 <td><a href="#">変更</a></td>
                             </tr>
+                            <tr>
+                                <td>2022</td>
+                                <td>2225001</td>
+                                <td>休学中 太郎</td>
+                                <td>201</td>
+                                <td class="center-text">－</td> <td><a href="#">変更</a></td>
+                            </tr>
+                            <tr>
+                                <td>2023</td>
+                                <td>2325002</td>
+                                <td>休学中 花子</td>
+                                <td>203</td>
+                                <td class="center-text">－</td> <td><a href="#">変更</a></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -414,7 +425,7 @@
         function filterStudents() {
             const filterYear = document.getElementById('filterYear').value;
             const filterClass = document.getElementById('filterClass').value;
-            const filterStatus = document.getElementById('filterStatus').value;
+            const filterActive = document.getElementById('filterActive').checked; // true または false を取得
 
             const studentTable = document.getElementById('studentTable');
             const searchResultsCount = document.getElementById('searchResultsCount');
@@ -428,32 +439,43 @@
             }
 
             let filteredCount = 0;
-            // フィルタリングロジック（ここでは簡略化のため、特定の組み合わせで表示・非表示を切り替える）
-            // 実際のアプリケーションでは、バックエンドからのデータに基づいてフィルタリングします。
-            if (filterYear === '2021' && filterClass === '201' && filterStatus === '在学中') {
-                // 画像に表示されているデータの一部を表示する例
-                document.querySelectorAll('#studentTable tbody tr').forEach(row => {
-                    const year = row.cells[0].innerText;
-                    const studentClass = row.cells[3].innerText;
-                    const status = row.cells[4].innerText === '〇' ? '在学中' : '休学中'; // 例：〇を在学中にマッピング
 
-                    if ((filterYear === '' || year === filterYear) &&
-                        (filterClass === '' || studentClass === filterClass) &&
-                        (filterStatus === '' || status === filterStatus)) {
-                        row.style.display = ''; // 表示する
-                        filteredCount++;
+            // フィルタリングロジック
+            document.querySelectorAll('#studentTable tbody tr').forEach(row => {
+                const year = row.cells[0].innerText;
+                const studentClass = row.cells[3].innerText;
+                // テーブルの「在学中」列が'〇'であれば在学中、そうでなければ休学中と判断
+                const isActiveStudent = row.cells[4].innerText === '〇';
+
+                let matches = true;
+
+                // 入学年度でフィルタリング
+                if (filterYear !== '' && year !== filterYear) {
+                    matches = false;
+                }
+                // クラスでフィルタリング
+                if (filterClass !== '' && studentClass !== filterClass) {
+                    matches = false;
+                }
+
+                // 在学中チェックボックスでのフィルタリングロジック
+                if (filterActive) {
+                    // チェックが入っている場合: 在学中の学生のみを表示
+                    if (!isActiveStudent) { // 在学中でない場合は非表示
+                        matches = false;
                     }
-                });
-            } else if (filterYear === '' && filterClass === '' && filterStatus === '') {
-                // 全て空の場合、全ての行を表示
-                for (let i = 0; i < rows.length; i++) {
-                    rows[i].style.display = '';
+                } else {
+                    // チェックが入っていない場合: 休学中の学生のみを表示
+                    if (isActiveStudent) { // 在学中の学生であれば非表示
+                        matches = false;
+                    }
+                }
+
+                if (matches) {
+                    row.style.display = ''; // 表示する
                     filteredCount++;
                 }
-            } else {
-                // それ以外の組み合わせの場合、データがないと仮定
-                filteredCount = 0;
-            }
+            });
 
             if (filteredCount > 0) {
                 searchResultsCount.innerText = `検索結果：${filteredCount}件`;
@@ -467,7 +489,8 @@
             }
         }
 
-        // ページ読み込み時に初期フィルタリングを実行（今回は全件表示）
+        // ページ読み込み時に初期フィルタリングを実行
+        // 初期状態では「在学中」チェックボックスはチェックなしなので、休学中の学生のみが表示されます
         document.addEventListener('DOMContentLoaded', () => {
             filterStudents();
         });
