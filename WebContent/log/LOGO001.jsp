@@ -52,7 +52,7 @@
 <!-- コンテンツ -->
 <div class="container">
 
-        <a href="LOGI.jsp">ログイン</a>
+        <a href="LOGI001.jsp">ログイン</a>
     </div>
 </div>
 
