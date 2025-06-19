@@ -89,11 +89,7 @@
 
       <!-- ⑥ -->
       <div class="box box-blue">
-<<<<<<< HEAD
-        <a href="SBJM002.jsp">⑥ 科目管理</a>
-=======
-        <a href="SubjectListServlet"> 科目管理</a>
->>>>>>> branch 'master' of https://github.com/03riku/JavaSD_teamG.git
+        <a href="SBJM002.jsp"> 科目管理</a>
       </div>
     </div>
   </div>
