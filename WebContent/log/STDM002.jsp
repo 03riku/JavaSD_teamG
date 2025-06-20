@@ -17,11 +17,11 @@
   <div style="float:left; width:15%; height:100vh; border-right:2px solid black; padding:10px;">
   <ul>
       <li><a href="MMNU001.jsp">メニュー</a></li>
-      <li><a href="StudentListServlet">学生管理</a></li>
+      <li><a href="STDM001.jsp">学生管理</a></li>
       <li><label>成績管理</label></li>
-      <li><a href="GradeSearchRegisterServlet">成績登録</a><br></li>
-      <li><a href="GradeSearchServlet">成績検索</a></li>
-      <li><a href="SubjectListServlet">科目管理</a></li>
+      <li><a href="GRMU001.jsp">成績登録</a><br></li>
+      <li><a href="GRMR001.jsp">成績検索</a></li>
+      <li><a href="SBJM001.jsp">科目管理</a></li>
   </ul>
   </div>
 
