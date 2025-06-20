@@ -58,7 +58,6 @@
 
 <!-- フッター -->
 <div class="footer">
-    © 2023 TIC<br>大原学園
 </div>
 
 </body>

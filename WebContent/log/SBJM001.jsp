@@ -216,7 +216,7 @@
                     <tr>
                         <td><%= subject.get("code") %></td>
                         <td><%= subject.get("name") %></td>
-                        <td><a href="#">変更</a></td>
+                        <td><a href="SBJM004.jsp">変更</a></td>
                         <td><a href="#">削除</a></td>
                     </tr>
                     <%
@@ -232,7 +232,6 @@
         </div>
 
         <div class="footer">
-            © 2023 TIC 大原学園
         </div>
     </div>
 </body>

@@ -58,7 +58,6 @@
       <button type="submit" class="btn btn-primary w-100">ログイン</button>
     </form>
     <footer>
-      &copy; 2023 TIC 大原学園
     </footer>
   </div>
 </body>

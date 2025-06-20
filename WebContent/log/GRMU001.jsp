@@ -35,19 +35,18 @@
 <body>
     <div class="header">
         <h1>得点管理システム</h1>
-        <p style="text-align: right;"> <a href="#">ログアウト</a></p>
+        <p style="text-align: right;"> <a href="LOGO001.jsp">ログアウト</a></p>
         <hr/>
     </div>
 
     <div class="menu">
         <ul>
-            <li><a href="#">メニュー</a></li>
-            <li><a href="#">学生管理</a></li>
-            <li><a href="#" style="font-weight: bold;">成績管理</a></li> <%-- 現在のページ --%>
-            <li><a href="#">成績参照</a></li>
-            <li><a href="#">成績登録</a></li>
-            <li><a href="#">科目管理</a></li>
-            <li><a href="#">教員管理</a></li>
+            <li><a href="MMNU001.jsp">メニュー</a></li>
+            <li><a href="STDM001.jsp">学生管理</a></li>
+            <li><a>成績管理</a></li> <%-- 現在のページ --%>
+            <li><a href="GRMR001.jsp">成績参照</a></li>
+            <li><a href="GRMU001.jsp">成績登録</a></li>
+            <li><a href="SBJM001.jsp">科目管理</a></li>
         </ul>
     </div>
 
