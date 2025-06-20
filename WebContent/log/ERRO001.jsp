@@ -47,8 +47,6 @@
 
   <!-- フッター -->
   <footer>
-    &copy; 2023 TIC<br>
-    大原学園
   </footer>
 
 </body>

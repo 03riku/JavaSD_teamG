@@ -177,23 +177,23 @@
     <div class="header">
         <h1>得点管理システム</h1>
         <div class="user-info">
-            大原 太郎様 <a href="#">ログアウト</a>
+            大原 太郎様 <a href="LOGO001.jsp">ログアウト</a>
         </div>
     </div>
 
     <div class="container">
         <div class="sidebar">
             <ul>
-                <li><a href="#">メニュー</a></li>
-                <li><a href="#" class="active">学生管理</a></li>
+                <li><a href="MMNU001.jsp">メニュー</a></li>
+                <li><a href="STDM001.jsp" class="active">学生管理</a></li>
                 <li>
-                    <a href="#">成績管理</a>
+                    <a>成績管理</a>
                     <ul>
-                        <li><a href="#">成績登録</a></li>
-                        <li><a href="#">成績参照</a></li>
+                        <li><a href="GRMU001.jsp">成績登録</a></li>
+                        <li><a href="GRMR001.jsp">成績参照</a></li>
                     </ul>
                 </li>
-                <li><a href="#">科目管理</a></li>
+                <li><a href="SBJM001.jsp">科目管理</a></li>
             </ul>
         </div>
 
@@ -206,7 +206,7 @@
                 </div>
 
                 <div class="student-list-link-container">
-                    <a href="#">学生一覧</a>
+                    <a href="STDM002.jsp">学生一覧</a>
                 </div>
 
             </div>

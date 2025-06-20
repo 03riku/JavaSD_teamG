@@ -160,7 +160,7 @@
         <div class="header">
             <h1>得点管理システム</h1>
             <div class="user-info">
-                <span>大原太郎</span> (<a href="LOGO001">ログアウト</a>)
+                  <td align="right"><a href="LOGO001.jsp">ログアウト</a></td>
             </div>
         </div>
 

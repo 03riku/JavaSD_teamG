@@ -269,7 +269,7 @@
 	<div class="header">
 		<h1>得点管理システム</h1>
 		<div class="user-info">
-			大原 太郎様<a href="#">ログアウト</a>
+			大原 太郎様<a href="LOGO001.jsp">ログアウト</a>
 		</div>
 	</div>
 
@@ -278,7 +278,7 @@
 			<ul>
 				<li><a href="MMNU001.jsp">メニュー</a></li>
 				<li><a href="STDM001.jsp">学生管理</a></li>
-				<li><a href="#">成績管理</a></li>
+				<li><a>成績管理</a></li>
 				<li><a href="GRMA001.jsp">成績一覧 (学生)</a></li> <%-- 学生一覧にリンクを修正 --%>
 				<li><a href="GRML001.jsp" class="active">成績一覧 (科目)</a></li> <%-- このページをアクティブに設定 --%>
 				<li><a href="GRMR001.jsp">成績登録</a></li>

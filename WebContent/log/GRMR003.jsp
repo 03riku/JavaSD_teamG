@@ -459,7 +459,7 @@
         </div>
 
         <div class="footer">
-            © 2023 TIC 大原学園
+
         </div>
     </div>
 </body>
