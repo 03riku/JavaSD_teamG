@@ -25,7 +25,7 @@
     <td width="180" style="padding: 10px;">
       <a href="#">メニュー</a><br><br>
       <a href="StudentListServlet">学生管理</a><br>
-      <a href="#">成績管理</a><br>
+      <a>成績管理</a><br>
       <a href="GradeSearchRegisterServlet">成績登録</a><br>
       <a href="GradeSearchServlet">成績検索</a><br>
       <a href="SubjectListServlet">科目管理</a><br>
