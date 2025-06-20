@@ -106,8 +106,31 @@ public class StudentDao extends Dao {
         }
     }
 
-	public List<Student> findAll() {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
-	}
+    /**
+     * 新規学生登録（INSERT文）
+     */
+    public void insert(Student student) throws Exception {
+        String sql = "INSERT INTO Student (no, name, ent_year, class_num, attend, school_cd) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection con = getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, student.getNo());
+            ps.setString(2, student.getName());
+            ps.setInt(3, student.getEntYear());
+            ps.setString(4, student.getClassNum());
+            ps.setBoolean(5, student.isAttend()); // デフォルト値を設定していないならfalseなどをセット
+            if (student.getSchool() != null) {
+                ps.setString(6, student.getSchool().getCd());
+            } else {
+                ps.setNull(6, java.sql.Types.VARCHAR);
+            }
+
+            ps.executeUpdate();
+        }
+    }
+
+    public List<Student> findAll() {
+        // TODO 自動生成されたメソッド・スタブ
+        return null;
+    }
 }
