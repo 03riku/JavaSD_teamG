@@ -1,125 +1,186 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>得点管理システム - 学生管理</title>
+    <title>学生管理</title>
     <style>
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Meiryo', sans-serif;
+            font-size: 14px;
         }
-        .sidebar {
-            width: 200px;
-            height: 100vh;
-            background-color: #f0f0f0;
-            float: left;
-            padding: 20px;
-            box-sizing: border-box;
+
+        /* 最上部の青いヘッダーバー */
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 20px;
+            font-weight: bold;
         }
-        .sidebar a {
-            display: block;
-            margin-bottom: 15px;
+
+        header .user-info {
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        header .user-info a {
+            color: white;
             text-decoration: none;
-            color: black;
+            margin-left: 10px;
         }
-        .main-content {
-            margin-left: 200px;
+
+        /* 全体を左右に分ける */
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 左側のメニュー */
+        .sidebar {
+            background-color: #e6f0ff;
+            width: 200px;
             padding: 20px;
         }
-        table, th, td {
-            border: 1px solid black;
-            border-collapse: collapse;
+
+        .sidebar h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #000;
         }
-        th, td {
-            padding: 5px 10px;
-            text-align: center;
+
+        .sidebar ul {
+            list-style: none;
+            padding-left: 0;
         }
-        form {
+
+        .sidebar li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar a {
+            color: #000;
+            text-decoration: none;
+        }
+
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+
+        /* 右側のメイン */
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .box {
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            padding: 20px;
+        }
+
+        h2 {
+            font-size: 18px;
             margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        select, input[type="checkbox"] {
+            padding: 5px;
+        }
+
+        .btn {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #5a6268;
+        }
+
+        .new-register {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .new-register a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .new-register a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
 
-    <!-- 左メニュー -->
-    <div class="sidebar">
-        <h3>メニュー</h3>
-        <a href="STDM001">学生管理</a>
-        <a href="TESTM001">成績管理</a>
-    </div>
-
-    <!-- メインコンテンツ -->
-    <div class="main-content">
-        <h2>得点管理システム</h2>
-        <div>
-            <span>ようこそ <strong>○○高校 教員</strong> さん</span> |
-            <a href="logout.jsp">ログアウト</a>
+    <header>
+        得点管理システム
+        <div class="user-info">
+            大原 太郎様　
+            <a href="Logout.action">ログアウト</a>
         </div>
+    </header>
 
-        <h3>学生管理</h3>
+    <div class="container">
+        <!-- 左メニュー -->
+        <nav class="sidebar">
+            <h3>メニュー</h3>
+            <ul>
+                <li><a href="STDM001.jsp">学生管理</a></li>
+                <li><a href="#">成績管理</a></li>
+                <li><a href="GRMU001.jsp">成績登録</a></li>
+                <li><a href="GRMR001.jsp">成績参照</a></li>
+                <li><a href="SBJM002.jsp">科目管理</a></li>
+            </ul>
+        </nav>
 
-        <!-- 絞り込みフォーム -->
-        <form action="STDM001" method="get">
-            <label for="entYear">入学年度：</label>
-            <select name="entYear" id="entYear">
-                <option value="">--</option>
-                <option value="2021">2021</option>
-                <option value="2022">2022</option>
-                <option value="2023">2023</option>
-            </select>
+        <!-- メイン -->
+        <main class="main-content">
+            <div class="box">
+                <h2>学生管理</h2>
 
-            <label for="classNum">クラス：</label>
-            <select name="classNum" id="classNum">
-                <option value="">--</option>
-                <option value="1">1組</option>
-                <option value="2">2組</option>
-                <option value="3">3組</option>
-            </select>
+                <div class="new-register">
+                    <a href="STDM002.jsp">新規登録</a>
+                </div>
 
-            <label>在学中：</label>
-            <input type="checkbox" name="isAttend" value="true" checked>
+                <form action="StudentList.action" method="post">
+                    <div class="form-row">
+                        <label for="entYear">入学年度</label>
+                        <select name="entYear" id="entYear">
+                            <option value="">-----</option>
+                            <option value="2021">2021</option>
+                            <option value="2022">2022</option>
+                        </select>
 
-            <button type="submit">絞り込み</button>
-        </form>
+                        <label for="classNo">クラス</label>
+                        <select name="classNo" id="classNo">
+                            <option value="">-----</option>
+                            <option value="201">201</option>
+                            <option value="202">202</option>
+                        </select>
 
-        <!-- 学生一覧テーブル -->
-        <table>
-            <thead>
-                <tr>
-                    <th>入学年度</th>
-                    <th>学籍番号</th>
-                    <th>氏名</th>
-                    <th>高校名</th>
-                    <th>学年</th>
-                    <th>クラス</th>
-                    <th>在学</th>
-                    <th>詳細</th>
-                </tr>
-            </thead>
-            <tbody>
-                <c:forEach var="s" items="${students}">
-                    <tr>
-                        <td>${s.entYear}</td>
-                        <td>${s.studentNo}</td>
-                        <td>${s.studentName}</td>
-                        <td>${s.schoolName}</td>
-                        <td>${s.grade}</td>
-                        <td>${s.classNum}</td>
-                        <td><input type="radio" <c:if test="${s.isAttend}">checked</c:if> disabled></td>
-                        <td><a href="STDM002?studentId=${s.studentNo}">詳細</a></td>
-                    </tr>
-                </c:forEach>
+                        <label><input type="checkbox" name="isEnrolled" value="true"> 在学中</label>
 
-                <!-- 一致する学生がいない場合 -->
-                <c:if test="${empty students}">
-                    <tr>
-                        <td colspan="8">※絞り込み条件に該当する学生情報がありません</td>
-                    </tr>
-                </c:if>
-            </tbody>
-        </table>
+                        <button class="btn" type="submit">絞込み</button>
+                    </div>
+                </form>
+            </div>
+        </main>
     </div>
 
 </body>

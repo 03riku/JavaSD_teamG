@@ -2,9 +2,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>メインメニュー</title>
-  <style>
+<meta charset="UTF-8">
+<title>メインメニュー</title>
+<style>
     body {
       font-family: sans-serif;
     }
@@ -50,52 +50,52 @@
       font-size: small;
       margin-top: 40px;
     }
-  </style>
+</style>
 </head>
 <body>
-  <!-- ① ヘッダー -->
-  <div class="header">
-    <div><strong>得点管理システム</strong></div>
-    <div><a href="LOGO001.jsp">ログアウト</a></div>
-  </div>
+<!-- ① ヘッダー -->
+<div class="header">
+<div><strong>得点管理システム</strong></div>
+<div><a href="LOGO001.jsp">ログアウト</a></div>
+</div>
 
   <!-- サイドバー -->
-  <div class="sidebar">
-    <ul>
-      <li><a href="STDM001.jsp">学生管理</a></li>
-      <li><label>成績管理</label></li>
-      <li><a href="GRMU001.jsp">成績登録</a><br></li>
-      <li><a href="GRMR001.jsp">成績検索</a></li>
-      <li><a href="SBJM002.jsp">科目管理</a></li>
-    </ul>
-  </div>
+<div class="sidebar">
+<ul>
+<li><a href="STDM001.jsp">学生管理</a></li>
+<li><label>成績管理</label></li>
+<li><a href="GRMU001.jsp">成績登録</a><br></li>
+<li><a href="GRMR001.jsp">成績検索</a></li>
+<li><a href="SBJM002.jsp">科目管理</a></li>
+</ul>
+</div>
 
   <!-- メインコンテンツ -->
-  <div class="content">
-    <h2>メニュー</h2> <!-- ① -->
+<div class="content">
+<h2>メニュー</h2> <!-- ① -->
 
     <div class="menu-box">
-      <!-- ② -->
-      <div class="box box-red">
-        <a href="StudentListServlet"> 学生管理</a>
-      </div>
+<!-- ② -->
+<div class="box box-red">
+<a href="STDM001.jsp"> 学生管理</a>
+</div>
 
       <!-- ③～⑤ -->
-      <div class="box box-green">
-        <div> 成績管理</div>
-        <a href="STDM002.jsp"> 成績登録</a>
-        <a href="GradeSearchServlet"> 成績参照</a>
-      </div>
+<div class="box box-green">
+<div> 成績管理</div>
+<a href="#"> 成績登録</a>
+<a href="GradeSearchServlet"> 成績参照</a>
+</div>
 
       <!-- ⑥ -->
-      <div class="box box-blue">
-        <a href="SBJM002.jsp"> 科目管理</a>
-      </div>
-    </div>
-  </div>
+<div class="box box-blue">
+<a href="SBJM002.jsp"> 科目管理</a>
+</div>
+</div>
+</div>
 
   <!-- フッター -->
-  <footer>
-  </footer>
+<footer>
+</footer>
 </body>
 </html>

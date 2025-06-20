@@ -1,51 +1,51 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%-- Teacher BeanとSchool Beanがセッションスコープに保存されていることを前提とします --%>
+<%-- 例: session.setAttribute("teacher", teacherObject); --%>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>得点管理システム - 科目登録完了</title>
+    <title>科目登録完了</title>
+    <%-- スタイルシートは外部ファイルで読み込むか、ここに記述しない --%>
+    <%-- 例: <link rel="stylesheet" href="css/style.css"> --%>
 </head>
-<body style="font-family: Arial, sans-serif; margin: 0; padding: 0;">
-    <table style="width: 100%; padding: 5px; border-bottom: 1px solid #ccc;">
+<body>
+    <table width="100%" cellpadding="5" cellspacing="0" border="0">
         <tr>
-            <td style="padding: 5px; text-align: left;">得点管理システム</td>
-            <td style="padding: 5px; text-align: right;">
-                <c:if test="${not empty userInfo}">
-                    <span style="margin-right: 5px;">${userInfo.userName}</span> |
+            <td align="left">得点管理システム</td>
+            <td align="right">
+                <%-- ユーザー情報とログアウトリンクの表示 --%>
+                <c:if test="${not empty teacher}">
+                    ${teacher.school.name} ${teacher.name}様&nbsp;
                 </c:if>
-                <a href="LOGO001.jsp" style="text-decoration: none; color: #007bff;">ログアウト</a>
+                <a href="LOGO001.jsp">ログアウト</a>
             </td>
         </tr>
     </table>
 
-    <div style="float: left; width: 15%; min-height: calc(100vh - 40px); border-right: 2px solid black; padding: 10px; box-sizing: border-box;">
-        <ul style="list-style: none; padding: 0; margin: 0;">
-            <li style="margin-bottom: 10px;"><a href="MMNU001.jsp" style="text-decoration: none; color: #007bff;">メニュー</a></li>
-            <li style="margin-bottom: 10px;"><a href="STDM001.jsp" style="text-decoration: none; color: #007bff;">学生管理</a></li>
-            <li style="margin-bottom: 10px;"><label style="color: #555;">成績管理</label></li>
-            <li style="margin-bottom: 10px;"><a href="GRMU001.jsp" style="text-decoration: none; color: #007bff;">成績登録</a><br></li>
-            <li style="margin-bottom: 10px;"><a href="GRMR001.jsp" style="text-decoration: none; color: #007bff;">成績検索</a></li>
-            <li style="margin-bottom: 10px;"><a href="SRJM002.jsp" style="text-decoration: none; color: #007bff;">科目管理</a></li>
+    <div style="float:left; width:15%; height:100vh; border-right:2px solid black; padding:10px;">
+        <ul>
+            <li><a href="MMNU001.jsp">メニュー</a></li>
+            <li><a href="STDM001.jsp">学生管理</a></li>
+            <li><label>成績管理</label></li>
+            <li><a href="GRMU001.jsp">成績登録</a><br></li>
+            <li><a href="GRMR001.jsp">成績検索</a></li>
+            <li><a href="SRJM002.jsp">科目管理</a></li>
         </ul>
     </div>
 
-    <div style="margin-left: 17%; padding: 20px;">
-        <h2 style="margin-top: 0;">科目登録完了</h2>
+    <%-- メインコンテンツのタイトル --%>
+    <h2>科目情報登録</h2> <%-- ① 科目情報登録 --%>
 
-        <div style="background-color: #e6ffe6; padding: 15px; border: 1px solid #a3e6a3; border-radius: 5px; margin-bottom: 20px; color: #006600;">
-            <p style="font-weight: bold; margin: 0;">科目情報が正常に登録されました。</p>
-            <c:if test="${not empty registeredSubject}">
-                <p style="margin: 5px 0 0 0;">登録された科目: <c:out value="${registeredSubject.name}" /> (<c:out value="${registeredSubject.cd}" />)</p>
-            </c:if>
-        </div>
+    <%-- 登録完了メッセージ --%>
+    <div class="success-message-box"> <%-- このクラスにCSSを適用してください --%>
+        登録が完了しました
+    </div> <%-- ② 登録が完了しました --%>
 
-        <p style="margin-top: 20px;">
-            <a href="SRJM002.jsp" style="text-decoration: none; color: #007bff;">科目管理一覧へ戻る</a>
-        </p>
-        <p>
-            <a href="MMNU001.jsp" style="text-decoration: none; color: #007bff;">メニューへ戻る</a>
-        </p>
-    </div>
+    <a href="SRJM001.jsp">戻る</a> <%-- ③ 戻る --%>
+    &nbsp;
+    <a href="SubjectListServlet">科目一覧</a> <%-- ④ 科目一覧 (仮のリンク先) --%>
+
 </body>
 </html>
