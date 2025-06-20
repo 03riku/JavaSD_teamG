@@ -38,7 +38,7 @@
             <li><label>成績管理</label></li> <%-- これはリンクではなくラベルです --%>
             <li><a href="GRMU001.jsp">成績登録</a><br></li>
             <li><a href="GRMR001.jsp">成績検索</a></li>
-            <li><a href="SRJM002.jsp">科目管理</a></li> <%-- 科目管理のリンク先 --%>
+            <li><a href="SBJM002.jsp">科目管理</a></li> <%-- 科目管理のリンク先 --%>
         </ul>
     </div>
 
@@ -69,7 +69,7 @@
         <button type="submit" name="execute">登録</button> <%-- ⑩ name="end" から name="execute" に変更することが多いですが、ここはご提示に合わせて変更しました --%>
     </form>
 
-    <a href="SRJM001.jsp">戻る</a> <%-- ⑪ --%>
+    <a href="SBJM001.jsp">戻る</a> <%-- ⑪ --%>
 
     <br><br>
      <h2>科目情報一覧</h2>
