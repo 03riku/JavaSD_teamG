@@ -44,8 +44,8 @@
       <br>
 
       <!-- 戻るリンク -->
-      <a href="StudentRegister.jsp">戻る</a>　<!-- ③ -->
-      <a href="StudentListServlet">学生一覧</a> <!-- ④ -->
+      <a href="STDM002.jsp">戻る</a>　<!-- ③ -->
+      <a href="STDM001.jsp">学生一覧</a> <!-- ④ -->
     </td>
   </tr>
 </table>
