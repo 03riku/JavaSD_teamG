@@ -1,344 +1,354 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="java.sql.*" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="java.util.Map" %>
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>成績一覧（学生）</title>
+    <title>得点管理システム - 学生管理</title>
     <style>
-        /* CSSスタイルは以前のバージョンと同じなので省略します。
-           変更がある場合はここに追加してください。
-           特に、以前追加した.search-section, .search-section-title, .form-group label
-           .input-error, .field-tip, .caution-message, .footer などのスタイルはそのまま有効です。
-        */
-
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
         }
-
+        .container {
+            width: 90%;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
         .header {
-            background-color: #e6f0fc;
-            padding: 10px 20px;
-            border-bottom: 1px solid #c0d9ef;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
         }
-
         .header h1 {
-            font-size: 24px;
             margin: 0;
+            font-size: 24px;
         }
-
         .user-info {
             font-size: 14px;
         }
-
-        .container {
-            display: flex;
-        }
-
-        .sidebar {
-            width: 200px;
-            background-color: #fff;
-            padding: 20px;
-            border-right: 1px solid #ccc;
-        }
-
-        .sidebar a {
-            display: block;
-            margin-bottom: 10px;
+        .user-info a {
             color: #007bff;
             text-decoration: none;
         }
-        .sidebar a:hover {
-            text-decoration: underline;
+        .menu {
+            float: left;
+            width: 150px;
+            padding-right: 20px;
+            border-right: 1px solid #eee;
+            min-height: 400px; /* Adjust as needed */
         }
-        .sidebar div { /* 現在のページを示す要素のスタイル */
-            font-weight: bold;
+        .menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .menu ul li {
+            margin-bottom: 10px;
+        }
+        .menu ul li a {
+            text-decoration: none;
             color: #333;
-            margin-bottom: 10px;
+            display: block;
+            padding: 5px 0;
         }
-
-
+        .menu ul li a.current {
+            color: #007bff;
+            font-weight: bold;
+        }
         .main-content {
-            flex-grow: 1;
-            padding: 20px;
-            background-color: #fff;
+            margin-left: 180px; /* Space for the menu */
+            padding-left: 20px;
         }
-
-        .section-title {
-            font-size: 20px;
+        .main-content h2 {
+            margin-top: 0;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
             margin-bottom: 20px;
-            font-weight: bold;
         }
-
-        /* 検索フォームの新しいセクションタイトルスタイル */
-        .search-section {
-            display: flex; /* 項目の配置にflexboxを使用 */
-            align-items: center; /* 垂直方向中央揃え */
-            margin-bottom: 15px; /* セクション間の余白 */
-            flex-wrap: wrap; /* 小さな画面で折り返す */
+        .new-student-link {
+            float: right;
+            margin-top: -40px; /* Adjust to align with h2 */
+            color: #007bff;
+            text-decoration: none;
         }
-
-        .search-section-title {
-            font-weight: bold;
-            width: 100px; /* タイトル部分の幅を固定 */
-            flex-shrink: 0; /* 幅を固定し、縮まないようにする */
-            text-align: left; /* テキスト左揃え */
-            margin-right: 20px; /* タイトルと入力フィールドの間の余白 */
-        }
-
-        .form-box {
-            padding: 20px;
-            background-color: #fafafa;
+        .filter-form {
+            background-color: #f9f9f9;
             border: 1px solid #ddd;
+            padding: 15px;
             margin-bottom: 20px;
+            overflow: auto; /* Clear floats */
         }
-
-        .form-group {
-            margin-bottom: 10px;
-            display: flex; /* ラベルと入力フィールドを横並びにするため */
-            align-items: center; /* 垂直方向中央揃え */
-            margin-right: 20px; /* 各form-group間の余白 */
-        }
-        .form-group:last-child {
-             margin-right: 0;
-        }
-
-
-        /* ラベルのスタイル調整 */
-        .form-group label {
-            display: inline-block;
-            width: 80px; /* ラベルの幅を固定 */
+        .filter-form label {
+            margin-right: 10px;
             font-weight: bold;
-            text-align: right; /* ラベルテキストを右揃え */
-            margin-right: 10px; /* ラベルと入力フィールドの間の余白 */
         }
-
-        select, input[type="text"] {
+        .filter-form select,
+        .filter-form input[type="text"],
+        .filter-form input[type="checkbox"] {
+            margin-right: 20px;
             padding: 5px;
-            width: 150px; /* 入力フィールドの幅を固定 */
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 3px;
         }
-
-        /* 学生番号入力フィールドのエラー表示用スタイル */
-        .input-error {
-            border-color: red !important;
-            background-color: #ffeaea;
-        }
-
-        .search-button {
-            padding: 6px 12px;
-            margin-left: 10px;
-            background-color: #4f4f4f;
+        .filter-form button {
+            padding: 8px 15px;
+            background-color: #007bff;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
         }
-        .search-button:hover {
-            background-color: #6a6a6a;
+        .filter-form button:hover {
+            background-color: #0056b3;
         }
-
-
-        .student-name {
-            margin-top: 20px;
+        .student-count {
+            margin-bottom: 10px;
             font-weight: bold;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
         }
-
-        th, td {
-            border: 1px solid #ccc;
+        table th, table td {
+            border: 1px solid #ddd;
             padding: 8px;
-            text-align: center;
+            text-align: left;
         }
-
-        th {
+        table th {
             background-color: #f2f2f2;
         }
-
-        /* エラーメッセージと情報メッセージ */
-        .error-message {
-            color: red;
-            margin-top: 10px;
-            margin-bottom: 10px;
+        table td a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 10px;
         }
-
-        .info-message {
-            color: #00796b;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-
-        /* 学生番号未入力時の追加メッセージ */
-        .field-tip {
-            color: #888;
-            font-size: 0.9em;
-            margin-top: 5px;
-            margin-left: 120px; /* ラベルと入力フィールドの幅に合わせる */
-        }
-        .caution-message {
-            color: orange; /* 注意を促す色 */
-            font-size: 0.9em;
-            margin-top: 5px;
-            display: flex;
-            align-items: center;
-            margin-left: 120px; /* 学生番号入力欄の開始位置に合わせる */
-        }
-        .caution-message::before {
-            content: '⚠️'; /* 警告アイコン */
-            margin-right: 5px;
-        }
-
-        /* 画面下部の著作権表示 */
         .footer {
+            clear: both;
             text-align: center;
-            font-size: 0.8em;
-            color: #777;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
             margin-top: 30px;
-            padding-bottom: 20px;
+            font-size: 12px;
+            color: #777;
+        }
+        .error-message, .no-data-message {
+            color: red;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .no-data-message {
+            color: #555;
         }
     </style>
 </head>
 <body>
-
-<div class="header">
-    <h1>得点管理システム</h1>
-    <div class="user-info">
-        大原 太郎様 <a href="#">ログアウト</a>
-    </div>
-</div>
-
-<div class="container">
-    <div class="sidebar">
-        <a href="#">メニュー</a>
-        <a href="#">学生管理</a>
-        <div>成績管理</div>
-        <a href="#">成績登録</a>
-        <a href="#">成績参照</a>
-        <a href="#">科目管理</a>
-    </div>
-
-    <div class="main-content">
-        <div class="section-title">成績一覧（学生）</div>
-
-        <div class="form-box">
-            <form action="StudentScoreListServlet" method="post">
-                <input type="hidden" name="searchType" value="subjectInfo">
-                <div class="search-section">
-                    <div class="search-section-title">科目情報</div>
-                    <div style="display: flex; align-items: center;">
-                        <div class="form-group">
-                            <label>入学年度</label>
-                            <select name="year">
-                                <option value="">------</option>
-                                <option value="2025" <c:if test="${param.year == '2025'}">selected</c:if>>2025</option>
-                                <option value="2024" <c:if test="${param.year == '2024'}">selected</c:if>>2024</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>クラス</label>
-                            <select name="class">
-                                <option value="">------</option>
-                                <option value="A" <c:if test="${param['class'] == 'A'}">selected</c:if>>A</option>
-                                <option value="B" <c:if test="${param['class'] == 'B'}">selected</c:if>>B</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>科目</label>
-                            <select name="subject">
-                                <option value="">------</option>
-                                <%-- ここからH2から取得した科目名を動的に表示 --%>
-                                <c:forEach var="sub" items="${subjects}">
-                                    <option value="${sub.subjectName}" <c:if test="${param.subject == sub.subjectName}">selected</c:if>>
-                                        ${sub.subjectName}
-                                    </option>
-                                </c:forEach>
-                                <%-- 以前の静的な科目名は削除 --%>
-                            </select>
-                            <button type="submit" class="search-button">検索</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-
-            <form action="StudentScoreListServlet" method="post">
-                <input type="hidden" name="searchType" value="studentInfo">
-                <div class="search-section">
-                    <div class="search-section-title">学生情報</div>
-                    <div style="display: flex; flex-direction: column;">
-                        <div class="form-group">
-                            <label>学生番号</label>
-                            <input type="text" name="studentId"
-                                   value="${param.studentId != null ? param.studentId : ''}"
-                                   placeholder="学生番号を入力してください"
-                                   class="${not empty errorMessage && param.searchType == 'studentInfo' ? 'input-error' : ''}">
-                            <button type="submit" class="search-button">検索</button>
-                        </div>
-                        <c:if test="${not empty errorMessage && param.searchType == 'studentInfo'}">
-                            <div class="field-tip">このフィールドを入力してください</div>
-                            <div class="caution-message">科目情報を選択または学生情報を入力してください</div>
-                        </c:if>
-                    </div>
-                </div>
-            </form>
-
-            <c:if test="${not empty studentSearchError}">
-                <div class="error-message">${studentSearchError}</div>
-            </c:if>
-
+    <div class="container">
+        <div class="header">
+            <h1>得点管理システム</h1>
+            <div class="user-info">
+                <span>大原太郎</span> (<a href="#">ログアウト</a>)
+            </div>
         </div>
 
-        <c:if test="${not empty studentName}">
-            <div class="student-name">氏名：${studentName}（${studentId}）</div>
-        </c:if>
+        <div class="menu">
+            <ul>
+                <li><a href="#">メニュー</a></li>
+                <li><a href="#">学生管理</a></li>
+                <li><a href="#">成績管理</a></li>
+                <li><a href="#">成績参照</a></li>
+                <li><a href="#">科目管理</a></li>
+            </ul>
+        </div>
 
-        <c:if test="${not empty scoreList}">
+        <div class="main-content">
+            <h2>学生管理</h2>
+            <a href="#" class="new-student-link">学生登録</a>
+
+            <div class="filter-form">
+                <form action="studentManagement.jsp" method="get">
+                    <label for="entYear">入学年度</label>
+                    <select id="entYear" name="entYear">
+                        <option value="">----</option>
+                        <%
+                            // 現在の年と過去数年を生成して選択肢に表示
+                            int currentYear = java.time.Year.now().getValue();
+                            for (int i = 0; i < 5; i++) { // 例: 現在の年-4年から現在まで
+                                int yearOption = currentYear - i;
+                                String selectedEntYear = request.getParameter("entYear");
+                                String selected = (selectedEntYear != null && selectedEntYear.equals(String.valueOf(yearOption))) ? "selected" : "";
+                        %>
+                                <option value="<%= yearOption %>" <%= selected %>><%= yearOption %></option>
+                        <%
+                            }
+                        %>
+                    </select>
+
+                    <label for="classNum">クラス</label>
+                    <select id="classNum" name="classNum">
+                        <option value="">------</option>
+                        <%
+                            // 仮のクラスリスト。実際はDBから取得するか、設定ファイルから読み込む
+                            String[] classNums = {"101", "102", "131", "201", "202", "301"};
+                            String selectedClassNum = request.getParameter("classNum");
+                            for (String cn : classNums) {
+                                String selected = (selectedClassNum != null && selectedClassNum.equals(cn)) ? "selected" : "";
+                        %>
+                                <option value="<%= cn %>" <%= selected %>><%= cn %></option>
+                        <%
+                            }
+                        %>
+                    </select>
+
+                    <label for="isAttend">在学中</label>
+                    <input type="checkbox" id="isAttend" name="isAttend" value="true"
+                           <% if (request.getParameter("isAttend") != null && request.getParameter("isAttend").equals("true")) { %>checked<% } %>>
+
+                    <label for="studentName">氏名</label>
+                    <input type="text" id="studentName" name="studentName" value="<%= request.getParameter("studentName") != null ? request.getParameter("studentName") : "" %>">
+
+                    <button type="submit">絞込み</button>
+                </form>
+            </div>
+
+            <%
+            List<Map<String, String>> students = new ArrayList<>();
+            Connection conn = null;
+            PreparedStatement pstmt = null;
+            ResultSet rs = null;
+            String errorMessage = null;
+            int studentCount = 0; // 検索結果件数
+
+            String filterEntYear = request.getParameter("entYear");
+            String filterClassNum = request.getParameter("classNum");
+            String filterIsAttend = request.getParameter("isAttend");
+            String filterStudentName = request.getParameter("studentName");
+
+            try {
+                Class.forName("org.h2.Driver");
+                String DB_URL = "jdbc:h2:tcp://localhost/~/kaihatsu"; // H2のデフォルトTCPサーバーとデータベース名
+                String USER = "sa";
+                String PASS = "";
+
+                conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+                StringBuilder sqlBuilder = new StringBuilder("SELECT NO, NAME, ENT_YEAR, CLASS_NUM, IS_ATTEND FROM STUDENT_NEW WHERE 1=1");
+                List<Object> params = new ArrayList<>();
+
+                if (filterEntYear != null && !filterEntYear.isEmpty()) {
+                    sqlBuilder.append(" AND ENT_YEAR = ?");
+                    params.add(Integer.parseInt(filterEntYear));
+                }
+                if (filterClassNum != null && !filterClassNum.isEmpty()) {
+                    sqlBuilder.append(" AND CLASS_NUM = ?");
+                    params.add(filterClassNum);
+                }
+                if (filterIsAttend != null && filterIsAttend.equals("true")) {
+                    sqlBuilder.append(" AND IS_ATTEND = 'O'"); // 'O'を在学中と見なす
+                }
+                if (filterStudentName != null && !filterStudentName.isEmpty()) {
+                    sqlBuilder.append(" AND NAME LIKE ?");
+                    params.add("%" + filterStudentName + "%");
+                }
+
+                sqlBuilder.append(" ORDER BY ENT_YEAR, CLASS_NUM, NO"); // ソート順を追加
+
+                pstmt = conn.prepareStatement(sqlBuilder.toString());
+
+                for (int i = 0; i < params.size(); i++) {
+                    pstmt.setObject(i + 1, params.get(i));
+                }
+
+                rs = pstmt.executeQuery();
+
+                while (rs.next()) {
+                    Map<String, String> student = new HashMap<>();
+                    student.put("no", rs.getString("NO"));
+                    student.put("name", rs.getString("NAME"));
+                    student.put("entYear", String.valueOf(rs.getInt("ENT_YEAR")));
+                    student.put("classNum", rs.getString("CLASS_NUM"));
+                    student.put("isAttend", rs.getString("IS_ATTEND"));
+                    students.add(student);
+                }
+                studentCount = students.size();
+
+            } catch (ClassNotFoundException e) {
+                errorMessage = "H2 JDBCドライバーが見つかりません。WEB-INF/libにh2*.jarを配置してください。: " + e.getMessage();
+                e.printStackTrace();
+            } catch (SQLException e) {
+                errorMessage = "データベースエラーが発生しました: " + e.getMessage();
+                e.printStackTrace();
+            } catch (NumberFormatException e) {
+                errorMessage = "入学年度が不正な値です。: " + e.getMessage();
+                e.printStackTrace();
+            } finally {
+                try { if (rs != null) rs.close(); } catch (SQLException e) { /* log error */ }
+                try { if (pstmt != null) pstmt.close(); } catch (SQLException e) { /* log error */ }
+                try { if (conn != null) conn.close(); } catch (SQLException e) { /* log error */ }
+            }
+            %>
+
+            <% if (errorMessage != null) { %>
+                <p class="error-message"><%= errorMessage %></p>
+            <% } %>
+
+            <p class="student-count">検索結果：<%= studentCount %>件</p>
+
             <table>
                 <thead>
                     <tr>
-                        <th>科目名</th>
-                        <th>科目コード</th>
-                        <th>回数</th>
-                        <th>点数</th>
+                        <th>入学年度</th>
+                        <th>学生番号</th>
+                        <th>氏名</th>
+                        <th>クラス</th>
+                        <th>在学中</th>
+                        <th></th> <%-- 変更リンク用 --%>
+                        <th></th> <%-- 削除リンク用 --%>
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="score" items="${scoreList}">
-                        <tr>
-                            <td>${score.subjectName}</td>
-                            <td>${score.subjectCode}</td>
-                            <td>${score.testNo}</td>
-                            <td>${score.point}</td>
-                        </tr>
-                    </c:forEach>
+                    <%
+                    if (students.isEmpty() && errorMessage == null) {
+                    %>
+                    <tr>
+                        <td colspan="7" class="no-data-message">絞り込み条件に該当する学生情報がありません。</td>
+                    </tr>
+                    <%
+                    } else {
+                        for (Map<String, String> student : students) {
+                    %>
+                    <tr>
+                        <td><%= student.get("entYear") %></td>
+                        <td><%= student.get("no") %></td>
+                        <td><%= student.get("name") %></td>
+                        <td><%= student.get("classNum") %></td>
+                        <td><%= "O".equals(student.get("isAttend")) ? "◯" : "×" %></td>
+                        <td><a href="#">変更</a></td>
+                    </tr>
+                    <%
+                        }
+                    }
+                    %>
                 </tbody>
             </table>
-        </c:if>
+        </div>
 
-        <c:if test="${not empty noResultMessage}">
-            <div class="info-message">
-                <c:if test="${not empty studentName}">
-                    氏名：${studentName}（${studentId}）<br>
-                </c:if>
-                ${noResultMessage}
-            </div>
-        </c:if>
+        <div class="footer">
+            © 2023 TIC 大原学園
+        </div>
     </div>
-</div>
-<div class="footer">
-    &copy; 2023 TIC<br>
-    大原学園
-</div>
 </body>
 </html>
