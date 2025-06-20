@@ -84,7 +84,7 @@
 <div class="box box-green">
 <div> 成績管理</div>
 <a href="GRMU001.jsp"> 成績登録</a>
-<a href="GradeSearchServlet"> 成績参照</a>
+<a href="GRMR001.jsp"> 成績参照</a>
 </div>
 
       <!-- ⑥ -->
