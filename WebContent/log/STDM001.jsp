@@ -177,7 +177,7 @@
 
         <div class="main-content">
             <h2>学生管理</h2>
-            <a href="STDM001.jsp" class="new-student-link">学生登録</a>
+            <a href="STDM002.jsp" class="new-student-link">学生登録</a>
 
             <div class="filter-form">
                 <form action="studentManagement.jsp" method="get">
