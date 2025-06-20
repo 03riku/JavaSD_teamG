@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"  %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -46,7 +47,7 @@
 
         .container {
             display: flex;
-            min-height: calc(100vh - 41px);
+            min-height: calc(100vh - 41px); /* ヘッダーの高さに合わせて調整 */
             background-color: #fff;
         }
 
@@ -188,6 +189,18 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
+        .error-message { /* 新たに追加 */
+            margin-top: 25px;
+            padding: 12px;
+            background-color: #ffebee;
+            border: 1px solid #ef9a9a;
+            border-radius: 5px;
+            color: #d32f2f;
+            font-size: 14px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
         .form-group.field-row {
             justify-content: flex-start;
             gap: 15px;
@@ -207,6 +220,49 @@
         .form-group.student-search .search-button {
             margin-left: 20px;
         }
+
+        .table-container {
+        	background-color: white;
+        	padding: 25px;
+        	border-radius: 8px;
+        	box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-top: 20px; /* 検索フォームとの間に余白を追加 */
+        }
+
+        .table { /* tabel を table に修正 */
+            width: 100%;
+            border-collapse: collapse; /* セルの境界線を結合 */
+        }
+
+        .table thead th,
+        .table tbody td {
+            border: 1px solid #ddd; /* セルの枠線 */
+            padding: 10px 15px;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .table thead th {
+        	background-color: #e9ecef;
+        	font-weight: bold;
+        	color: #495057;
+        }
+        .table tbody tr:nth-child(even) { /* 偶数行の背景色 */
+            background-color: #f9f9f9;
+        }
+
+        .table .score-column {
+        	width: 80px;
+        }
+
+        .subject-display { /* 科目名表示用の新しいスタイル */
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed #eee;
+        }
 	</style>
 </head>
 <body>
@@ -223,7 +279,8 @@
 				<li><a href="MMNU001.jsp">メニュー</a></li>
 				<li><a href="STDM001.jsp">学生管理</a></li>
 				<li><a href="#">成績管理</a></li>
-				<li><a href="GRMU001.jsp" class="active">成績参照</a></li>
+				<li><a href="GRMA001.jsp">成績一覧 (学生)</a></li> <%-- 学生一覧にリンクを修正 --%>
+				<li><a href="GRML001.jsp" class="active">成績一覧 (科目)</a></li> <%-- このページをアクティブに設定 --%>
 				<li><a href="GRMR001.jsp">成績登録</a></li>
 				<li><a href="SBJM002.jsp">科目管理</a></li>
 			</ul>
@@ -231,35 +288,39 @@
 
 		<div class="main-content">
 			<div class="section">
-				<div class="section-title">成績一覧</div>
+				<div class="section-title">成績一覧 (科目)</div> <%-- タイトルを明確化 --%>
 
-				<form action="#" method="post">
+				<form action="GRML001.action" method="get"> <%-- アクション名を適切に変更、method="get" に --%>
 					<div class="form-group field-row">
 						<span class="sub-section-label">科目情報</span>
 					</div>
 					<div class="form-group field-row">
 
-						<label for="year">入学年度</label>
-						<select id="year" name="year">
+						<label for="entYear">入学年度</label> <%-- name属性をentYearに修正 --%>
+						<select id="entYear" name="entYear">
 							<option value="">------</option>
-							<option value="2025">2025</option>
-							<option value="2024">2024</option>
-							<option value="2023">2023</option>
+							<%-- ここに動的に入学年度のオプションを生成するJSP/JSTLコードを記述 --%>
+							<c:forEach begin="2020" end="2025" var="year"> <%-- 例: 2020年から2025年まで --%>
+                                <option value="${year}" <c:if test="${param.entYear == year}">selected</c:if>>${year}</option>
+                            </c:forEach>
 						</select>
 
-						<label for="class">クラス</label>
-						<select id="class" name="class">
+						<label for="classNum">クラス</label> <%-- name属性をclassNumに修正 --%>
+						<select id="classNum" name="classNum">
 							<option value="">------</option>
-							<option value="A">A</option>
-							<option value="B">B</option>
-							<option value="C">C</option>
+							<%-- ここに動的にクラスのオプションを生成するJSP/JSTLコードを記述 --%>
+                            <option value="A" <c:if test="${param.classNum == 'A'}">selected</c:if>>A</option>
+                            <option value="B" <c:if test="${param.classNum == 'B'}">selected</c:if>>B</option>
+                            <option value="C" <c:if test="${param.classNum == 'C'}">selected</c:if>>C</option>
 						</select>
 
-						<label for="subject">科目</label>
-						<select id="subject" name="subject">
+						<label for="subjectCd">科目</label> <%-- name属性をsubjectCdに修正 --%>
+						<select id="subjectCd" name="subjectCd">
 							<option value="">------</option>
-							<option value="math">数学</option>
-							<option value="japanese">国語</option>
+							<%-- ここに動的に科目のオプションを生成するJSP/JSTLコードを記述 --%>
+                            <option value="J001" <c:if test="${param.subjectCd == 'J001'}">selected</c:if>>情報処理基礎知識I</option>
+                            <option value="J002" <c:if test="${param.subjectCd == 'J002'}">selected</c:if>>プログラミング演習</option>
+                            <option value="J003" <c:if test="${param.subjectCd == 'J003'}">selected</c:if>>データベース</option>
 						</select>
 
 						<button type="submit" class="search-button">検索</button>
@@ -270,32 +331,80 @@
 					</div>
 
 					<div class="form-group student-search">
-						<label for="studentId">学生番号</label>
-						<label type="text" id="studentId" name="studentId" placeholder="学生番号を入力してください">
+						<label for="studentNo">学生番号</label> <%-- inputタグに修正、idとnameをstudentNoに --%>
+						<input type="text" id="studentNo" name="studentNo" placeholder="学生番号を入力してください" value="${param.studentNo}">
 						<button type="submit" class="search-button">検索</button>
 					</div>
 				</form>
 
-				<div class="table-container">
-					<%-- 科目名表示(検索結果の科目名) --%>
-					<p>科目:
-						<c:choose>
-							<c:when test="${param.subjectCd == 'J001'}">情報処理基礎知識I</c:when>
-							<c:otherwise>選択されていません</c:otherwise>
-						</c:choose>
-					</p>
-					<table class="tabel tabel-bordered tabel-striped">
-						<thead>
-							<tr>
-								<th>入学年度</th>
-								<th>クラス</th>
-								<th>学生番号</th>
-								<th>氏名</th>
-								<th class="score-column">1回</th>
-								<th class="score-column">2回</th>
-								<th class="score-column">...</th>
-					</table>
-				</div>
+                <%-- メッセージ表示エリア --%>
+                <c:choose>
+                    <c:when test="${not empty requestScope.message}">
+                        <div class="info-message">
+                            ${requestScope.message}
+                        </div>
+                    </c:when>
+                    <c:when test="${empty param.entYear and empty param.classNum and empty param.subjectCd and empty param.studentNo and empty requestScope.subjectScores}">
+                        <div class="info-message">
+                            科目情報または学生番号を入力して検索ボタンをクリックしてください
+                        </div>
+                    </c:when>
+                    <c:when test="${not empty param.subjectCd and empty requestScope.subjectScores}">
+                         <div class="error-message">
+                             選択された科目、または検索条件に該当する成績データがありません。
+                         </div>
+                    </c:when>
+                </c:choose>
+
+                <%-- 科目名表示 (検索結果がある場合のみ表示) --%>
+                <c:if test="${not empty requestScope.subjectScores}">
+                    <div class="table-container">
+                        <p class="subject-display">科目:
+                            <c:choose>
+                                <c:when test="${not empty requestScope.selectedSubjectName}">${requestScope.selectedSubjectName}</c:when> <%-- サーブレットから渡される科目名 --%>
+                                <c:when test="${param.subjectCd == 'J001'}">情報処理基礎知識I</c:when>
+                                <c:when test="${param.subjectCd == 'J002'}">プログラミング演習</c:when>
+                                <c:when test="${param.subjectCd == 'J003'}">データベース</c:when>
+                                <c:otherwise>選択されていません</c:otherwise>
+                            </c:choose>
+                        </p>
+                        <table class="table"> <%-- class="tabel"を"table"に修正 --%>
+                            <thead>
+                                <tr>
+                                    <th>入学年度</th>
+                                    <th>クラス</th>
+                                    <th>学生番号</th>
+                                    <th>氏名</th>
+                                    <th class="score-column">1回</th>
+                                    <th class="score-column">2回</th>
+                                    <th class="score-column">...</th> <%-- 必要に応じて回数を追加 --%>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <%-- 成績データを表示 --%>
+                                <c:forEach var="score" items="${requestScope.subjectScores}"> <%-- requestScore を requestScope に修正 --%>
+                                    <tr>
+                                        <td>${score.entYear}</td>
+                                        <td>${score.classNum}</td>
+                                        <td>${score.studentNo}</td>
+                                        <td>${score.studentName}</td>
+                                        <td><c:out value="${score.score1}" default="-"/></td> <%-- nullの場合はハイフンを表示 --%>
+                                        <td><c:out value="${score.score2}" default="-"/></td>
+                                        <td>-</td> <%-- さらに回数分の<td>を追加 --%>
+                                    </tr>
+                                </c:forEach>
+
+                                <%-- データがない場合のメッセージ --%>
+                                <c:if test="${empty requestScope.subjectScores}"> <%-- requestScore を requestScope に修正 --%>
+                                    <tr>
+                                        <td colspan="7">該当するデータがありません</td>
+                                    </tr>
+                                </c:if>
+                            </tbody>
+                        </table>
+                    </div>
+                </c:if>
+
 			</div>
 		</div>
 	</div>
