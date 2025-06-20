@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>成績管理システム - 成績管理</title>
     <style>
-        /* 簡単なCSSで可読性を高めます。必要に応じて詳細なデザインを追加してください */
         body { font-family: Arial, sans-serif; margin: 20px; }
         h1 { color: #333; }
         .container { width: 80%; margin: 0 auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px; }
