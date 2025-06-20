@@ -224,7 +224,7 @@
             <ul>
                 <li><a href="MMNU001.jsp">メニュー</a></li>
                 <li><a href="STDM001.jsp">学生管理</a></li>
-                <li><a href="#">成績管理</a></li>
+                <li><a>成績管理</a></li>
                 <li><a href="GRMU001.jsp" class="active">成績参照</a></li>
                 <li><a href="GRMR001.jsp">成績登録</a></li>
                 <li><a href="SBJM002.jsp">科目管理</a></li>
