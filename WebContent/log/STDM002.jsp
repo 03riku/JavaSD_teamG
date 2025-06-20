@@ -20,7 +20,7 @@
       <li><a href="STDM001.jsp">学生管理</a></li>
       <li><label>成績管理</label></li>
       <li><a href="GRMU001.jsp">成績登録</a><br></li>
-      <li><a href="GRMR001.jsp">成績検索</a></li>
+      <li><a href="GRMR001.jsp">成績参照</a></li>
       <li><a href="SBJM001.jsp">科目管理</a></li>
   </ul>
   </div>
