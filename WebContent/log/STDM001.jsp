@@ -160,23 +160,24 @@
         <div class="header">
             <h1>得点管理システム</h1>
             <div class="user-info">
-                <span>大原太郎</span> (<a href="#">ログアウト</a>)
+                <span>大原太郎</span> (<a href="LOGO001">ログアウト</a>)
             </div>
         </div>
 
         <div class="menu">
             <ul>
-                <li><a href="#">メニュー</a></li>
-                <li><a href="#">学生管理</a></li>
-                <li><a href="#">成績管理</a></li>
-                <li><a href="#">成績参照</a></li>
-                <li><a href="#">科目管理</a></li>
+                <li><a href="MMNU001.jsp">メニュー</a></li>
+                <li><a href="STDM001.jsp">学生管理</a></li>
+                <li><a>成績管理</a></li>
+                <li><a href="GRMU001.jsp">成績登録</a></li>
+                <li><a href="GRMR001.jsp">成績参照</a></li>
+                <li><a href="SBJM001.jsp">科目管理</a></li>
             </ul>
         </div>
 
         <div class="main-content">
             <h2>学生管理</h2>
-            <a href="#" class="new-student-link">学生登録</a>
+            <a href="STDM002.jsp" class="new-student-link">学生登録</a>
 
             <div class="filter-form">
                 <form action="studentManagement.jsp" method="get">
@@ -334,7 +335,7 @@
                         <td><%= student.get("name") %></td>
                         <td><%= student.get("classNum") %></td>
                         <td><%= "O".equals(student.get("isAttend")) ? "◯" : "×" %></td>
-                        <td><a href="#">変更</a></td>
+                        <td><a href="STDM004.jsp">変更</a></td>
                     </tr>
                     <%
                         }
@@ -345,7 +346,6 @@
         </div>
 
         <div class="footer">
-            © 2023 TIC 大原学園
         </div>
     </div>
 </body>
