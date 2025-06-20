@@ -215,7 +215,7 @@
     <div class="header">
         <h1>得点管理システム</h1>
         <div class="user-info">
-            大原 太郎様 <a href="#">ログアウト</a>
+            大原 太郎様 <a href="LOGO001.jsp">ログアウト</a>
         </div>
     </div>
 
