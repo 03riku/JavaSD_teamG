@@ -23,12 +23,12 @@
   <tr valign="top">
     <!-- 左メニュー -->
     <td width="180" style="padding: 10px;">
-      <a href="#">メニュー</a><br><br>
-      <a href="StudentListServlet">学生管理</a><br>
-      <a href="#">成績管理</a><br>
-      <a href="GradeSearchRegisterServlet">成績登録</a><br>
-      <a href="GradeSearchServlet">成績検索</a><br>
-      <a href="SubjectListServlet">科目管理</a><br>
+      <a href="MMNU001.jsp">メニュー</a><br><br>
+      <a href="STDM001.jsp">学生管理</a><br>
+      <a>成績管理</a><br>
+      <a href="GRMU001.jsp">成績登録</a><br>
+      <a href="GRMR001.jsp">成績参照</a><br>
+      <a href="SBJM001.jsp">科目管理</a><br>
     </td>
 
     <!-- メイン -->
@@ -44,8 +44,8 @@
       <br>
 
       <!-- 戻るリンク -->
-      <a href="StudentRegister.jsp">戻る</a>　<!-- ③ -->
-      <a href="StudentListServlet">学生一覧</a> <!-- ④ -->
+      <a href="STDM002.jsp">戻る</a>　<!-- ③ -->
+      <a href="STDM001.jsp">学生一覧</a> <!-- ④ -->
     </td>
   </tr>
 </table>
