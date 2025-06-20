@@ -1,8 +1,6 @@
 package Bean;
 
-import javax.servlet.http.HttpServlet;
-
-public class School extends HttpServlet {
+public class School {
 	private String cd;
 	private String name;
 
@@ -10,12 +8,12 @@ public class School extends HttpServlet {
 		return cd;
 	}
 
-	public String getName() {
-		return name;
-	}
-
 	public void setCd(String cd) {
 		this.cd = cd;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public void setName(String name) {
