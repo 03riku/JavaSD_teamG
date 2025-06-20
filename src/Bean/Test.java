@@ -1,8 +1,6 @@
 package Bean;
 
-import javax.servlet.http.HttpServlet;
-
-public class Test extends HttpServlet {
+public class Test {
 	private String student;
 	private String classNum;
 	private String subject;
@@ -14,48 +12,47 @@ public class Test extends HttpServlet {
 		return student;
 	}
 
-	public String getClassNum() {
-		return classNum;
-	}
-
-	public String getSubject() {
-		return subject;
-	}
-
-	public School getSchool() {
-		return school;
-	}
-
-	public int getNo() {
-		return no;
-	}
-
-	public int getPoint(){
-		return point;
-	}
-
 	public void setStudent(String student) {
 		this.student = student;
+	}
+
+	public String getClassNum() {
+		return classNum;
 	}
 
 	public void setClassNum(String classNum) {
 		this.classNum = classNum;
 	}
 
+	public String getSubject() {
+		return subject;
+	}
+
 	public void setSubject(String subject) {
 		this.subject = subject;
+	}
+
+	public School getSchool() {
+		return school;
 	}
 
 	public void setSchool(School school) {
 		this.school = school;
 	}
 
+	public int getNo() {
+		return no;
+	}
+
 	public void setNo(int no) {
 		this.no = no;
 	}
 
-	public void setPoint(int point){
-		this.point = point;
+	public int getPoint() {
+		return point;
 	}
 
+	public void setPoint(int point) {
+		this.point = point;
+	}
 }

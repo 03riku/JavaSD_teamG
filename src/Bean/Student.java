@@ -1,8 +1,6 @@
 package Bean;
 
-import javax.servlet.http.HttpServlet;
-
-public class Student extends HttpServlet {
+public class Student {
 	private String no;
 	private String name;
 	private int entYear;
@@ -10,52 +8,51 @@ public class Student extends HttpServlet {
 	private boolean isAttend;
 	private School school;
 
-	public String getNo(){
+	public String getNo() {
 		return no;
+	}
+
+	public void setNo(String no) {
+		this.no = no;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public int entYear() {
-		return entYear;
-	}
-
-	public String classNum(){
-		return classNum;
-	}
-
-	public boolean isAttend(){
-		return isAttend;
-	}
-
-	public School getSchool(){
-		return school;
-	}
-
-	public void setNo(String no){
-		this.no = no;
-	}
-
-	public void setName(String name){
+	public void setName(String name) {
 		this.name = name;
 	}
 
-	public void setEntYear(int entYear){
+	public int getEntYear() {
+		return entYear;
+	}
+
+	public void setEntYear(int entYear) {
 		this.entYear = entYear;
 	}
 
-	public void setClassNum(String classNum){
+	public String getClassNum() {
+		return classNum;
+	}
+
+	public void setClassNum(String classNum) {
 		this.classNum = classNum;
 	}
 
-	public void setAttend(boolean isAttend){
+	public boolean isAttend() {
+		return isAttend;
+	}
+
+	public void setAttend(boolean isAttend) {
 		this.isAttend = isAttend;
 	}
 
-	public void setSchool(School school){
-		this.school = school;
+	public School getSchool() {
+		return school;
 	}
 
+	public void setSchool(School school) {
+		this.school = school;
+	}
 }
