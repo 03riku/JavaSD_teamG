@@ -53,8 +53,7 @@
 <!-- フッター -->
 <hr>
 <div align="center">
-  &copy; 2023 TIC<br>
-  大原学園
+
 </div>
 
 </body>
