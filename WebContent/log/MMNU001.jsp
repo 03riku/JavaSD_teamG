@@ -89,7 +89,7 @@
 
       <!-- ⑥ -->
 <div class="box box-blue">
-<a href="SBJM002.jsp"> 科目管理</a>
+<a href="SBJM001.jsp"> 科目管理</a>
 </div>
 </div>
 </div>
