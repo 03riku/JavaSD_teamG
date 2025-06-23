@@ -265,9 +265,9 @@ body {
                 <div class="form-group">
                     <label for="studentClass">クラス</label>
                     <select id="studentClass" name="studentClass">
-                        <option value="201" selected>201</option>
-                        <option value="202">202</option>
-                        <option value="203">203</option>
+                        <option value="101" selected>101</option>
+                        <option value="102">102</option>
+                        <option value="103">103</option>
                     </select>
                 </div>
                 <div class="form-group">
