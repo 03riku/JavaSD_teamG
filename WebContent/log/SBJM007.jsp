@@ -257,7 +257,5 @@
             </div>
         </div>
     </div>
->>>>>>> branch 'master' of https://github.com/03riku/JavaSD_teamG.git
-
 </body>
 </html>
