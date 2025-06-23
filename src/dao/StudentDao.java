@@ -19,9 +19,7 @@ public class StudentDao extends Dao {
                        " FROM Student s";
     }
 
-    /**
-     * 学生を no で取得
-     */
+    // 学生を no で取得
     public Student get(String no) throws Exception {
         String sql = basesql + " WHERE s.no = ?";
         try (Connection con = getConnection();
@@ -29,11 +27,8 @@ public class StudentDao extends Dao {
             st.setString(1, no);
             try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
-                    // School 情報を取得するため DAO or bean で取得すると想定
                     School school = new School();
                     school.setCd(rs.getString("school_cd"));
-                    // school.setName(…); // 必要なら追加の DB クエリ
-
                     return postFilter(rs, school).get(0);
                 }
                 return null;
@@ -41,9 +36,7 @@ public class StudentDao extends Dao {
         }
     }
 
-    /**
-     * ResultSet -> Student オブジェクトへ変換
-     */
+    // ResultSet → Student オブジェクトへ変換
     private List<Student> postFilter(ResultSet rSet, School school) throws Exception {
         List<Student> list = new ArrayList<>();
         do {
@@ -59,9 +52,7 @@ public class StudentDao extends Dao {
         return list;
     }
 
-    /**
-     * フィルタ検索（学校・入学年・クラス・出席状態）
-     */
+    // フィルタ検索（学校・入学年・クラス・出席状態）
     public List<Student> filter(School school, int entYear, String classNum, boolean isAttend) throws Exception {
         String sql = basesql + " WHERE s.school_cd = ? AND s.ent_year = ? AND s.class_num = ? AND s.attend = ?";
         try (Connection con = getConnection();
@@ -80,16 +71,12 @@ public class StudentDao extends Dao {
         }
     }
 
-    /**
-     * filter メソッド（学校・入学年・出席状態）
-     */
+    // フィルタ検索（学校・入学年・出席状態）
     public List<Student> filter(School school, int entYear, boolean isAttend) throws Exception {
         return filter(school, entYear, null, isAttend);
     }
 
-    /**
-     * filter メソッド（学校・出席状態）
-     */
+    // フィルタ検索（学校・出席状態）
     public List<Student> filter(School school, boolean isAttend) throws Exception {
         String sql = basesql + " WHERE s.school_cd = ? AND s.attend = ?";
         try (Connection con = getConnection();
@@ -106,9 +93,7 @@ public class StudentDao extends Dao {
         }
     }
 
-    /**
-     * 新規学生登録（INSERT文）
-     */
+    // 学生の新規登録
     public void insert(Student student) throws Exception {
         String sql = "INSERT INTO Student (no, name, ent_year, class_num, attend, school_cd) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection con = getConnection();
@@ -118,7 +103,7 @@ public class StudentDao extends Dao {
             ps.setString(2, student.getName());
             ps.setInt(3, student.getEntYear());
             ps.setString(4, student.getClassNum());
-            ps.setBoolean(5, student.isAttend()); // デフォルト値を設定していないならfalseなどをセット
+            ps.setBoolean(5, student.isAttend());
             if (student.getSchool() != null) {
                 ps.setString(6, student.getSchool().getCd());
             } else {
@@ -129,8 +114,32 @@ public class StudentDao extends Dao {
         }
     }
 
+    // 学生情報を更新
+    public void update(Student student) throws Exception {
+        String sql = "UPDATE Student SET name = ?, ent_year = ?, class_num = ?, attend = ?, school_cd = ? WHERE no = ?";
+        try (Connection con = getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, student.getName());
+            ps.setInt(2, student.getEntYear());
+            ps.setString(3, student.getClassNum());
+            ps.setBoolean(4, student.isAttend());
+
+            if (student.getSchool() != null) {
+                ps.setString(5, student.getSchool().getCd());
+            } else {
+                ps.setNull(5, java.sql.Types.VARCHAR);
+            }
+
+            ps.setString(6, student.getNo());
+
+            ps.executeUpdate();
+        }
+    }
+
+    // （未実装）全件取得
     public List<Student> findAll() {
-        // TODO 自動生成されたメソッド・スタブ
         return null;
     }
 }
+
