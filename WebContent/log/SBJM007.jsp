@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%-- Teacher BeanとSchool Beanがセッションスコープに保存されていることを前提とします --%>
@@ -45,7 +44,6 @@
     </div> <%-- ② 削除が完了しました --%>
 
     <a href="SRJM001.jsp">科目一覧</a> <%-- ③ 科目一覧 (画像に表示されているリンク) --%>
-=======
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="ja">
