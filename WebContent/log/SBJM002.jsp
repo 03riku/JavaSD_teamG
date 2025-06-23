@@ -8,7 +8,6 @@
     <meta charset="UTF-8">
     <title>科目情報登録</title>
     <style>
-<<<<<<< HEAD
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -112,9 +111,7 @@
             color: #777;
             width: 100%; /* Footer takes full width */
         }
-=======
-        /* エラーメッセージ用のスタイル */
->>>>>>> branch 'master' of https://github.com/03riku/JavaSD_teamG.git
+       /* エラーメッセージ用のスタイル */
         .error-message {
             color: red;
             font-weight: bold;
@@ -122,7 +119,6 @@
             font-size: 0.9em;
             margin-top: 5px;
         }
-<<<<<<< HEAD
         .success-message {
             color: green;
             font-weight: bold;
@@ -156,7 +152,6 @@
         }
         form button:hover {
             background-color: #0056b3;
-=======
         /* 成功メッセージ用のスタイル */
         .success-message {
             color: green;
@@ -278,12 +273,10 @@
         }
         tbody tr:hover {
             background-color: #e9e9e9; /* ホバー時の背景色 */
->>>>>>> branch 'master' of https://github.com/03riku/JavaSD_teamG.git
         }
     </style>
 </head>
 <body>
-<<<<<<< HEAD
     <div class="container">
         <div class="header">
             <h1>得点管理システム</h1>
@@ -294,7 +287,6 @@
                 <a href="LOGO001.jsp">ログアウト</a>
             </div>
         </div>
-=======
     <header>
         <div>得点管理システム</div>
         <div>
@@ -305,9 +297,6 @@
             <a href="LOGO001.jsp">ログアウト</a>
         </div>
     </header>
->>>>>>> branch 'master' of https://github.com/03riku/JavaSD_teamG.git
-
-<<<<<<< HEAD
         <div class="menu">
             <ul>
                 <li><a href="MMNU001.jsp">メニュー</a></li>
@@ -318,7 +307,6 @@
                 <li><a href="SBJM002.jsp" class="current">科目管理</a></li>
             </ul>
         </div>
-=======
     <div class="container">
         <nav>
             <ul>
@@ -330,13 +318,9 @@
                 <li><a href="SBJM002.jsp">科目管理</a></li>
             </ul>
         </nav>
->>>>>>> branch 'master' of https://github.com/03riku/JavaSD_teamG.git
 
-<<<<<<< HEAD
         <div class="main-content">
-=======
         <main>
->>>>>>> branch 'master' of https://github.com/03riku/JavaSD_teamG.git
             <h2>科目情報登録</h2>
 
             <%-- 登録成功メッセージの表示 --%>
@@ -345,7 +329,6 @@
             </c:if>
 
             <form action="SubjectRegisterServlet" method="post">
-<<<<<<< HEAD
                 <label for="subjectCd">科目コード</label>
                 <input type="text" id="subjectCd" name="cd" value="${subject.cd}" placeholder="科目コードを入力してください" required />
                 <c:if test="${not empty errorSubjectCdEmpty}">
@@ -355,7 +338,6 @@
                     <div class="error-message">${errorSubjectCdLength}</div>
                 </c:if>
                 <br>
-=======
 			    <%-- 他のフォーム要素はそのまま --%>
 			    <label for="cd">科目コード</label>
 			    <input type="text" id="cd" name="cd" value="${subject.cd}" placeholder="科目コードを入力してください" required maxlength="3" />
@@ -370,42 +352,29 @@
 			        <div class="error-message">${errorSubjectCdExists}</div>
 			    </c:if>
 			    <br>
->>>>>>> branch 'master' of https://github.com/03riku/JavaSD_teamG.git
 
-<<<<<<< HEAD
                 <label for="subjectName">科目名</label>
                 <input type="text" id="subjectName" name="name" value="${subject.name}" placeholder="科目名を入力してください" required />
                 <c:if test="${not empty errorSubjectNameEmpty}">
                     <div class="error-message">${errorSubjectNameEmpty}</div>
                 </c:if>
                 <br><br>
-=======
 			    <label for="name">科目名</label>
 			    <input type="text" id="name" name="name" value="${subject.name}" placeholder="科目名を入力してください" required />
 			    <c:if test="${not empty errorSubjectNameEmpty}">
 			        <div class="error-message">${errorSubjectNameEmpty}</div>
 			    </c:if>
 			    <br><br>
->>>>>>> branch 'master' of https://github.com/03riku/JavaSD_teamG.git
 
-<<<<<<< HEAD
                 <button type="submit" name="execute">登録</button>
             </form>
-=======
 			    <button type="submit" name="execute">登録</button>
 			</form>
->>>>>>> branch 'master' of https://github.com/03riku/JavaSD_teamG.git
 
-<<<<<<< HEAD
             <p><a href="SBJM001.jsp">戻る</a></p>
-=======
             <a href="SBJM001.jsp">戻る</a>
->>>>>>> branch 'master' of https://github.com/03riku/JavaSD_teamG.git
 
-<<<<<<< HEAD
-=======
             <br><br>
->>>>>>> branch 'master' of https://github.com/03riku/JavaSD_teamG.git
             <h2>科目情報一覧</h2>
             <c:choose>
                 <%-- 科目リストが空の場合、メッセージを表示 --%>
@@ -432,15 +401,12 @@
                     </table>
                 </c:otherwise>
             </c:choose>
-<<<<<<< HEAD
         </div>
 
         <div class="footer">
             <p>&copy; 2025 得点管理システム</p>
         </div>
-=======
         </main>
->>>>>>> branch 'master' of https://github.com/03riku/JavaSD_teamG.git
     </div>
 </body>
 </html>
