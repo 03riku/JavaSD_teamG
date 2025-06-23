@@ -43,9 +43,9 @@
         登録が完了しました
     </div> <%-- ② 登録が完了しました --%>
 
-    <a href="SBJM001.jsp">戻る</a> <%-- ③ 戻る --%>
+    <a href="SBJM002.jsp">戻る</a> <%-- ③ 戻る --%>
     &nbsp;
-    <a href="SubjectListServlet">科目一覧</a> <%-- ④ 科目一覧 (仮のリンク先) --%>
+    <a href="SBJM001.jsp">科目一覧</a> <%-- ④ 科目一覧 (仮のリンク先) --%>
 
 </body>
 </html>
