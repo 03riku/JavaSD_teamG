@@ -249,7 +249,7 @@ body {
 
         <div class="main-content">
             <h2>学生情報変更</h2>
-            <form action="studentUpdate" method="post"> <%-- アクションはサーブレットを指します --%>
+            <form action="STDM005.jsp" method="post"> <%-- アクションはサーブレットを指します --%>
                 <div class="form-group">
                     <label for="admissionYear">入学年度</label>
                     <input type="text" id="admissionYear" name="admissionYear" value="2023" readonly>
