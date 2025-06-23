@@ -50,7 +50,7 @@
         <div class="success-message">${successMessage}</div>
     </c:if>
 
-    <form action="SubjectRegisterServlet" method="post"> <%-- サーブレット名を適宜変更してください (StudentRegisterServlet -> SubjectRegisterServlet) --%>
+    <form action="SBJM003.jsp" method="post"> <%-- サーブレット名を適宜変更してください (StudentRegisterServlet -> SubjectRegisterServlet) --%>
         <label>科目コード</label> <input type="text" name="cd" value="${subject.cd}" placeholder="科目コードを入力してください" required /> <%-- 科目コード関連のエラーメッセージ --%>
         <c:if test="${not empty errorSubjectCdEmpty}">
             <div class="error-message">${errorSubjectCdEmpty}</div>
