@@ -8,23 +8,65 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import Bean.School;
+import Bean.Student;
+import dao.StudentDao; // パッケージ名に注意
+
 @WebServlet("/STDM003")
 public class Student_create_doneServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    // POSTリクエストで登録処理
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // フォームのパラメータ取得例（名前・年・クラスなど）
+        request.setCharacterEncoding("UTF-8");
+
+        String no = request.getParameter("no");
         String name = request.getParameter("name");
-        String entYear = request.getParameter("ent_year");
+        String entYearStr = request.getParameter("ent_year");
         String classNum = request.getParameter("class_num");
 
-        // TODO: ここでDAOを使ってDB登録処理を書く
+        int entYear = 0;
+        try {
+            entYear = Integer.parseInt(entYearStr);
+        } catch (NumberFormatException e) {
+            request.setAttribute("errorMessage", "入学年度が不正です。数値を入力してください。");
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
+            return;
+        }
 
-        // 登録成功後は完了画面にフォワード
-        request.getRequestDispatcher("/log/STDM003.jsp").forward(request, response);
+        Student student = new Student();
+        student.setNo(no);
+        student.setName(name);
+        student.setEntYear(entYear);
+        student.setClassNum(classNum);
+        student.setAttend(true);
+
+        School school = new School();
+        school.setCd("O00"); // ここはあなたのシステムに合わせて適切な学校コードに置き換えてください
+        student.setSchool(school);
+
+        StudentDao studentDao = new StudentDao();
+        // boolean success = false; // ★この行を削除またはコメントアウト★
+
+        try {
+            studentDao.insert(student); // ★戻り値を受け取らないように修正★
+
+            // insertがvoidなので、成功したかどうかは例外が投げられなかったことで判断します。
+            // そのため、ここでは登録成功として扱います。
+            request.setAttribute("message", "学生情報が正常に登録されました。");
+            request.getRequestDispatcher("/log/STDM003.jsp").forward(request, response);
+            // return; // forward後は通常returnします
+        } catch (Exception e) {
+            e.printStackTrace(); // エラーの詳細をコンソールに出力
+            request.setAttribute("errorMessage", "データベースエラーが発生しました：" + e.getMessage());
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
+            return; // エラー時はここで処理を終了
+        }
+
+        // ここに到達することは、通常は正常終了（insert成功）を意味します
+        // すでにtryブロック内でフォワードしているので、ここでのフォワードは不要です。
+        // request.getRequestDispatcher("/log/STDM003.jsp").forward(request, response);
     }
 }
