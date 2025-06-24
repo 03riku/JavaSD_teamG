@@ -51,7 +51,13 @@ public class Subject_updateServlet extends HttpServlet {
         }
 
         SubjectDao subjectDao = new SubjectDao();
-        Subject subject = subjectDao.get(subjectCd, school); // SubjectDaoを使って科目情報を取得
+        Subject subject = null;
+		try {
+			subject = subjectDao.get(subjectCd, school);
+		} catch (Exception e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} // SubjectDaoを使って科目情報を取得
 
         // 取得した科目情報が存在しない場合のエラーハンドリング
         if (subject == null) {
