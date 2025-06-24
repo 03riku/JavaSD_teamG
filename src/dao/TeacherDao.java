@@ -3,44 +3,53 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException; // SQLExceptionのインポートを追加
 
 import Bean.School;
 import Bean.Teacher;
 
 public class TeacherDao extends Dao {
 
-//Teacher オブジェクトに関連する School 情報を設定するため
-//	getメソッド
-	public Teacher get(String id) throws Exception {
-		Teacher Teacher = new Teacher();
-//	sql作成
-		try (Connection con = getConnection()) {
-			String sql = "SELECT * FROM Teacher WHERE id = ?";
-			PreparedStatement st = con.prepareStatement(sql);
-			st.setString(1, id);
-			ResultSet rs = st.executeQuery();
-//	sql結果受け取り
-			String teacher_id = rs.getString("id");
-			String teacher_password = rs.getString("password");
-			String teacher_name = rs.getString("name");
-			String teacher_school_cd = rs.getString("school_cd");
-//	beanにセット
-			Teacher.setId(teacher_id);
-			Teacher.setPassword(teacher_password);
-			Teacher.setName(teacher_name);
+    /**
+     * 指定されたIDの教師情報を取得します。
+     * 関連する学校情報もTeacherオブジェクトに設定されます。
+     * @param id 取得する教師のID
+     * @return 該当するTeacherオブジェクト、または見つからない場合はnull
+     * @throws Exception データベースアクセスエラーが発生した場合
+     */
+    public Teacher get(String id) throws Exception {
+        Teacher teacher = null; // Teacherオブジェクトをnullで初期化
 
-			School school = new School();
-			String sql2 = "SELECT * FROM SCHOOL WHERE SCHOOL_CD = ?";
-			PreparedStatement st2 = con.prepareStatement(sql2);
-			st2.setString(1, teacher_school_cd);
-	        ResultSet rs2 = st2.executeQuery();
-			String school_cd = rs2.getString("school_cd");
-			String school_name = rs2.getString("school_name");
+        // 1つ目のSQL: Teacherテーブルから情報を取得
+        String sql = "SELECT id, password, name, school_cd FROM teacher WHERE id = ?";
 
-			school.setCd(school_cd);
-			school.setName(school_name);
-			Teacher.setSchool(school);
-		}
-		return Teacher;
-	}
+        // SchoolDaoのインスタンスを作成 (学校情報を取得するため)
+        SchoolDao schoolDao = new SchoolDao();
+
+        try (Connection con = getConnection(); // データベース接続を取得
+             PreparedStatement st = con.prepareStatement(sql)) { // PreparedStatementを作成
+
+            st.setString(1, id); // プレースホルダーにIDをセット
+
+            try (ResultSet rs = st.executeQuery()) { // SQLを実行し、ResultSetを取得
+                if (rs.next()) { // 結果セットに次の行がある場合（データが見つかった場合）
+                    teacher = new Teacher(); // Teacherオブジェクトを初期化
+
+                    // ResultSetから教師情報を取得し、Beanにセット
+                    teacher.setId(rs.getString("id"));
+                    teacher.setPassword(rs.getString("password"));
+                    teacher.setName(rs.getString("name"));
+                    String schoolCd = rs.getString("school_cd"); // 学校コードを取得
+
+                    // 取得した学校コードを使ってSchoolDaoから学校情報を取得
+                    School school = schoolDao.find(schoolCd);
+                    teacher.setSchool(school); // TeacherオブジェクトにSchoolを設定
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // エラーの詳細を出力
+            throw e; // 例外を上位にスロー
+        }
+        return teacher; // 取得したTeacherオブジェクト、またはnullを返す
+    }
 }

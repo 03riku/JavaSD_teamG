@@ -22,7 +22,7 @@ public class Student_listServlet extends HttpServlet {
             StudentDao dao = new StudentDao();
             List<Student> students = dao.findAll();
             request.setAttribute("students", students);
-            RequestDispatcher rd = request.getRequestDispatcher("/STDM001.jsp");
+            RequestDispatcher rd = request.getRequestDispatcher("/SBJM001.jsp");
             rd.forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
