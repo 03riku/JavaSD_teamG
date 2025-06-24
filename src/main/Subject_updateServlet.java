@@ -1,5 +1,5 @@
-// src/main/java/servlet/SubjectUpdateExecuteServlet.java
-package main;
+// src/main/java/main/Subject_updateServlet.java
+package main; // パッケージ名は 'main'
 
 import java.io.IOException;
 
@@ -13,14 +13,14 @@ import javax.servlet.http.HttpSession;
 
 import Bean.School;
 import Bean.Subject;
-import Bean.Teacher; // Teacher Beanもセッションから取得すると仮定
+import Bean.Teacher;
 import dao.SubjectDao;
 
-@WebServlet("/SBJM004") // SBJM004.jspのform actionと一致させる
+@WebServlet("/SubjectUpdateDisplay") // 科目変更画面を表示するためのURL
 public class Subject_updateServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         request.setCharacterEncoding("UTF-8"); // リクエストのエンコーディングを設定
@@ -28,55 +28,46 @@ public class Subject_updateServlet extends HttpServlet {
         HttpSession session = request.getSession();
         Teacher teacher = (Teacher) session.getAttribute("teacher"); // セッションから先生情報を取得
 
-        // ログインしていない、または先生情報がない場合はエラー
+        // 未ログインまたは学校情報がない場合はログイン画面へリダイレクト
         if (teacher == null || teacher.getSchool() == null) {
             request.setAttribute("errorMessage", "ログインが必要です。");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("LOGO001.jsp"); // ログインページへリダイレクト
+            RequestDispatcher dispatcher = request.getRequestDispatcher("LOGO001.jsp");
             dispatcher.forward(request, response);
             return;
         }
 
         School school = teacher.getSchool(); // 先生が所属する学校を取得
 
-        // パラメータの取得
-        String subjectCd = request.getParameter("cd");   // 科目コード (hiddenで送信)
-        String subjectName = request.getParameter("name"); // 科目名
+        // パラメータから科目コードを取得 (例: SRJM002.jspのリンクから渡される)
+        String subjectCd = request.getParameter("cd");
 
-        // 入力値の検証
-        if (subjectName == null || subjectName.trim().isEmpty()) {
-            // 科目名が未入力の場合
-            request.setAttribute("errorMessage", "科目名が入力されていません。");
-            // 現在の科目情報を取得し、JSPに再表示するためにセット
-            SubjectDao subjectDao = new SubjectDao();
-            Subject currentSubject = subjectDao.get(subjectCd, school);
-            request.setAttribute("subject", currentSubject); // フォームに元の値をセット
-            RequestDispatcher dispatcher = request.getRequestDispatcher("SBJM004.jsp");
+        // 科目コードが指定されていない場合のエラーハンドリング
+        if (subjectCd == null || subjectCd.trim().isEmpty()) {
+            request.setAttribute("errorMessage", "変更対象の科目コードが指定されていません。");
+            // 科目一覧ページへ戻ることを想定 (SRJM002.jsp)
+            RequestDispatcher dispatcher = request.getRequestDispatcher("SRJM002.jsp");
             dispatcher.forward(request, response);
             return;
         }
 
-        Subject subject = new Subject();
-        subject.setCd(subjectCd);
-        subject.setName(subjectName);
-        subject.setSchool(school); // 科目オブジェクトに学校情報をセット
-
         SubjectDao subjectDao = new SubjectDao();
-        boolean isUpdated = subjectDao.save(subject); // saveメソッドで更新
+        Subject subject = subjectDao.get(subjectCd, school); // SubjectDaoを使って科目情報を取得
 
-        if (isUpdated) {
-            // 更新成功
-            request.setAttribute("successMessage", "科目の情報を更新しました。");
-        } else {
-            // 更新失敗
-            request.setAttribute("errorMessage", "科目の更新に失敗しました。データベースエラーの可能性があります。");
+        // 取得した科目情報が存在しない場合のエラーハンドリング
+        if (subject == null) {
+            request.setAttribute("errorMessage", "指定された科目コードの科目が見つかりませんでした。");
+            // 科目一覧ページへ戻ることを想定 (SRJM002.jsp)
+            RequestDispatcher dispatcher = request.getRequestDispatcher("SRJM002.jsp");
+            dispatcher.forward(request, response);
+            return;
         }
 
-        // 更新後、再度SBJM004.jspを表示して結果をユーザーに通知
-        // 更新後の情報を取得し直して表示 (必須ではないが、更新されたことを確認できる)
-        Subject updatedSubject = subjectDao.get(subjectCd, school);
-        request.setAttribute("subject", updatedSubject);
-
+        // 取得した科目情報をリクエストスコープにセットし、JSPにフォワード
+        request.setAttribute("subject", subject);
         RequestDispatcher dispatcher = request.getRequestDispatcher("SBJM004.jsp");
         dispatcher.forward(request, response);
     }
+
+    // 科目変更の画面表示は通常GETリクエストで行われるため、doPostはここでは実装しません。
+    // もしPOSTでこのサーブレットが呼ばれるシナリオがある場合は、doPostメソッドを追加してください。
 }
