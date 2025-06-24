@@ -29,7 +29,7 @@ public class Student_updateServlet extends HttpServlet {
 
             if (student == null) {
                 request.setAttribute("error", "該当する学生が見つかりませんでした。");
-                request.getRequestDispatcher("/WEB-INF/jsp/error.jsp").forward(request, response);
+                request.getRequestDispatcher("/log/error.jsp").forward(request, response);
                 return;
             }
 
