@@ -15,8 +15,7 @@ public class StudentDao extends Dao {
 
     public StudentDao() {
         // Student テーブルの基本 SELECT 文
-        this.basesql = "SELECT s.no, s.name, s.ent_year, s.class_num, s.attend, s.school_cd" +
-                       " FROM Student s";
+        this.basesql = "SELECT s.no, s.name, s.ent_year, s.class_num, s.attend, s.school_cd FROM Student s";
     }
 
     // 学生を no で取得
@@ -104,6 +103,7 @@ public class StudentDao extends Dao {
             ps.setInt(3, student.getEntYear());
             ps.setString(4, student.getClassNum());
             ps.setBoolean(5, student.isAttend());
+
             if (student.getSchool() != null) {
                 ps.setString(6, student.getSchool().getCd());
             } else {
@@ -137,9 +137,30 @@ public class StudentDao extends Dao {
         }
     }
 
-    // （未実装）全件取得
+    // 全件取得
     public List<Student> findAll() {
-        return null;
+        List<Student> list = new ArrayList<>();
+        try (Connection con = getConnection();
+             PreparedStatement st = con.prepareStatement(basesql);
+             ResultSet rs = st.executeQuery()) {
+
+            while (rs.next()) {
+                School school = new School();
+                school.setCd(rs.getString("school_cd"));
+
+                Student s = new Student();
+                s.setNo(rs.getString("no"));
+                s.setName(rs.getString("name"));
+                s.setEntYear(rs.getInt("ent_year"));
+                s.setClassNum(rs.getString("class_num"));
+                s.setAttend(rs.getBoolean("attend"));
+                s.setSchool(school);
+
+                list.add(s);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }
-
