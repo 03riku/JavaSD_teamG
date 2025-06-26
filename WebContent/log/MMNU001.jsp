@@ -95,7 +95,6 @@
 </div>
 
   <!-- フッター -->
-<footer>
-</footer>
+
 </body>
 </html>
