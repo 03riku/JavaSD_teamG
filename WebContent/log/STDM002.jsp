@@ -212,7 +212,7 @@
         <div class="main-content">
             <h2>学生情報登録</h2>
 
-            <form action="STDM003.jsp" method="post">
+            <form action="STDM003" method="post">
                 <div class="form-section">
                     <h3>学生情報登録</h3>
                     <div class="form-row">
