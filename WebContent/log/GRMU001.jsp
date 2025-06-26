@@ -19,11 +19,25 @@
         .grade-input-area th, .grade-input-area td { padding: 8px; text-align: center; border: 1px solid #ddd; }
         .grade-input-area th { background-color: #f2f2f2; }
         .grade-input-area input[type="number"] { width: 80px; padding: 5px; text-align: center; }
-        .register-button { text-align: right; margin-top: 20px; }
-        .register-button input[type="submit"] { padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
-        .register-button input[type="submit"]:hover { background-color: #218838; }
+        .register-button { margin-top: 20px; }
+        .register-button input[type="submit"] {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
 
-        /* メニューのスタイル (簡易版) */
+        /* グレーボタンスタイル */
+        .gray-button {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .gray-button:hover {
+            background-color: #5a6268;
+        }
+
         .menu { float: left; width: 15%; padding-right: 20px; }
         .menu ul { list-style-type: none; padding: 0; }
         .menu li a { display: block; padding: 8px 0; text-decoration: none; color: #007bff; }
@@ -42,7 +56,7 @@
         <ul>
             <li><a href="MMNU001.jsp">メニュー</a></li>
             <li><a href="STDM001.jsp">学生管理</a></li>
-            <li><a>成績管理</a></li> <%-- 現在のページ --%>
+            <li><a>成績管理</a></li>
             <li><a href="GRMR001.jsp">成績参照</a></li>
             <li><a href="GRMU001.jsp">成績登録</a></li>
             <li><a href="SBJM001.jsp">科目管理</a></li>
@@ -53,14 +67,14 @@
         <h2>成績管理</h2>
 
         <div class="search-form">
-            <form action="gradeManagementList" method="get"> <%-- 仮のaction URL --%>
+            <form action="gradeManagementList" method="get">
                 <table>
                     <tr>
                         <th>入学年度</th>
                         <th>クラス</th>
                         <th>科目</th>
                         <th>回数</th>
-                        <th></th> <%-- 検索ボタン用セル --%>
+                        <th></th>
                     </tr>
                     <tr>
                         <td>
@@ -109,19 +123,13 @@
 
         <div class="grade-input-area">
             <%
-                // ここはJSPが実行されたときに、サーブレットから渡されるデータがあると想定します。
-                // 例として、検索結果がある場合のみ表示するロジックをここに記述できます。
-                // 例えば、request.getAttribute("students") != null など。
-                // 今回はデモのため、常に表示されるようにします。
-
-                // 仮の検索条件 (本来はリクエストパラメータから取得)
                 String selectedSubject = request.getParameter("subject") != null ? request.getParameter("subject") : "Python1";
                 String selectedAttemptNo = request.getParameter("attemptNo") != null ? request.getParameter("attemptNo") : "1";
             %>
 
             <h3>科目: <%= selectedSubject %> (<%= selectedAttemptNo %>回)</h3>
 
-            <form action="registerGrades" method="post"> <%-- 仮のaction URL --%>
+            <form action="registerGrades" method="post">
                 <table>
                     <thead>
                         <tr>
@@ -133,18 +141,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <%
-                            // ここに、サーブレット/JavaBeansから取得した学生データのリストをループして表示するロジックが入ります。
-                            // 例: List<Student> students = (List<Student>) request.getAttribute("students");
-                            //     if (students != null) {
-                            //         for (Student student : students) {
-                            //             // ... 以下の<tr>を生成 ...
-                            //         }
-                            //     } else {
-                            //          // デモデータ
-                            //     }
-                        %>
-                        <%-- デモ用の静的な学生データ --%>
                         <tr>
                             <td>2023</td>
                             <td>131</td>
@@ -166,15 +162,19 @@
                             <td>大原三郎</td>
                             <td><input type="number" name="score_2325003" value="85" min="0" max="100"></td>
                         </tr>
-                        <%-- 他の学生データが続く場合はここに追加 --%>
                     </tbody>
                 </table>
+
+                <!-- グレーで左寄せの登録して終了ボタン -->
+                <div class="register-button" style="text-align: left;">
+                    <input type="submit" value="登録して終了" formaction="GRMU002.jsp" class="gray-button">
                 </div>
+
             </form>
         </div>
     </div>
 
-    <div style="clear: both;"></div> <%-- Float解除 --%>
+    <div style="clear: both;"></div>
     <div class="footer" style="text-align: center; margin-top: 50px; font-size: 0.8em; color: #666;">
         <hr/>
         <p>&copy; 2023 TIC</p>
