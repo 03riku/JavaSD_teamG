@@ -16,7 +16,7 @@ import Bean.Subject;
 import Bean.Teacher;
 import dao.SubjectDao;
 
-@WebServlet("/SubjectUpdateDisplay") // 科目変更画面を表示するためのURL
+@WebServlet("/SRJM002") // 科目変更画面を表示するためのURL
 public class Subject_updateServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
