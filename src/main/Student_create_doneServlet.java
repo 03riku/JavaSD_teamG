@@ -19,6 +19,7 @@ public class Student_create_doneServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        System.out.println("=====================================================================");
 
         request.setCharacterEncoding("UTF-8");
 
@@ -31,6 +32,7 @@ public class Student_create_doneServlet extends HttpServlet {
         try {
             entYear = Integer.parseInt(entYearStr);
         } catch (NumberFormatException e) {
+            System.out.println("===== errorMessage:入学年度が不正です。数値を入力してください。");
             request.setAttribute("errorMessage", "入学年度が不正です。数値を入力してください。");
             request.getRequestDispatcher("/error.jsp").forward(request, response);
             return;

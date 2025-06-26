@@ -95,6 +95,7 @@ public class StudentDao extends Dao {
     // 学生の新規登録
  // 学生の新規登録（STUDENT_NEW テーブルに挿入）
     public void insert(Student student) throws Exception {
+        System.out.println("=====================================================================");
         String sql = "INSERT INTO STUDENT (NO, NAME, ENT_YEAR, CLASS_NUM, IS_ATTEND, SCHOOL_CD) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection con = getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -104,6 +105,7 @@ public class StudentDao extends Dao {
             ps.setInt(3, student.getEntYear());
             ps.setString(4, student.getClassNum());
             ps.setBoolean(5, student.isAttend());
+            System.out.println("ps:"+ ps);
 
             if (student.getSchool() != null) {
                 ps.setString(6, student.getSchool().getCd());
