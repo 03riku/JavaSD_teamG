@@ -7,15 +7,12 @@
 <head>
     <meta charset="UTF-8">
     <title>科目情報変更</title>
-    <%-- スタイルシートは外部ファイルで読み込むか、ここに記述しない --%>
-    <%-- 例: <link rel="stylesheet" href="css/style.css"> --%>
 </head>
 <body>
     <table width="100%" cellpadding="5" cellspacing="0" border="0">
         <tr>
             <td align="left">得点管理システム</td>
             <td align="right">
-                <%-- ユーザー情報とログアウトリンクの表示 --%>
                 <c:if test="${not empty teacher}">
                     ${teacher.school.name} ${teacher.name}様&nbsp;
                 </c:if>
@@ -35,10 +32,8 @@
         </ul>
     </div>
 
-    <%-- メインコンテンツのタイトル --%>
-    <h2>科目情報変更</h2> <%-- ① 科目情報変更 --%>
+    <h2>科目情報変更</h2>
 
-    <%-- メッセージ表示エリア --%>
     <c:if test="${not empty errorMessage}">
         <div class="error-message">${errorMessage}</div>
     </c:if>
@@ -46,28 +41,27 @@
         <div class="success-message">${successMessage}</div>
     </c:if>
 
-    <form action="SubjectUpdateExecuteServlet" method="post"> <%-- 変更処理を行うサーブレット名を指定 --%>
+    <form action="SubjectUpdateExecuteServlet" method="post">
         <div>
-            <label>科目コード</label> <%-- ② 科目コード --%>
-            <%-- 科目コードは表示専用で、変更不可にする (hiddenフィールドで値を送信) --%>
-            <span class="readonly-field">${subject.cd}</span> <%-- ③ F02 など、DBから取得した値を表示 --%>
-            <input type="hidden" name="cd" value="${subject.cd}"> <%-- 変更対象の科目を特定するためにhiddenで送信 --%>
+            <label>科目コード</label>
+            <span class="readonly-field">${subject.cd}</span>
+            <input type="hidden" name="cd" value="${subject.cd}">
         </div>
         <br><br>
 
         <div>
-            <label>科目名</label> <%-- ④ 科目名 --%>
-            <input type="text" name="name" value="${subject.name}" placeholder="科目名を入力してください" required /> <%-- ⑤ Javaプログラミング基礎 など、DBから取得した値を表示 --%>
-            <%-- 科目名未入力エラーメッセージ (必要であれば追加) --%>
+            <label>科目名</label>
+            <input type="text" name="name" value="${subject.name}" placeholder="科目名を入力してください" required />
             <c:if test="${not empty errorSubjectNameEmpty}">
                 <div class="error-message">${errorSubjectNameEmpty}</div>
             </c:if>
         </div>
         <br><br>
 
-        <button type="submit" name="execute">変更</button> <%-- ⑥ 変更ボタン --%>
+        <!-- 修正点：このボタンでSBJM005.jspへ遷移 -->
+        <button type="submit" name="execute" formaction="SBJM005.jsp">変更</button>
     </form>
 
-    <a href="SRJM002.jsp">戻る</a> <%-- ⑦ 戻るリンク --%>
+    <a href="SRJM002.jsp">戻る</a>
 </body>
 </html>
