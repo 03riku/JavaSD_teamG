@@ -63,7 +63,7 @@ public class Student_create_doneServlet extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace(); // エラーの詳細をコンソールに出力
             request.setAttribute("errorMessage", "データベースエラーが発生しました：" + e.getMessage());
-            request.getRequestDispatcher("/error.jsp").forward(request, response);
+            request.getRequestDispatcher("/log/ERRO001.jsp").forward(request, response);
             return; // エラー時はここで処理を終了
         }
 
