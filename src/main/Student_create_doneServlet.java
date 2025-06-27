@@ -7,9 +7,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import Bean.School;
 import Bean.Student;
+import Bean.Teacher;
 import dao.StudentDao; // パッケージ名に注意
 
 @WebServlet("/STDM003")
@@ -51,7 +53,8 @@ public class Student_create_doneServlet extends HttpServlet {
 
         StudentDao studentDao = new StudentDao();
         // boolean success = false; // ★この行を削除またはコメントアウト★
-
+        HttpSession session = request.getSession();
+        Teacher Getteacher = (Teacher) session.getAttribute("teacher");
         try {
             studentDao.insert(student); // ★戻り値を受け取らないように修正★
 
@@ -63,7 +66,7 @@ public class Student_create_doneServlet extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace(); // エラーの詳細をコンソールに出力
             request.setAttribute("errorMessage", "データベースエラーが発生しました：" + e.getMessage());
-            request.getRequestDispatcher("/error.jsp").forward(request, response);
+            request.getRequestDispatcher("/log/ERRO001.jsp").forward(request, response);
             return; // エラー時はここで処理を終了
         }
 

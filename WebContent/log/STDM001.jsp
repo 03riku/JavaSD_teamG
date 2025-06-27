@@ -244,7 +244,7 @@
 
                 conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-                StringBuilder sqlBuilder = new StringBuilder("SELECT NO, NAME, ENT_YEAR, CLASS_NUM, IS_ATTEND FROM STUDENT_NEW WHERE 1=1");
+                StringBuilder sqlBuilder = new StringBuilder("SELECT NO, NAME, ENT_YEAR, CLASS_NUM, IS_ATTEND FROM STUDENT WHERE 1=1");
                 List<Object> params = new ArrayList<>();
 
                 if (filterEntYear != null && !filterEntYear.isEmpty()) {

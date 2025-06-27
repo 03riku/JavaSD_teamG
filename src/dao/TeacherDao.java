@@ -21,7 +21,7 @@ public class TeacherDao extends Dao {
         Teacher teacher = null; // Teacherオブジェクトをnullで初期化
 
         // 1つ目のSQL: Teacherテーブルから情報を取得
-        String sql = "SELECT id, password, name, school_cd FROM teacher WHERE id = ?";
+        String sql = "SELECT * FROM teacher WHERE id = ?";
 
         // SchoolDaoのインスタンスを作成 (学校情報を取得するため)
         SchoolDao schoolDao = new SchoolDao();
@@ -34,15 +34,14 @@ public class TeacherDao extends Dao {
             try (ResultSet rs = st.executeQuery()) { // SQLを実行し、ResultSetを取得
                 if (rs.next()) { // 結果セットに次の行がある場合（データが見つかった場合）
                     teacher = new Teacher(); // Teacherオブジェクトを初期化
-
+                    School school = null;
+                    
                     // ResultSetから教師情報を取得し、Beanにセット
                     teacher.setId(rs.getString("id"));
                     teacher.setPassword(rs.getString("password"));
                     teacher.setName(rs.getString("name"));
-                    String schoolCd = rs.getString("school_cd"); // 学校コードを取得
+                    school = schoolDao.find(rs.getString("school_cd"));
 
-                    // 取得した学校コードを使ってSchoolDaoから学校情報を取得
-                    School school = schoolDao.find(schoolCd);
                     teacher.setSchool(school); // TeacherオブジェクトにSchoolを設定
                 }
             }
@@ -51,5 +50,16 @@ public class TeacherDao extends Dao {
             throw e; // 例外を上位にスロー
         }
         return teacher; // 取得したTeacherオブジェクト、またはnullを返す
+    }
+    public Teacher login(String id, String password) throws Exception {
+
+        Teacher teacher = get(id);
+        
+       if(teacher != null && teacher.getPassword().equals(password)){
+    	   
+    	   return teacher;
+       }
+        return null;
+        
     }
 }

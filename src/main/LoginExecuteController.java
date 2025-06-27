@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import Bean.Student;
-import dao.StudentDao;
+import Bean.Teacher;
+import dao.TeacherDao;
 import tool.CommonServlet;
 
 @WebServlet(urlPatterns={"/log/MMNU001"})  // JSPのactionに合わせて修正
@@ -27,14 +27,14 @@ public class LoginExecuteController extends CommonServlet {
         String id = request.getParameter("id");
         String password = request.getParameter("password");
 
-        StudentDao studentDao = new StudentDao();
-        Student student = null;
+        TeacherDao TeacherDao = new TeacherDao();
+        Teacher teacher = null;
 
         try {
             // 1. IDでStudentを取得（パスワードなし）
-            student = studentDao.get(id);
+            teacher = TeacherDao.get(id);
 
-            if (student == null) {
+            if (teacher == null) {
                 // IDがない → ログイン画面に戻す（エラーメッセージ無し）
             	System.out.println("debug-chk001");
                 request.getRequestDispatcher("/log/LOGI001").forward(request, response);
@@ -45,7 +45,7 @@ public class LoginExecuteController extends CommonServlet {
             String dbPassword = null;
             String sql = "SELECT password FROM Teacher WHERE no = ?";
 
-            try (Connection con = studentDao.getConnection();
+            try (Connection con = TeacherDao.getConnection();
                  PreparedStatement ps = con.prepareStatement(sql)) {
 
                 ps.setString(1, id);
@@ -61,7 +61,7 @@ public class LoginExecuteController extends CommonServlet {
             if (dbPassword != null && dbPassword.equals(password)) {
                 // ログイン成功 → セッションにStudentをセット
                 HttpSession session = request.getSession();
-                session.setAttribute("student", student);
+                session.setAttribute("teacher", teacher);
 
                 // メインメニュー画面へリダイレクト
                 response.sendRedirect(request.getContextPath() + "/log/MMNU001.jsp");
