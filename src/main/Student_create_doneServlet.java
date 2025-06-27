@@ -7,9 +7,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import Bean.School;
 import Bean.Student;
+import Bean.Teacher;
 import dao.StudentDao; // パッケージ名に注意
 
 @WebServlet("/STDM003")
@@ -51,7 +53,8 @@ public class Student_create_doneServlet extends HttpServlet {
 
         StudentDao studentDao = new StudentDao();
         // boolean success = false; // ★この行を削除またはコメントアウト★
-
+        HttpSession session = request.getSession();
+        Teacher Getteacher = (Teacher) session.getAttribute("teacher");
         try {
             studentDao.insert(student); // ★戻り値を受け取らないように修正★
 
