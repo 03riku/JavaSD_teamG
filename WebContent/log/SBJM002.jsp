@@ -38,7 +38,7 @@
             <li><label>成績管理</label></li> <%-- これはリンクではなくラベルです --%>
             <li><a href="GRMU001.jsp">成績登録</a><br></li>
             <li><a href="GRMR001.jsp">成績検索</a></li>
-            <li><a href="SBJM002.jsp">科目管理</a></li> <%-- 科目管理のリンク先 --%>
+            <li><a href="SBJM001.jsp">科目管理</a></li> <%-- 科目管理のリンク先 --%>
         </ul>
     </div>
 
@@ -50,7 +50,7 @@
         <div class="success-message">${successMessage}</div>
     </c:if>
 
-    <form action="SBJM005.jsp" method="post"> <%-- サーブレット名を適宜変更してください (StudentRegisterServlet -> SubjectRegisterServlet) --%>
+    <form action="SBJM003.jsp" method="post"> <%-- サーブレット名を適宜変更してください (StudentRegisterServlet -> SubjectRegisterServlet) --%>
         <label>科目コード</label> <input type="text" name="cd" value="${subject.cd}" placeholder="科目コードを入力してください" required /> <%-- 科目コード関連のエラーメッセージ --%>
         <c:if test="${not empty errorSubjectCdEmpty}">
             <div class="error-message">${errorSubjectCdEmpty}</div>
@@ -73,6 +73,5 @@
 
     <br><br>
 
-    </div>
 </body>
 </html>
