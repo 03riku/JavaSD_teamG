@@ -17,11 +17,15 @@ public class TeacherDao extends Dao {
      * @return 該当するTeacherオブジェクト、または見つからない場合はnull
      * @throws Exception データベースアクセスエラーが発生した場合
      */
-    public Teacher get(String id) throws Exception {
+    @SuppressWarnings("null")
+	public Teacher get(String id) throws Exception {
         Teacher teacher = null; // Teacherオブジェクトをnullで初期化
 
         // 1つ目のSQL: Teacherテーブルから情報を取得
-        String sql = "SELECT * FROM teacher WHERE id = ?";
+//        String sql = "SELECT * FROM teacher WHERE id = ?";
+        String sql = "SELECT * FROM TEACHER AS T "
+        		   + "INNER JOIN SCHOOL AS S ON T.SCHOOL_CD = S.SCHOOL_CD "
+        		   + "WHERE ID  = ?";
 
         // SchoolDaoのインスタンスを作成 (学校情報を取得するため)
         SchoolDao schoolDao = new SchoolDao();
@@ -34,17 +38,14 @@ public class TeacherDao extends Dao {
             try (ResultSet rs = st.executeQuery()) { // SQLを実行し、ResultSetを取得
                 if (rs.next()) { // 結果セットに次の行がある場合（データが見つかった場合）
                     teacher = new Teacher(); // Teacherオブジェクトを初期化
-                    School school = null;
+                    School school = new School();
 
                     // ResultSetから教師情報を取得し、Beanにセット
                     teacher.setId(rs.getString("id"));
                     teacher.setPassword(rs.getString("password"));
                     teacher.setName(rs.getString("name"));
-                    school = schoolDao.find(rs.getString("school_cd"));
-                    
-                    System.out.println("rs.getString('school_cd'):"+rs.getString("school_cd"));
-                    System.out.println("school:"+school);
-
+                    school.setCd(rs.getString("school_cd")); // カラム名を 'school_cd' に修正
+                    school.setName(rs.getString("school_name")); // カラム名を 'school_name' に修正
                     teacher.setSchool(school); // TeacherオブジェクトにSchoolを設定
                 }
             }

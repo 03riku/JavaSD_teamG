@@ -99,7 +99,6 @@ public class StudentDao extends Dao {
         String sql = "INSERT INTO STUDENT (NO, NAME, ENT_YEAR, CLASS_NUM, IS_ATTEND, SCHOOL_CD) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection con = getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
-
             ps.setString(1, student.getNo());
             ps.setString(2, student.getName());
             ps.setInt(3, student.getEntYear());
@@ -107,15 +106,17 @@ public class StudentDao extends Dao {
             ps.setBoolean(5, student.isAttend());
             System.out.println("ps:"+ ps);
 
-            if (student.getSchool() != null) {
+            // --- 重要：SCHOOL_CD を必ずセット、NULLは不可！
+            if (student.getSchool() != null && student.getSchool().getCd() != null) {
                 ps.setString(6, student.getSchool().getCd());
             } else {
-                ps.setNull(6, java.sql.Types.VARCHAR);
+                throw new IllegalArgumentException("insert: SCHOOL_CD must not be null (student=" + student + ")");
             }
 
-            ps.executeUpdate(); // 実行
+            ps.executeUpdate();
         }
     }
+
 
 
     // 学生情報を更新
@@ -123,23 +124,23 @@ public class StudentDao extends Dao {
         String sql = "UPDATE STUDENT SET NAME = ?, ENT_YEAR = ?, CLASS_NUM = ?, IS_ATTEND = ?, SCHOOL_CD = ? WHERE NO = ?";
         try (Connection con = getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
-
             ps.setString(1, student.getName());
             ps.setInt(2, student.getEntYear());
             ps.setString(3, student.getClassNum());
             ps.setBoolean(4, student.isAttend());
 
-            if (student.getSchool() != null) {
+            // --- こちらも SCHOOL_CD が null なら例外
+            if (student.getSchool() != null && student.getSchool().getCd() != null) {
                 ps.setString(5, student.getSchool().getCd());
             } else {
-                ps.setNull(5, java.sql.Types.VARCHAR);
+                throw new IllegalArgumentException("update: SCHOOL_CD must not be null (student=" + student + ")");
             }
 
             ps.setString(6, student.getNo());
-
             ps.executeUpdate();
         }
     }
+
 
     // 全件取得
     public List<Student> findAll() {
