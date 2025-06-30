@@ -1,9 +1,6 @@
 package main;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -31,52 +28,30 @@ public class LoginExecuteController extends CommonServlet {
         Teacher teacher = null;
 
         try {
-            // 1. IDでStudentを取得（パスワードなし）
-            teacher = TeacherDao.get(id);
+            // loginメソッドで認証（IDとパスワードを使ってチェック）
+            teacher = TeacherDao.login(id, password);
 
             if (teacher == null) {
-                // IDがない → ログイン画面に戻す（エラーメッセージ無し）
-            	System.out.println("debug-chk001");
-                request.getRequestDispatcher("/log/LOGI001").forward(request, response);
+                // ログイン失敗：IDが存在しないか、パスワードが一致しない
+                System.out.println("ログイン失敗: teacher == null");
+                request.setAttribute("error", "IDまたはパスワードが正しくありません");
+                request.getRequestDispatcher("/log/LOGI001.jsp").forward(request, response);
                 return;
             }
 
-            // 2. パスワードだけ別で取得
-            String dbPassword = null;
-            String sql = "SELECT password FROM Teacher WHERE no = ?";
-
-            try (Connection con = TeacherDao.getConnection();
-                 PreparedStatement ps = con.prepareStatement(sql)) {
-
-                ps.setString(1, id);
-
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        dbPassword = rs.getString("password");
-                    }
-                }
-            }
-
-            // 3. パスワードチェック
-            if (dbPassword != null && dbPassword.equals(password)) {
-                // ログイン成功 → セッションにStudentをセット
-                HttpSession session = request.getSession();
-                session.setAttribute("teacher", teacher);
-
-                // メインメニュー画面へリダイレクト
-                response.sendRedirect(request.getContextPath() + "/log/MMNU001.jsp");
-            } else {
-                // パスワード不一致 → ログイン画面に戻す（エラーメッセージ無し）
-                request.getRequestDispatcher("/log/LOGI001.jsp").forward(request, response);
-            }
+            // ログイン成功 → セッションに保存してメニューへ
+            HttpSession session = request.getSession();
+            session.setAttribute("teacher", teacher);
+            System.out.println("teacher.getSchool():"+teacher.getSchool());
+            response.sendRedirect(request.getContextPath() + "/log/MMNU001.jsp");
 
         } catch (Exception e) {
             e.printStackTrace();
-            //メニューに続く
-            request.getRequestDispatcher("/log/MMNU001.jsp").forward(request, response);
+            // 例外発生時はエラーページまたはログイン画面に遷移
+            request.getRequestDispatcher("/log/LOGI001.jsp").forward(request, response);
         }
-
     }
+
     protected void get(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 

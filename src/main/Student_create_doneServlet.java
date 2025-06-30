@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import Bean.School;
 import Bean.Student;
 import Bean.Teacher;
 import dao.StudentDao; // パッケージ名に注意
@@ -47,14 +46,16 @@ public class Student_create_doneServlet extends HttpServlet {
         student.setClassNum(classNum);
         student.setAttend(true);
 
-        School school = new School();
-        school.setCd("O00"); // ここはあなたのシステムに合わせて適切な学校コードに置き換えてください
-        student.setSchool(school);
+        HttpSession session = request.getSession();
+        System.out.println("session:" + session);
+        Teacher Getteacher = (Teacher) session.getAttribute("teacher");
+        System.out.println("===============================================");
+        System.out.println("Getteacher:" + Getteacher);
+        System.out.println("Getteacher.getSchool():" +  Getteacher.getSchool());
+        //student.setSchool(Getteacher.getSchool());
 
         StudentDao studentDao = new StudentDao();
         // boolean success = false; // ★この行を削除またはコメントアウト★
-        HttpSession session = request.getSession();
-        Teacher Getteacher = (Teacher) session.getAttribute("teacher");
         try {
             studentDao.insert(student); // ★戻り値を受け取らないように修正★
 

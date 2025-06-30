@@ -35,12 +35,15 @@ public class TeacherDao extends Dao {
                 if (rs.next()) { // 結果セットに次の行がある場合（データが見つかった場合）
                     teacher = new Teacher(); // Teacherオブジェクトを初期化
                     School school = null;
-                    
+
                     // ResultSetから教師情報を取得し、Beanにセット
                     teacher.setId(rs.getString("id"));
                     teacher.setPassword(rs.getString("password"));
                     teacher.setName(rs.getString("name"));
                     school = schoolDao.find(rs.getString("school_cd"));
+                    
+                    System.out.println("rs.getString('school_cd'):"+rs.getString("school_cd"));
+                    System.out.println("school:"+school);
 
                     teacher.setSchool(school); // TeacherオブジェクトにSchoolを設定
                 }
@@ -54,12 +57,12 @@ public class TeacherDao extends Dao {
     public Teacher login(String id, String password) throws Exception {
 
         Teacher teacher = get(id);
-        
+
        if(teacher != null && teacher.getPassword().equals(password)){
-    	   
+
     	   return teacher;
        }
         return null;
-        
+
     }
 }

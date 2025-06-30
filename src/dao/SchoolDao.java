@@ -11,17 +11,13 @@ import Bean.School;
 
 public class SchoolDao extends Dao {
 
-    // SQL文
-    private static final String FIND_ALL_SQL = "SELECT school_cd, school_name FROM school";
-    private static final String FIND_BY_CD_SQL = "SELECT school_cd, school_name FROM school WHERE school_cd = ?"; // 'schhol_cd'を修正しました
-    private static final String INSERT_SQL = "INSERT INTO school (school_cd, school_name) VALUES (?, ?)"; // ★追加★
-
     // すべての学校を取得
     public List<School> findAll() {
         List<School> list = new ArrayList<>();
+        String sql = "SELECT * FROM SCHOOL";
 
         try (Connection con = getConnection();
-             PreparedStatement stmt = con.prepareStatement(FIND_ALL_SQL);
+             PreparedStatement stmt = con.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
@@ -41,9 +37,10 @@ public class SchoolDao extends Dao {
     // 学校コードで1件取得
     public School find(String cd) {
         School school = null;
+        String sql = "SELECT * FROM SCHOOL WHERE cd = ?";
 
         try (Connection con = getConnection();
-             PreparedStatement stmt = con.prepareStatement(FIND_BY_CD_SQL)) {
+             PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, cd);
             ResultSet rs = stmt.executeQuery();
@@ -71,10 +68,11 @@ public class SchoolDao extends Dao {
         boolean success = false;
         Connection con = null;
         PreparedStatement stmt = null;
+        String sql = "INSERT INTO school (school_cd, school_name) VALUES (?, ?)";
 
         try {
             con = getConnection(); // データベース接続を取得
-            stmt = con.prepareStatement(INSERT_SQL); // INSERT文をセット
+            stmt = con.prepareStatement(sql); // INSERT文をセット
 
             stmt.setString(1, school.getCd());   // 学校コードをセット
             stmt.setString(2, school.getName()); // 学校名をセット
