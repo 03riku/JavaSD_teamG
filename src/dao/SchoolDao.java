@@ -37,13 +37,21 @@ public class SchoolDao extends Dao {
     // 学校コードで1件取得
     public School find(String cd) {
         School school = null;
-        String sql = "SELECT * FROM SCHOOL WHERE cd = ?";
+        String sql = "SELECT * FROM SCHOOL WHERE school_cd = 'oom'";
 
         try (Connection con = getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
 
-            stmt.setString(1, cd);
+//            stmt.setString(1, cd);
             ResultSet rs = stmt.executeQuery();
+            System.out.println("CD:"+ cd);
+            System.out.println("stmt:"+ stmt);
+
+            System.out.println("SCHOOL_CD:"+ rs.getString("school_cd"));
+
+            System.out.println("SCHOOL_name:"+ rs.getString("school_name"));
+
+
 
             if (rs.next()) {
                 school = new School();

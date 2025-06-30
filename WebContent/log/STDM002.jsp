@@ -249,9 +249,9 @@
                     <div class="form-row">
                         <label for="class_num">クラス</label>
                         <select id="class_num" name="class_num">
-                            <option value="101" <%= (request.getAttribute("class_num") != null && request.getAttribute("class_num").equals("101")) ? "selected" : "" %>>101</option>
-                            <option value="102" <%= (request.getAttribute("class_num") != null && request.getAttribute("class_num").equals("102")) ? "selected" : "" %>>102</option>
-                            <option value="103" <%= (request.getAttribute("class_num") != null && request.getAttribute("class_num").equals("103")) ? "selected" : "" %>>103</option>
+                            <option value="131" <%= (request.getAttribute("class_num") != null && request.getAttribute("class_num").equals("131")) ? "selected" : "" %>>131</option>
+                            <option value="132" <%= (request.getAttribute("class_num") != null && request.getAttribute("class_num").equals("132")) ? "selected" : "" %>>132</option>
+                            <option value="133" <%= (request.getAttribute("class_num") != null && request.getAttribute("class_num").equals("133")) ? "selected" : "" %>>133</option>
                         </select>
                     </div>
                 </div>
