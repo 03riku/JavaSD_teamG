@@ -176,9 +176,7 @@
 
     <div style="clear: both;"></div>
     <div class="footer" style="text-align: center; margin-top: 50px; font-size: 0.8em; color: #666;">
-        <hr/>
-        <p>&copy; 2023 TIC</p>
-        <p>大原学園</p>
+        <hr>
     </div>
 </body>
 </html>
