@@ -1,17 +1,15 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%-- Teacher BeanとSchool Beanがセッションスコープに保存されていることを前提とします --%>
-<%-- 例: session.setAttribute("teacher", teacherObject); --%>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>科目登録完了</title>
-    <%-- スタイルシートは外部ファイルで読み込むか、ここに記述しない --%>
-    <%-- 例: <link rel="stylesheet" href="css/style.css"> --%>
 </head>
 <body>
-    <table width="100%" cellpadding="5" cellspacing="0" border="0">
+
+<!-- ヘッダー -->
+    <table width="100%" cellpadding="5" cellspacing="0" border="0" bgcolor="#e0e0ff">
         <tr>
             <td align="left">得点管理システム</td>
             <td align="right">
@@ -36,12 +34,16 @@
     </div>
 
     <%-- メインコンテンツのタイトル --%>
+    <td style="padding: 20px;">
     <h2>科目情報登録</h2> <%-- ① 科目情報登録 --%>
 
     <%-- 登録完了メッセージ --%>
+    <table wifth="60%" cellpadding="10" cellspacing="0" corder="1" bgcolor="#ccffcc">
     <div class="success-message-box"> <%-- このクラスにCSSを適用してください --%>
         登録が完了しました
     </div> <%-- ② 登録が完了しました --%>
+    </table>
+    <br>
 
     <a href="SBJM002.jsp">戻る</a> <%-- ③ 戻る --%>
     &nbsp;

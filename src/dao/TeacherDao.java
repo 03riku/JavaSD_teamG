@@ -27,13 +27,13 @@ public class TeacherDao extends Dao {
         		   + "INNER JOIN SCHOOL AS S ON T.SCHOOL_CD = S.SCHOOL_CD "
         		   + "WHERE ID  = ?";
 
-        // SchoolDaoのインスタンスを作成 (学校情報を取得するため)
-        SchoolDao schoolDao = new SchoolDao();
 
         try (Connection con = getConnection(); // データベース接続を取得
              PreparedStatement st = con.prepareStatement(sql)) { // PreparedStatementを作成
 
             st.setString(1, id); // プレースホルダーにIDをセット
+
+            System.out.println("st;"+ st);
 
             try (ResultSet rs = st.executeQuery()) { // SQLを実行し、ResultSetを取得
                 if (rs.next()) { // 結果セットに次の行がある場合（データが見つかった場合）
