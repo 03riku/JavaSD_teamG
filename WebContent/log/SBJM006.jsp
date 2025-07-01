@@ -7,6 +7,135 @@
 <head>
     <meta charset="UTF-8">
     <title>科目情報削除</title>
+    <style>
+    	/* 共通全体レイアウト */
+body {
+    font-family: "メイリオ", Meiryo, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+/* ヘッダー */
+table {
+    background-color: #d9e6f2;
+    width: 100%;
+    border-bottom: 2px solid #ccc;
+}
+
+td {
+    padding: 10px;
+    vertical-align: middle;
+    font-weight: bold;
+}
+
+/* ログアウトリンク */
+td a {
+    text-decoration: none;
+    color: #337ab7;
+}
+
+td a:hover {
+    text-decoration: underline;
+}
+
+/* サイドバー */
+div[style*="float:left"] {
+    background-color: #f4f4f4;
+    height: 100vh;
+}
+
+div[style*="float:left"] ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+div[style*="float:left"] li {
+    margin-bottom: 10px;
+}
+
+div[style*="float:left"] a, div[style*="float:left"] label {
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+div[style*="float:left"] a:hover {
+    color: #007BFF;
+}
+
+/* メインタイトル */
+h2 {
+    margin-left: 18%;
+    padding-top: 20px;
+    color: #333;
+}
+
+/* メッセージ表示 */
+.error-message {
+    color: red;
+    font-weight: bold;
+    margin-left: 18%;
+}
+
+.success-message {
+    color: green;
+    font-weight: bold;
+    margin-left: 18%;
+}
+
+/* メインフォーム */
+form {
+    margin-left: 18%;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    width: 50%;
+}
+
+/* ラベルと値 */
+form label {
+    font-weight: bold;
+    display: inline-block;
+    width: 100px;
+}
+
+form span {
+    font-size: 1rem;
+    margin-left: 10px;
+}
+
+/* 削除ボタン */
+form button[type="submit"] {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+form button[type="submit"]:hover {
+    background-color: #c9302c;
+}
+
+/* 戻るリンク */
+a[href="SRJM001.jsp"] {
+    display: inline-block;
+    margin-left: 18%;
+    margin-top: 20px;
+    color: #337ab7;
+    text-decoration: none;
+}
+
+a[href="SRJM001.jsp"]:hover {
+    text-decoration: underline;
+}
+
+    </style>
     <%-- スタイルシートは外部ファイルで読み込むか、ここに記述しない --%>
     <%-- 例: <link rel="stylesheet" href="css/style.css"> --%>
 </head>
