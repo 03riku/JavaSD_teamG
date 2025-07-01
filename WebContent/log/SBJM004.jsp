@@ -7,6 +7,27 @@
 <head>
     <meta charset="UTF-8">
     <title>科目情報変更</title>
+    <style>
+    	h2 {
+    		color: #333;
+    		margin-top: 0;
+    		margin-bottom: 25px;
+    		border-bottom: 1px solid #eee;
+    		padding-bottom: 10px;
+    	}
+
+    	.nav-sidebar ul {
+    		list-style: none;
+    		padding: 0;
+    		margin: 0;
+    	}
+
+    	.nav-sidebar li {
+    		margin-bottom: 5px;
+    	}
+
+
+    </style>
 </head>
 <body>
     <table width="100%" cellpadding="5" cellspacing="0" border="0">
