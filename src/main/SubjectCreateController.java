@@ -1,7 +1,7 @@
 package main;
-
 import java.io.IOException;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,35 +12,40 @@ import javax.servlet.http.HttpSession;
 import Bean.Subject;
 import Bean.Teacher;
 
-// Teacher BeanとSchool Beanはご自身のプロジェクトの実際のクラスを使用してください
-
-@WebServlet("/SubjectCreateAction") // 科目登録リンクの遷移先
+@WebServlet(urlPatterns = "/log/SBJM002")
 public class SubjectCreateController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Teacher teacher = (Teacher) session.getAttribute("teacher");
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession(false); // 既存のセッションを取得（新規作成しない）
 
         // ログインチェック
+        Teacher teacher = (session != null) ? (Teacher) session.getAttribute("teacher") : null;
         if (teacher == null || teacher.getSchool() == null) {
             response.sendRedirect("LOGO001.jsp");
             return;
         }
 
-        // ここでは、空のSubjectオブジェクトを渡すか、何も渡さずにJSPで新規入力モードと判断させる
-        // シーケンス図の「入力された値をクリア」に対応するなら、新しいSubjectオブジェクトをセット
-        request.setAttribute("subject", new Subject()); // 新規入力のため空のSubjectをセット
+        // 新規入力用のSubjectオブジェクトをセット
+        request.setAttribute("subject", new Subject());
 
-        // エラーメッセージなどはこの時点ではクリアされている想定
-        request.removeAttribute("errorSubjectCdEmpty");
-        request.removeAttribute("errorSubjectCdLength");
-        request.removeAttribute("errorSubjectCdExists");
-        request.removeAttribute("errorSubjectNameEmpty");
-        request.removeAttribute("successMessage");
-        request.removeAttribute("errorMessage");
+        // エラーメッセージなどの属性をクリア
+        String[] attributesToClear = {
+            "errorSubjectCdEmpty",
+            "errorSubjectCdLength",
+            "errorSubjectCdExists",
+            "errorSubjectNameEmpty",
+            "successMessage",
+            "errorMessage"
+        };
+        for (String attr : attributesToClear) {
+            request.removeAttribute(attr);
+        }
 
-        // シーケンス図の「subject_create.jspへ」に対応
-        request.getRequestDispatcher("subject_create.jsp").forward(request, response);
+        // 入力画面へフォワード
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/SBJM002.jsp");
+        dispatcher.forward(request, response);
     }
 }
