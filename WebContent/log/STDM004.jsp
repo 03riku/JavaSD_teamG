@@ -1,11 +1,13 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="Bean.Student" %> <%-- Student Beanをインポート --%>
+<%@ page import="Bean.School" %> <%-- School Beanをインポート（念のため） --%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>学生情報変更 - 得点管理システム</title>
 <style>
-/* ここからCSSの記述 */
+/* ここからCSSの記述 - STDM005.jspと同じCSSを想定 */
 body {
     font-family: sans-serif;
     margin: 0;
@@ -92,12 +94,6 @@ body {
     color: #007bff;
 }
 
-/* 現在のアクティブなメニュー項目にスタイルを追加することもできます */
-/* .sidebar a.active {
-    background-color: #007bff;
-    color: white;
-} */
-
 .main-content {
     flex-grow: 1;
     padding: 20px;
@@ -147,17 +143,18 @@ body {
     cursor: not-allowed;
 }
 
+/* ラジオボタンのスタイルは今回は使用しないためコメントアウトするか削除します
 .form-group input[type="radio"] {
     margin-right: 8px;
 }
 
-.form-group input[type="radio"] + label { /* ラジオボタンのラベル */
-    width: auto; /* ラジオボタンのラベルの幅は自動 */
+.form-group input[type="radio"] + label {
+    width: auto;
     text-align: left;
     margin-right: 20px;
-    font-weight: normal; /* ラジオボタンのラベルは太字にしない */
+    font-weight: normal;
 }
-
+*/
 
 .form-actions {
     margin-top: 30px;
@@ -194,29 +191,6 @@ body {
     transform: translateY(-2px); /* 少し上に移動 */
 }
 
-/* 番号付きの丸印のテキストはCSSで直接再現が難しいですが、HTMLで表現可能です。
-   ここでは見た目上のデザインを重視しています。 */
-/* 特定の要素に番号の丸印を付ける場合は、HTMLで対応する要素の近くに配置し、
-   CSSで丸い背景と中央揃えを適用することになります。 */
-
-/* 例: 番号付きの丸印（HTML側に要素を追加する必要があります） */
-/*
-.circled-number {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background-color: #007bff;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-    margin-right: 5px;
-}
-*/
-
-/* グループ化されたオブジェクトのテキストは、HTMLのコメントや単純なdivで表現 */
 .grouped-object-note {
     text-align: right;
     margin-top: 30px;
@@ -228,10 +202,37 @@ body {
 </style>
 </head>
 <body>
+    <%
+        // Student_updateServletから渡されたStudentオブジェクトを取得
+        Student student = (Student) request.getAttribute("student");
+        // エラーメッセージの取得 (Student_updateServletは"error"属性で設定)
+        String errorMessage = (String) request.getAttribute("error");
+
+        // studentオブジェクトがnullの場合のエラーハンドリング
+        if (student == null) {
+            // エラーメッセージがあれば表示
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+    %>
+                <p style="color: red; text-align: center; font-size: 18px;"><%= errorMessage %></p>
+    <%
+            } else {
+    %>
+                <p style="color: red; text-align: center; font-size: 18px;">学生情報が取得できませんでした。</p>
+    <%
+            }
+    %>
+            <div style="text-align: center; margin-top: 20px;">
+                <button type="button" onclick="history.back()">戻る</button>
+            </div>
+    <%
+            return; // これ以上JSPの描画を続行しない
+        }
+    %>
+
     <div class="header">
         <h1>得点管理システム</h1>
         <div class="user-info">
-            大原太郎様 <a href="LOGO001.jsp">ログアウト</a>
+            大原太郎様 <a href="${pageContext.request.contextPath}/log/LOGO001.jsp">ログアウト</a>
         </div>
     </div>
 
@@ -239,49 +240,71 @@ body {
         <div class="sidebar">
             <h3>メニュー</h3>
             <ul>
-                <li><a href="STDM001.jsp">学生管理</a></li>
+                <li><a href="${pageContext.request.contextPath}/log/STDM001.jsp">学生管理</a></li>
                 <li><a>成績管理</a></li>
-                <li><a href="GRMU001.jsp">成績登録</a></li>
-                <li><a href="GRMR001.jsp">成績参照</a></li>
-                <li><a href="SBJM001.jsp">科目管理</a></li>
+                <li><a href="${pageContext.request.contextPath}/log/GRMU001.jsp">成績登録</a></li>
+                <li><a href="${pageContext.request.contextPath}/log/GRMR001.jsp">成績参照</a></li>
+                <li><a href="${pageContext.request.contextPath}/log/SBJM001.jsp">科目管理</a></li>
             </ul>
         </div>
 
         <div class="main-content">
             <h2>学生情報変更</h2>
-            <form action="STDM005.jsp" method="post"> <%-- アクションはサーブレットを指します --%>
+            <%-- エラーメッセージがあれば表示 --%>
+            <% if (errorMessage != null && !errorMessage.isEmpty()) { %>
+                <p style="color: red; margin-bottom: 20px;"><%= errorMessage %></p>
+            <% } %>
+
+            <%-- actionは学生情報更新処理を実行するサーブレット（student_update_done）を指します --%>
+            <form action="${pageContext.request.contextPath}/student_update_done" method="post">
+                <%-- 必須: 学生番号 (変更不可なのでhidden) --%>
+                <input type="hidden" name="no" value="<%= student.getNo() %>">
+
+                <%-- 必須: 学校コード (ユーザーには表示せず、更新時に必要なのでhidden) --%>
+                <%-- StudentオブジェクトにSchoolオブジェクトがセットされていることを前提とします --%>
+                <input type="hidden" name="school_cd" value="<%= student.getSchool() != null ? student.getSchool().getCd() : "" %>">
+
                 <div class="form-group">
-                    <label for="admissionYear">入学年度</label>
-                    <input type="text" id="admissionYear" name="admissionYear" value="2023" readonly>
+                    <label for="entYear">入学年度</label>
+                    <%-- readonlyなので変更不可。Student Beanから値を取得。name属性をent_yearに変更 --%>
+                    <input type="text" id="entYear" name="ent_year" value="<%= student.getEntYear() %>" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="studentId">学生番号</label>
-                    <input type="text" id="studentId" name="studentId" value="123456" readonly>
+                    <label for="studentNo">学生番号</label>
+                    <%-- readonlyなので変更不可。Student Beanから値を取得。これが更新対象のキーとなる。name属性をnoに変更 --%>
+                    <input type="text" id="studentNo" name="no" value="<%= student.getNo() %>" readonly>
                 </div>
                 <div class="form-group">
                     <label for="studentName">氏名</label>
-                    <input type="text" id="studentName" name="studentName" value="大原 次郎">
+                    <%-- 編集可能。Student Beanから値を取得。name属性をnameに変更 --%>
+                    <input type="text" id="studentName" name="name" value="<%= student.getName() != null ? student.getName() : "" %>" required>
                 </div>
                 <div class="form-group">
-                    <label for="studentClass">クラス</label>
-                    <select id="studentClass" name="studentClass">
-                        <option value="101" selected>101</option>
-                        <option value="102">102</option>
-                        <option value="103">103</option>
+                    <label for="classNum">クラス</label>
+                    <%-- クラスを選択。Student Beanの値に応じてselectedを設定。name属性をclass_numに変更 --%>
+                    <select id="classNum" name="class_num" required>
+                        <option value="">選択してください</option>
+                        <option value="101" <%= (student.getClassNum() != null && student.getClassNum().equals("101")) ? "selected" : "" %>>101</option>
+                        <option value="102" <%= (student.getClassNum() != null && student.getClassNum().equals("102")) ? "selected" : "" %>>102</option>
+                        <option value="103" <%= (student.getClassNum() != null && student.getClassNum().equals("103")) ? "selected" : "" %>>103</option>
+                        <%-- 必要に応じて他のクラスオプションを追加 --%>
                     </select>
                 </div>
                 <div class="form-group">
-                    <input type="radio" id="currentStudent" name="enrollmentStatus" value="active" checked>
-                    <label for="currentStudent">在学中</label>
+                    <label for="isAttend">在学中</label>
+                    <%-- 在学中チェックボックス。Student Beanのattendプロパティに応じてcheckedを設定 --%>
+                    <%-- nameをis_attendに、valueをonに設定。ラジオボタンをチェックボックスに変更 --%>
+                    <input type="checkbox" id="isAttend" name="is_attend" value="on" <%= student.isAttend() ? "checked" : "" %>>
                 </div>
                 <div class="form-actions">
                     <button type="submit">変更</button>
+                    <%-- 戻るボタンはJavaScriptのhistory.back()で戻る --%>
                     <button type="button" onclick="history.back()">戻る</button>
                 </div>
             </form>
             <div class="grouped-object-note">
-                グループ化されたオブジェクト
             </div>
         </div>
     </div>
 </body>
+</html>

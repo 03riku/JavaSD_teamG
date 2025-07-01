@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -67,26 +68,14 @@
         <h2>成績管理</h2>
 
         <div class="search-form">
-            <form action="gradeManagementList" method="get">
+            <form action="Test_list_studentServlet" method="get">
                 <table>
                     <tr>
-                        <th>入学年度</th>
-                        <th>クラス</th>
-                        <th>科目</th>
-                        <th>回数</th>
-                        <th></th>
+                        <th>入学年度</th><th>クラス</th><th>科目</th><th>回数</th><th></th>
                     </tr>
                     <tr>
                         <td>
                             <select name="enrollmentYear">
-                                <option value="2015" selected>2015</option>
-                                <option value="2016">2016</option>
-                                <option value="2017">2017</option>
-                                <option value="2018">2018</option>
-                                <option value="2019">2019</option>
-                                <option value="2020">2020</option>
-                                <option value="2021">2021</option>
-                                <option value="2022">2022</option>
                                 <option value="2023">2023</option>
                                 <option value="2024">2024</option>
                                 <option value="2025">2025</option>
@@ -95,8 +84,6 @@
                         <td>
                             <select name="classId">
                                 <option value="131" selected>131</option>
-                                <option value="132">132</option>
-                                <option value="133">133</option>
                             </select>
                         </td>
                         <td>
@@ -110,7 +97,6 @@
                             <select name="attemptNo">
                                 <option value="1" selected>1</option>
                                 <option value="2">2</option>
-                                <option value="3">3</option>
                             </select>
                         </td>
                         <td>
@@ -121,64 +107,45 @@
             </form>
         </div>
 
-        <div class="grade-input-area">
-            <%
-                String selectedSubject = request.getParameter("subject") != null ? request.getParameter("subject") : "Python1";
-                String selectedAttemptNo = request.getParameter("attemptNo") != null ? request.getParameter("attemptNo") : "1";
-            %>
+        <!-- 成績表示は検索後だけ表示 -->
+        <c:if test="${not empty scoreList}">
+            <div class="grade-input-area">
+                <h3>科目: ${param.subject}（${param.attemptNo}回）</h3>
 
-            <h3>科目: <%= selectedSubject %> (<%= selectedAttemptNo %>回)</h3>
-
-            <form action="registerGrades" method="post">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>入学年度</th>
-                            <th>クラス</th>
-                            <th>学生番号</th>
-                            <th>氏名</th>
-                            <th>点数</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>2023</td>
-                            <td>131</td>
-                            <td>2325001</td>
-                            <td>大原一郎1</td>
-                            <td><input type="number" name="score_2325001" value="65" min="0" max="100"></td>
-                        </tr>
-                        <tr>
-                            <td>2023</td>
-                            <td>131</td>
-                            <td>2325002</td>
-                            <td>大原二郎</td>
-                            <td><input type="number" name="score_2325002" value="2" min="0" max="100"></td>
-                        </tr>
-                        <tr>
-                            <td>2023</td>
-                            <td>131</td>
-                            <td>2325003</td>
-                            <td>大原三郎</td>
-                            <td><input type="number" name="score_2325003" value="85" min="0" max="100"></td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <!-- グレーで左寄せの登録して終了ボタン -->
-                <div class="register-button" style="text-align: left;">
-                    <input type="submit" value="登録して終了" formaction="GRMU002.jsp" class="gray-button">
-                </div>
-
-            </form>
-        </div>
+                <form action="registerGrades" method="post">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>入学年度</th>
+                                <th>クラス</th>
+                                <th>学生番号</th>
+                                <th>氏名</th>
+                                <th>点数</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach var="score" items="${scoreList}">
+                                <tr>
+                                    <td>${score.entYear}</td>
+                                    <td>${score.classNum}</td>
+                                    <td>${score.studentNo}</td>
+                                    <td>${score.name}</td>
+                                    <td><input type="number" name="score_${score.studentNo}" value="${score.point}" min="0" max="100"></td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                    <div class="register-button" style="text-align: left;">
+                        <input type="submit" value="登録して終了" formaction="GRMU002.jsp" class="gray-button">
+                    </div>
+                </form>
+            </div>
+        </c:if>
     </div>
 
     <div style="clear: both;"></div>
     <div class="footer" style="text-align: center; margin-top: 50px; font-size: 0.8em; color: #666;">
-        <hr/>
-        <p>&copy; 2023 TIC</p>
-        <p>大原学園</p>
+        <hr>
     </div>
 </body>
 </html>
