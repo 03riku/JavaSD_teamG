@@ -52,7 +52,7 @@ public class SubjectCreateExecuteController extends HttpServlet {
         SubjectDao subjectDao = new SubjectDao();
         try {
             // 学生情報のDB登録
-
+        	subjectDao.insert(subject);
             // 成功メッセージの設定とフォワード
             request.setAttribute("message", "学生情報が正常に登録されました。");
             request.getRequestDispatcher("/log/STDM003.jsp").forward(request, response);
