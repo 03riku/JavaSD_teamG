@@ -280,7 +280,6 @@ body {
                 </div>
             </form>
             <div class="grouped-object-note">
-                グループ化されたオブジェクト
             </div>
         </div>
     </div>
