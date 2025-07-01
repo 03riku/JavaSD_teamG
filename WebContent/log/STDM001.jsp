@@ -160,27 +160,31 @@
         <div class="header">
             <h1>得点管理システム</h1>
             <div class="user-info">
-                  <td align="right"><a href="LOGO001.jsp">ログアウト</a></td>
+                <%-- ★ここも修正が必要な可能性あり。通常はセッションからユーザー名を取得。 --%>
+                <%-- 例: <% Teacher teacher = (Teacher) session.getAttribute("teacher"); %> --%>
+                <%-- <%= teacher != null ? teacher.getName() : "ゲスト" %>様 --%>
+                <td align="right"><a href="${pageContext.request.contextPath}/log/LOGO001.jsp">ログアウト</a></td>
             </div>
         </div>
 
         <div class="menu">
             <ul>
-                <li><a href="MMNU001.jsp">メニュー</a></li>
-                <li><a href="STDM001.jsp">学生管理</a></li>
+                <li><a href="${pageContext.request.contextPath}/log/MMNU001.jsp">メニュー</a></li>
+                <li><a href="${pageContext.request.contextPath}/log/STDM001.jsp" class="current">学生管理</a></li>
                 <li><a>成績管理</a></li>
-                <li><a href="GRMU001.jsp">成績登録</a></li>
-                <li><a href="GRMR001.jsp">成績参照</a></li>
-                <li><a href="SBJM001.jsp">科目管理</a></li>
+                <li><a href="${pageContext.request.contextPath}/log/GRMU001.jsp">成績登録</a></li>
+                <li><a href="${pageContext.request.contextPath}/log/GRMR001.jsp">成績参照</a></li>
+                <li><a href="${pageContext.request.contextPath}/log/SBJM001.jsp">科目管理</a></li>
             </ul>
         </div>
 
         <div class="main-content">
             <h2>学生管理</h2>
-            <a href="STDM002.jsp" class="new-student-link">学生登録</a>
+            <a href="${pageContext.request.contextPath}/log/STDM002.jsp" class="new-student-link">学生登録</a>
 
             <div class="filter-form">
-                <form action="studentManagement.jsp" method="get">
+                <%-- studentManagement.jsp はJSPファイルへの直接アクセスなので、サーブレットにするのが一般的です --%>
+                <form action="studentManagement.jsp" method="get"> <%-- ここもサーブレットへのURLに変更推奨 --%>
                     <label for="entYear">入学年度</label>
                     <select id="entYear" name="entYear">
                         <option value="">----</option>
@@ -216,7 +220,7 @@
 
                     <label for="isAttend">在学中</label>
                     <input type="checkbox" id="isAttend" name="isAttend" value="true"
-                           <% if (request.getParameter("isAttend") != null && request.getParameter("isAttend").equals("true")) { %>checked<% } %>>
+                                <% if (request.getParameter("isAttend") != null && request.getParameter("isAttend").equals("true")) { %>checked<% } %>>
 
 
                     <button type="submit">絞込み</button>
@@ -234,10 +238,12 @@
             String filterEntYear = request.getParameter("entYear");
             String filterClassNum = request.getParameter("classNum");
             String filterIsAttend = request.getParameter("isAttend");
-            String filterStudentName = request.getParameter("studentName");
+            // String filterStudentName = request.getParameter("studentName"); // フィルタフォームにstudentNameの入力フィールドがない
 
             try {
+                // JDBCドライバのロード
                 Class.forName("org.h2.Driver");
+                // データベース接続URL、ユーザー名、パスワード
                 String DB_URL = "jdbc:h2:tcp://localhost/~/kaihatsu"; // H2のデフォルトTCPサーバーとデータベース名
                 String USER = "sa";
                 String PASS = "";
@@ -255,13 +261,19 @@
                     sqlBuilder.append(" AND CLASS_NUM = ?");
                     params.add(filterClassNum);
                 }
+                // isAttend のチェックボックスは、チェックされている場合のみフィルタを適用
+                // DBのIS_ATTENDカラムがCHAR(1)で 'O' or 'X' だと仮定
                 if (filterIsAttend != null && filterIsAttend.equals("true")) {
-                    sqlBuilder.append(" AND IS_ATTEND = 'O'"); // 'O'を在学中と見なす
+                    sqlBuilder.append(" AND IS_ATTEND = 'O'");
+                } else {
+                    // isAttendがチェックされていない場合、'X'（卒業）の生徒も表示したい場合はコメントアウトを外す
+                    // sqlBuilder.append(" AND IS_ATTEND = 'X'");
                 }
-                if (filterStudentName != null && !filterStudentName.isEmpty()) {
-                    sqlBuilder.append(" AND NAME LIKE ?");
-                    params.add("%" + filterStudentName + "%");
-                }
+                // studentName フィルタはフォームにないのでコメントアウト
+                // if (filterStudentName != null && !filterStudentName.isEmpty()) {
+                //     sqlBuilder.append(" AND NAME LIKE ?");
+                //     params.add("%" + filterStudentName + "%");
+                // }
 
                 sqlBuilder.append(" ORDER BY ENT_YEAR, CLASS_NUM, NO"); // ソート順を追加
 
@@ -294,6 +306,7 @@
                 errorMessage = "入学年度が不正な値です。: " + e.getMessage();
                 e.printStackTrace();
             } finally {
+                // リソースのクローズ
                 try { if (rs != null) rs.close(); } catch (SQLException e) { /* log error */ }
                 try { if (pstmt != null) pstmt.close(); } catch (SQLException e) { /* log error */ }
                 try { if (conn != null) conn.close(); } catch (SQLException e) { /* log error */ }
@@ -315,7 +328,7 @@
                         <th>クラス</th>
                         <th>在学中</th>
                         <th></th> <%-- 変更リンク用 --%>
-                        <th></th> <%-- 削除リンク用 --%>
+                        <%-- <th></th> <-- 削除リンク用 (削除) --%>
                     </tr>
                 </thead>
                 <tbody>
@@ -323,7 +336,8 @@
                     if (students.isEmpty() && errorMessage == null) {
                     %>
                     <tr>
-                        <td colspan="7" class="no-data-message">絞り込み条件に該当する学生情報がありません。</td>
+                        <td colspan="6" class="no-data-message">絞り込み条件に該当する学生情報がありません。</td>
+                        <%-- colspan を 7 から 6 に変更 --%>
                     </tr>
                     <%
                     } else {
@@ -335,7 +349,10 @@
                         <td><%= student.get("name") %></td>
                         <td><%= student.get("classNum") %></td>
                         <td><%= "O".equals(student.get("isAttend")) ? "◯" : "×" %></td>
-                        <td><a href="STDM004.jsp">変更</a></td>
+                        <%-- 「変更」リンクは維持 --%>
+                        <td><a href="${pageContext.request.contextPath}/student_update?no=<%= student.get("no") %>">変更</a></td>
+                        <%-- 削除リンクを削除 --%>
+                        <%-- <td><a href="#" onclick="alert('削除機能は未実装です。学生番号: <%= student.get("no") %>'); return false;">削除</a></td> --%>
                     </tr>
                     <%
                         }
@@ -346,6 +363,7 @@
         </div>
 
         <div class="footer">
+            <%-- フッターの内容 --%>
         </div>
     </div>
 </body>

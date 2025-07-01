@@ -37,7 +37,7 @@ public class Student_updateServlet extends HttpServlet {
             request.setAttribute("student", student);
 
             // フォーム表示JSPへフォワード
-            request.getRequestDispatcher("/log/STDM005.jsp").forward(request, response);
+            request.getRequestDispatcher("/log/STDM004.jsp").forward(request, response);
 
 
         } catch (Exception e) {
