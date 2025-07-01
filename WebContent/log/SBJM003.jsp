@@ -22,16 +22,16 @@
         </tr>
     </table>
 
-    <div style="float:left; width:15%; height:100vh; border-right:2px solid black; padding:10px;">
-        <ul>
-            <li><a href="MMNU001.jsp">メニュー</a></li>
-            <li><a href="STDM001.jsp">学生管理</a></li>
-            <li><label>成績管理</label></li>
-            <li><a href="GRMU001.jsp">成績登録</a><br></li>
-            <li><a href="GRMR001.jsp">成績検索</a></li>
-            <li><a href="SBJM001.jsp">科目管理</a></li>
-        </ul>
-    </div>
+	<table width="100%" border="0">
+		<tr valign="top">
+			<td width="180" style="padding: 10px;">
+        	<a href="${pageContext.request.contextPath}/log/MMNU001.jsp">メニュー</a><br><br>
+      		<a href="${pageContext.request.contextPath}/log/STDM001.jsp">学生管理</a><br>
+      		<a>成績管理</a><br>
+      		<a href="${pageContext.request.contextPath}/log/GRMU001.jsp">成績登録</a><br>
+      		<a href="${pageContext.request.contextPath}/log/GRMR001.jsp">成績参照</a><br>
+      		<a href="${pageContext.request.contextPath}/log/SBJM001.jsp">科目管理</a><br>
+    	</td>
 
     <%-- メインコンテンツのタイトル --%>
     <td style="padding: 20px;">
