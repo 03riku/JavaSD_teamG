@@ -1,49 +1,52 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%-- Teacher BeanとSchool Beanがセッションスコープに保存されていることを前提とします --%>
-<%-- 例: session.setAttribute("teacher", teacherObject); --%>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>科目変更完了</title>
-    <%-- スタイルシートは外部ファイルで読み込むか、ここに記述しない --%>
-    <%-- 例: <link rel="stylesheet" href="css/style.css"> --%>
+    <title>科目情報変更完了</title>
 </head>
 <body>
-    <table width="100%" cellpadding="5" cellspacing="0" border="0">
+
+<table width="100%" cellpadding="10" cellspacing="0" border="0" bgcolor="#e0e0ff">
+  <tr>
+    <td><b>得点管理システム</b></td>
+    <td align="right">
+      大原 太郎様　
+      <a href="${pageContext.request.contextPath}/log/LOGO001.jsp">ログアウト</a>
+    </td>
+  </tr>
+</table>
+
+<table width="100%" border="0">
+  <tr valign="top">
+    <td width="180" style="padding: 10px;">
+      <a href="${pageContext.request.contextPath}/log/MMNU001.jsp">メニュー</a><br><br>
+      <a href="${pageContext.request.contextPath}/log/STDM001.jsp">学生管理</a><br>
+      <a>成績管理</a><br>
+      <a href="${pageContext.request.contextPath}/log/GRMU001.jsp">成績登録</a><br>
+      <a href="${pageContext.request.contextPath}/log/GRMR001.jsp">成績参照</a><br>
+      <a href="${pageContext.request.contextPath}/log/SBJM001.jsp">科目管理</a><br>
+    </td>
+
+    <td style="padding: 20px;">
+      <h3>科目情報変更</h3>
+
+      <table width="60%" cellpadding="10" cellspacing="0" border="1" bgcolor="#ccffcc">
         <tr>
-            <td align="left">得点管理システム</td>
-            <td align="right">
-                <%-- ユーザー情報とログアウトリンクの表示 --%>
-                <c:if test="${not empty teacher}">
-                    ${teacher.school.name} ${teacher.name}様&nbsp;
-                </c:if>
-                <a href="LOGO001.jsp">ログアウト</a>
-            </td>
+          <td align="center">登録が完了しました</td>
         </tr>
-    </table>
+      </table>
+      <br>
 
-    <div style="float:left; width:15%; height:100vh; border-right:2px solid black; padding:10px;">
-        <ul>
-            <li><a href="MMNU001.jsp">メニュー</a></li>
-            <li><a href="STDM001.jsp">学生管理</a></li>
-            <li><label>成績管理</label></li>
-            <li><a href="GRMU001.jsp">成績登録</a><br></li>
-            <li><a href="GRMR001.jsp">成績検索</a></li>
-            <li><a href="SRJM002.jsp">科目管理</a></li>
-        </ul>
-    </div>
+      <a href="${pageContext.request.contextPath}/log/STDM001.jsp">科目一覧</a>
+    </td>
+  </tr>
+</table>
 
-    <%-- メインコンテンツのタイトル --%>
-    <h2>科目情報変更</h2> <%-- ① 科目情報変更 --%>
+<hr>
+<div align="center">
 
-    <%-- 変更完了メッセージ --%>
-    <div class="success-message-box"> <%-- このクラスにCSSを適用してください --%>
-        変更が完了しました
-    </div> <%-- ② 変更が完了しました --%>
-
-    <a href="SBJM001.jsp">科目一覧</a> <%-- ③ 科目一覧 (画像では「科目一覧」と表示されている) --%>
+</div>
 
 </body>
 </html>
