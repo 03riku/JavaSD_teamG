@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Bean.School;
+import Bean.Student;
 import Bean.Subject;
 
 public class SubjectDao extends Dao {
@@ -141,6 +142,30 @@ public class SubjectDao extends Dao {
         return isSaved;
     }
 
+ // 科目の新規登録
+    // 科目の新規登録（Subject テーブルに挿入）
+       public void insert(Student student) throws Exception {
+           System.out.println("=====================================================================");
+           String sql = "INSERT INTO SUBJECT (SCHOOL_CD,SUBJECT_CD,SUBJECT_NAME)VALUES (?, ?, ?)";
+           try (Connection con = getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
+               ps.setString(1, student.getNo());
+               ps.setString(2, student.getName());
+               ps.setInt(3, student.getEntYear());
+               ps.setString(4, student.getClassNum());
+               ps.setBoolean(5, student.isAttend());
+               System.out.println("ps:"+ ps);
+
+               // --- 重要：SCHOOL_CD を必ずセット、NULLは不可！
+               if (student.getSchool() != null && student.getSchool().getCd() != null) {
+                   ps.setString(6, student.getSchool().getCd());
+               } else {
+                   throw new IllegalArgumentException("insert: SCHOOL_CD must not be null (student=" + student + ")");
+               }
+
+               ps.executeUpdate();
+           }
+       }
     /**
      * 科目をデータベースから削除します。
      * @param subject 削除するSubjectオブジェクト
