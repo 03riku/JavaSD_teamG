@@ -25,17 +25,36 @@ public class StudentDao extends Dao {
         List<Integer> entYears = new ArrayList<>();
         // DISTINCTを使って重複しない入学年度を取得し、昇順に並べ替える
         String sql = "SELECT DISTINCT ENT_YEAR FROM STUDENT WHERE SCHOOL_CD = ? ORDER BY ENT_YEAR";
+
+        // ★★★ 追加するデバッグログ ★★★
+        System.out.println("DEBUG (StudentDao.getEntYears): SQL: " + sql);
+        System.out.println("DEBUG (StudentDao.getEntYears): Parameter School CD: " + (school != null ? school.getCd() : "null"));
+        // ★★★ ここまで ★★★
+
         try (Connection con = getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, school.getCd());
             try (ResultSet rs = ps.executeQuery()) {
+                // ★★★ 追加するデバッグログ ★★★
+                System.out.println("DEBUG (StudentDao.getEntYears): Query executed successfully. Fetching results...");
+                // ★★★ ここまで ★★★
                 while (rs.next()) {
-                    entYears.add(rs.getInt("ENT_YEAR"));
+                    int year = rs.getInt("ENT_YEAR");
+                    entYears.add(year);
+                    // ★★★ 追加するデバッグログ ★★★
+                    System.out.println("DEBUG (StudentDao.getEntYears): Found ENT_YEAR: " + year);
+                    // ★★★ ここまで ★★★
                 }
+                // ★★★ 追加するデバッグログ ★★★
+                System.out.println("DEBUG (StudentDao.getEntYears): Total years found: " + entYears.size());
+                // ★★★ ここまで ★★★
             }
         } catch (SQLException e) {
             e.printStackTrace(); // エラーログ出力
+            // ★★★ 追加するデバッグログ ★★★
+            System.err.println("ERROR (StudentDao.getEntYears): SQLException occurred: " + e.getMessage());
+            // ★★★ ここまで ★★★
             throw new Exception("入学年度の取得中にデータベースエラーが発生しました。", e); // 例外をラップして再スロー
         }
         return entYears;
@@ -46,17 +65,36 @@ public class StudentDao extends Dao {
         List<String> classNums = new ArrayList<>();
         // DISTINCTを使って重複しないクラス番号を取得し、昇順に並べ替える
         String sql = "SELECT DISTINCT CLASS_NUM FROM STUDENT WHERE SCHOOL_CD = ? ORDER BY CLASS_NUM";
+
+        // ★★★ 追加するデバッグログ ★★★
+        System.out.println("DEBUG (StudentDao.getClassNums): SQL: " + sql);
+        System.out.println("DEBUG (StudentDao.getClassNums): Parameter School CD: " + (school != null ? school.getCd() : "null"));
+        // ★★★ ここまで ★★★
+
         try (Connection con = getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, school.getCd());
             try (ResultSet rs = ps.executeQuery()) {
+                // ★★★ 追加するデバッグログ ★★★
+                System.out.println("DEBUG (StudentDao.getClassNums): Query executed successfully. Fetching results...");
+                // ★★★ ここまで ★★★
                 while (rs.next()) {
-                    classNums.add(rs.getString("CLASS_NUM"));
+                    String classNum = rs.getString("CLASS_NUM");
+                    classNums.add(classNum);
+                    // ★★★ 追加するデバッグログ ★★★
+                    System.out.println("DEBUG (StudentDao.getClassNums): Found CLASS_NUM: " + classNum);
+                    // ★★★ ここまで ★★★
                 }
+                // ★★★ 追加するデバッグログ ★★★
+                System.out.println("DEBUG (StudentDao.getClassNums): Total class numbers found: " + classNums.size());
+                // ★★★ ここまで ★★★
             }
         } catch (SQLException e) {
             e.printStackTrace(); // エラーログ出力
+            // ★★★ 追加するデバッグログ ★★★
+            System.err.println("ERROR (StudentDao.getClassNums): SQLException occurred: " + e.getMessage());
+            // ★★★ ここまで ★★★
             throw new Exception("クラス番号の取得中にデータベースエラーが発生しました。", e); // 例外をラップして再スロー
         }
         return classNums;
@@ -73,8 +111,8 @@ public class StudentDao extends Dao {
             try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
                     School school = new School();
-                    school.setCd(rs.getString("school_cd")); // ResultSetからschool_cdを取得してSchoolオブジェクトにセット
-                    return postFilter(rs, school).get(0); // postFilterが現在の行からリストを生成するので、get(0)で取得
+                    school.setCd(rs.getString("school_cd"));
+                    return postFilter(rs, school).get(0);
                 }
                 return null;
             }
@@ -87,18 +125,14 @@ public class StudentDao extends Dao {
     // ResultSet → Student オブジェクトへ変換
     private List<Student> postFilter(ResultSet rSet, School school) throws Exception {
         List<Student> list = new ArrayList<>();
-        // このメソッドは、rs.next()が呼び出された後のResultSetの現在の行から処理を開始します。
-        // getメソッドでrs.next()が呼び出されているので、do-whileではなくwhileループが適切かもしれません。
-        // ただし、getメソッドの呼び出し方によってはdo-whileでも機能します。
-        // 一般的には、ResultSetの最初の行でこのメソッドが呼び出され、その後rs.next()で次の行へ進む、という流れになります。
         do {
             Student s = new Student();
             s.setNo(rSet.getString("no"));
             s.setName(rSet.getString("name"));
             s.setEntYear(rSet.getInt("ent_year"));
             s.setClassNum(rSet.getString("class_num"));
-            s.setAttend("O".equals(rSet.getString("IS_ATTEND"))); // DBカラム名「IS_ATTEND」を使用し、'O'/'X'をbooleanに変換
-            s.setSchool(school); // 引数で受け取ったSchoolオブジェクトをセット
+            s.setAttend("O".equals(rSet.getString("IS_ATTEND")));
+            s.setSchool(school);
             list.add(s);
         } while (rSet.next());
         return list;
@@ -112,14 +146,12 @@ public class StudentDao extends Dao {
             st.setString(1, school.getCd());
             st.setInt(2, entYear);
             st.setString(3, classNum);
-            st.setBoolean(4, isAttend); // booleanを直接setBooleanでセット
+            st.setBoolean(4, isAttend);
             try (ResultSet rs = st.executeQuery()) {
-                // postFilterはResultSetの現在の位置から処理を開始し、rs.next()を内部で呼び出すため
-                // ここでrs.next()を呼び出す必要はありません。
-                if (rs.next()) { // 最初の行があるか確認
+                if (rs.next()) {
                     return postFilter(rs, school);
                 }
-                return new ArrayList<>(); // 結果がない場合は空のリストを返す
+                return new ArrayList<>();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -134,7 +166,7 @@ public class StudentDao extends Dao {
              PreparedStatement st = con.prepareStatement(sql)) {
             st.setString(1, school.getCd());
             st.setInt(2, entYear);
-            st.setBoolean(3, isAttend); // booleanを直接setBooleanでセット
+            st.setBoolean(3, isAttend);
             try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
                     return postFilter(rs, school);
@@ -153,7 +185,7 @@ public class StudentDao extends Dao {
         try (Connection con = getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
             st.setString(1, school.getCd());
-            st.setBoolean(2, isAttend); // booleanを直接setBooleanでセット
+            st.setBoolean(2, isAttend);
             try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
                     return postFilter(rs, school);
@@ -176,18 +208,20 @@ public class StudentDao extends Dao {
             ps.setString(2, student.getName());
             ps.setInt(3, student.getEntYear());
             ps.setString(4, student.getClassNum());
-            ps.setBoolean(5, student.isAttend()); // booleanを直接setBooleanでセット
-            System.out.println("ps:"+ ps); // デバッグ用
+            ps.setBoolean(5, student.isAttend());
 
             if (student.getSchool() != null && student.getSchool().getCd() != null) {
                 ps.setString(6, student.getSchool().getCd());
+                System.out.println("DEBUG (StudentDao.insert): ps (before executeUpdate): " + ps.toString()); // デバッグ用: 実行されるSQLとパラメータを確認
             } else {
                 throw new IllegalArgumentException("insert: SCHOOL_CD must not be null (student=" + student + ")");
             }
 
             ps.executeUpdate();
+            System.out.println("DEBUG (StudentDao.insert): Insert successful.");
         } catch (SQLException e) {
             e.printStackTrace();
+            System.err.println("ERROR (StudentDao.insert): SQLException occurred: " + e.getMessage());
             throw new Exception("学生の新規登録中にデータベースエラーが発生しました。", e);
         }
     }
@@ -200,7 +234,7 @@ public class StudentDao extends Dao {
             ps.setString(1, student.getName());
             ps.setInt(2, student.getEntYear());
             ps.setString(3, student.getClassNum());
-            ps.setBoolean(4, student.isAttend()); // booleanを直接setBooleanでセット
+            ps.setBoolean(4, student.isAttend());
 
             if (student.getSchool() != null && student.getSchool().getCd() != null) {
                 ps.setString(5, student.getSchool().getCd());
@@ -219,14 +253,13 @@ public class StudentDao extends Dao {
     // 全件取得
     public List<Student> findAll() {
         List<Student> list = new ArrayList<>();
-        // Schoolオブジェクトは各Studentに設定されるため、ループ内でインスタンス化が必要
-        String sql = basesql + " ORDER BY ENT_YEAR, CLASS_NUM, NO"; // 並び順を指定
+        String sql = basesql + " ORDER BY ENT_YEAR, CLASS_NUM, NO";
         try (Connection con = getConnection();
              PreparedStatement st = con.prepareStatement(sql);
              ResultSet rs = st.executeQuery()) {
 
             while (rs.next()) {
-                School school = new School(); // 各学生ごとにSchoolオブジェクトを生成
+                School school = new School();
                 school.setCd(rs.getString("school_cd"));
 
                 Student s = new Student();

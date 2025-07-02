@@ -264,7 +264,7 @@
                             <option value="">------</option>
                             <%-- Servletから渡される subjects リストをJSTLでループ --%>
                             <c:forEach var="subjectOption" items="${subjects}">
-                                <option value="${subjectOption.subjectCd}" <c:if test="${param.subject eq subjectOption.subjectCd}">selected</c:if>>${subjectOption.subjectName}</option>
+                                <option value="${subjectOption.cd}" <c:if test="${param.subject eq subjectOption.cd}">selected</c:if>>${subjectOption.name}</option>
                             </c:forEach>
                         </select>
 
