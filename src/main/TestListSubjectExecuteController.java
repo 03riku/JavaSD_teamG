@@ -27,7 +27,7 @@ public class TestListSubjectExecuteController extends HttpServlet {
         String schoolCd = "oom"; // 仮の学校コード。ログインユーザーから取得するのが本来の形。
 
         String yearStr = request.getParameter("year");
-        String classNum = request.getParameter("class");
+        String classNum = request.getParameter("class_num"); // ★ここを "class_num" に修正
         String subjectCd = request.getParameter("subject");
         String numStr = request.getParameter("num");
 
