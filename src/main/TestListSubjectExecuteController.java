@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import Bean.School;
 import Bean.Subject;
 import Bean.Test;
+import dao.StudentDao; // ★★ StudentDaoをインポート ★★
 import dao.SubjectDao;
 import dao.TestListSubjectDao;
-// import dao.SchoolDao; // もしSchoolDaoがあるなら、ここでインポートしてください
 
 @WebServlet("/TestListSubjectExecute.action")
 public class TestListSubjectExecuteController extends HttpServlet {
@@ -24,63 +24,53 @@ public class TestListSubjectExecuteController extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
-        // 仮の学校コード。ログインユーザーから取得するのが本来の形。
-        // ※このschoolCdは、現在のシステムが単一の学校で動作していることを前提としています。
-        String schoolCd = "oom";
+        String schoolCd = "oom"; // 仮の学校コード。ログインユーザーから取得するのが本来の形。
 
         String yearStr = request.getParameter("year");
         String classNum = request.getParameter("class");
         String subjectCd = request.getParameter("subject");
+        String numStr = request.getParameter("num");
 
-        // Schoolオブジェクトをここで作成し、全てのDAO呼び出しで共通して利用
-        // これにより、SubjectDao#filter(School) や SubjectDao#get(String, School) の引数エラーを解消
         School currentSchool = new School();
         currentSchool.setCd(schoolCd);
-        // もしSchoolDaoがあり、学校名なども含めた完全なSchoolオブジェクトを取得したい場合は、以下のようにします。
-        // try {
-        //     SchoolDao schoolDao = new SchoolDao();
-        //     currentSchool = schoolDao.get(schoolCd); // SchoolDaoから完全なSchoolオブジェクトを取得
-        //     if (currentSchool == null) {
-        //         // 学校が見つからない場合のエラーハンドリング
-        //         request.setAttribute("message", "指定された学校コードが見つかりません。");
-        //         request.getRequestDispatcher("log/GRMU001.jsp").forward(request, response);
-        //         return;
-        //     }
-        // } catch (Exception e) {
-        //     e.printStackTrace();
-        //     request.setAttribute("message", "学校情報の取得中にエラーが発生しました。");
-        //     request.getRequestDispatcher("log/GRMU001.jsp").forward(request, response);
-        //     return;
-        // }
 
 
-        // 初期表示時（パラメータが全くない場合）の処理
-        if (yearStr == null && classNum == null && subjectCd == null) {
-            SubjectDao subjectDao = new SubjectDao();
-            try {
-                // 入学年度のリスト（仮データ、実際にはDBから取得するのが望ましい）
-                List<Integer> entYears = new ArrayList<>();
-                entYears.add(2023);
-                entYears.add(2024);
-                entYears.add(2025);
-                request.setAttribute("entYears", entYears);
+        // ★★ ここからDAOを使ったデータ取得 ★★
+        SubjectDao subjectDao = new SubjectDao();
+        StudentDao studentDao = new StudentDao(); // ★★ StudentDaoのインスタンス化 ★★
+        List<Integer> entYears = new ArrayList<>();
+        List<String> classNumsList = new ArrayList<>();
+        List<Subject> subjects = new ArrayList<>();
+        List<Integer> testNums = new ArrayList<>(); // 回数用のリスト
 
-                // クラス番号のリスト（仮データ、実際にはDBから取得するのが望ましい）
-                List<String> classNumsList = new ArrayList<>();
-                classNumsList.add("101");
-                classNumsList.add("102");
-                classNumsList.add("131");
-                classNumsList.add("132"); // 例として追加
-                request.setAttribute("classNums", classNumsList);
+        try {
+            // 入学年度のリストをDBから取得 (StudentDaoを使用)
+            entYears = studentDao.getEntYears(currentSchool);
+            // クラス番号のリストをDBから取得 (StudentDaoを使用)
+            classNumsList = studentDao.getClassNums(currentSchool);
+            // 科目のリストをDBから取得 (SubjectDaoを使用)
+            subjects = subjectDao.filter(currentSchool);
 
-                // 科目のリストを取得 (SubjectDao#filter に Schoolオブジェクトを渡す)
-                List<Subject> subjects = subjectDao.filter(currentSchool);
-                request.setAttribute("subjects", subjects);
+            // 回数（テスト回数）のリストは、現状データベースに依存しないと仮定して、固定で設定
+            testNums.add(1);
+            testNums.add(2);
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                request.setAttribute("message", "初期データ取得中にエラーが発生しました。");
-            }
+            request.setAttribute("entYears", entYears);
+            request.setAttribute("classNums", classNumsList);
+            request.setAttribute("subjects", subjects);
+            request.setAttribute("testNums", testNums);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("message", "初期データ取得中にエラーが発生しました。");
+            // エラーが発生した場合もJSPにフォワードして、エラーメッセージを表示できるようにする
+            request.getRequestDispatcher("log/GRMU001.jsp").forward(request, response);
+            return;
+        }
+
+
+        // 初期表示時（パラメータが全くない場合）の処理は、上記のデータ取得後に行う
+        if (yearStr == null && classNum == null && subjectCd == null && numStr == null) {
             request.getRequestDispatcher("log/GRMU001.jsp").forward(request, response);
             return; // 初期表示処理が完了したらここで終了
         }
@@ -98,9 +88,17 @@ public class TestListSubjectExecuteController extends HttpServlet {
                 message = "入学年度は不正な値です。";
             }
         }
+        Integer num = null;
+        if (numStr != null && !numStr.isEmpty()) {
+            try {
+                num = Integer.parseInt(numStr);
+            } catch (NumberFormatException e) {
+                message = "回数は不正な値です。";
+            }
+        }
+
 
         // 必須項目のチェック
-        // messageが既に設定されている場合はスキップ
         if (message.isEmpty()) {
             if (entYear == null) {
                 message = "入学年度が選択されていません。";
@@ -108,13 +106,14 @@ public class TestListSubjectExecuteController extends HttpServlet {
                 message = "クラスが選択されていません。";
             } else if (subjectCd == null || subjectCd.isEmpty()) {
                 message = "科目が選択されていません。";
+            } else if (num == null) { // 回数も必須チェックに追加
+                message = "回数が選択されていません。";
             }
         }
 
 
         if (message.isEmpty()) { // すべての入力値が有効であれば検索を実行
             TestListSubjectDao testListSubjectDao = new TestListSubjectDao();
-            SubjectDao subjectDao = new SubjectDao();
 
             try {
                 // Subjectオブジェクトの生成 (SubjectDao#get に Schoolオブジェクトを渡す)
@@ -124,8 +123,7 @@ public class TestListSubjectExecuteController extends HttpServlet {
                     message = "指定された科目が見つかりませんでした。";
                 } else {
                     // TestListSubjectDaoのfilterメソッドを呼び出してテスト結果を取得
-                    // currentSchool オブジェクトを TestListSubjectDao#filter の school 引数として渡す
-                    tests = testListSubjectDao.filter(entYear, classNum, subject, currentSchool);
+                    tests = testListSubjectDao.filter(entYear, classNum, subject, num, currentSchool); // num を追加
 
                     if (tests.isEmpty()) {
                         message = "該当する成績情報はありませんでした。";
@@ -136,7 +134,7 @@ public class TestListSubjectExecuteController extends HttpServlet {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                message = "データベース処理中にエラーが発生しました。エラーの詳細: " + e.getMessage(); // エラーメッセージを追加
+                message = "データベース処理中にエラーが発生しました。エラーの詳細: " + e.getMessage();
             }
         }
 
@@ -144,37 +142,11 @@ public class TestListSubjectExecuteController extends HttpServlet {
         request.setAttribute("tests", tests);
         request.setAttribute("message", message);
 
-        // プルダウンリストの再表示のために必要なデータを再設定
-        // (検索条件を保持し、再度表示するため)
-        SubjectDao subjectDaoForPulldown = new SubjectDao(); // 新しいインスタンス（または既存のsubjectDaoを再利用しても良い）
-        try {
-            List<Integer> entYears = new ArrayList<>();
-            entYears.add(2023);
-            entYears.add(2024);
-            entYears.add(2025);
-            request.setAttribute("entYears", entYears);
-
-            List<String> classNumsList = new ArrayList<>();
-            classNumsList.add("101");
-            classNumsList.add("102");
-            classNumsList.add("131");
-            classNumsList.add("132"); // 例として追加
-            request.setAttribute("classNums", classNumsList);
-
-            // 科目のリストを再取得 (SubjectDao#filter に Schoolオブジェクトを渡す)
-            List<Subject> subjects = subjectDaoForPulldown.filter(currentSchool);
-            request.setAttribute("subjects", subjects);
-
-            // 検索後に選択されていた値を再度セットし、JSPで選択状態を保持できるようにする
-            request.setAttribute("selectedEntYear", yearStr);
-            request.setAttribute("selectedClassNum", classNum);
-            request.setAttribute("selectedSubjectCd", subjectCd);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            // ここでエラーが発生しても、既にテスト結果とメッセージは設定されているので、
-            // 処理を中断せずにフォワードを続行します。
-        }
+        // 検索後に選択されていた値を再度セットし、JSPで選択状態を保持できるようにする
+        request.setAttribute("selectedEntYear", yearStr);
+        request.setAttribute("selectedClassNum", classNum);
+        request.setAttribute("selectedSubjectCd", subjectCd);
+        request.setAttribute("selectedNum", numStr);
 
         // 結果表示JSPにフォワード
         request.getRequestDispatcher("log/GRMU001.jsp").forward(request, response);

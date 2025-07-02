@@ -15,18 +15,20 @@ public class TestListSubjectDao extends Dao {
 
     private final String baseSql =
         // StudentとSubjectの情報を取得するためにJOINし、SELECT句も拡張
-        "SELECT t.student_no, s.name AS student_name, s.ent_year, s.class_num AS student_class_num, s.is_attend, s.school_cd AS student_school_cd, " + // 学生の全情報 + school_cdをエイリアスで取得
-        "t.class_num AS test_class_num, t.subject_cd, sub.name AS subject_name, sub.school_cd AS subject_school_cd, " + // TESTテーブルのクラス番号と科目の全情報 + school_cdをエイリアスで取得
-        "t.no, t.point, t.school_cd AS test_school_cd " + // TESTテーブルの試験回数、点数、学校コードをエイリアスで取得
+        "SELECT t.student_no, s.name AS student_name, s.ent_year, s.class_num AS student_class_num, s.is_attend, s.school_cd AS student_school_cd, " +
+        "t.class_num AS test_class_num, t.subject_cd, sub.name AS subject_name, sub.school_cd AS subject_school_cd, " +
+        "t.no, t.point, t.school_cd AS test_school_cd " +
         "FROM test AS t " +
         "JOIN student AS s ON t.student_no = s.no AND t.school_cd = s.school_cd " +
         "JOIN subject AS sub ON t.subject_cd = sub.cd AND t.school_cd = sub.school_cd " +
-        "WHERE s.ent_year = ? AND t.class_num = ? AND t.subject_cd = ? AND t.school_cd = ?";
+        // WHERE句に t.no を追加
+        "WHERE s.ent_year = ? AND t.class_num = ? AND t.subject_cd = ? AND t.no = ? AND t.school_cd = ?";
         // 注意: `t.student` と `t.subject` はカラム名として適切ではありません。
         // `student_no` と `subject_cd` など、DBのカラム名に合わせるべきです。
+        // (ご提示のコードでは既にstudent_no, subject_cdが使われているので問題ありません)
 
     private final String insertSql =
-        "INSERT INTO test (student_no, class_num, subject_cd, school_cd, no, point) VALUES (?, ?, ?, ?, ?, ?)"; // カラム名修正
+        "INSERT INTO test (student_no, class_num, subject_cd, school_cd, no, point) VALUES (?, ?, ?, ?, ?, ?)";
 
     private List<Test> postFilter(ResultSet rset) throws Exception {
         List<Test> list = new ArrayList<>();
@@ -45,9 +47,8 @@ public class TestListSubjectDao extends Dao {
             // StudentにSchoolオブジェクトをセットするために、ResultSetから取得したschool_cdを使用
             School studentSchool = new School();
             studentSchool.setCd(rset.getString("student_school_cd")); // エイリアスで取得
-            // もし学校名も必要なら、ここでSchoolDaoを使って学校名を取得し、studentSchool.setName() する
-            student.setSchool(studentSchool);                   // StudentにSchoolオブジェクトをセット
-            test.setStudent(student);                           // TestにStudentオブジェクトをセット
+            student.setSchool(studentSchool);                       // StudentにSchoolオブジェクトをセット
+            test.setStudent(student);                               // TestにStudentオブジェクトをセット
 
 
             // Subject オブジェクトの生成とセット
@@ -58,9 +59,8 @@ public class TestListSubjectDao extends Dao {
             // SubjectにSchoolオブジェクトをセットするために、ResultSetから取得したschool_cdを使用
             School subjectSchool = new School();
             subjectSchool.setCd(rset.getString("subject_school_cd")); // エイリアスで取得
-            // もし学校名も必要なら、ここでSchoolDaoを使って学校名を取得し、subjectSchool.setName() する
-            subject.setSchool(subjectSchool);                   // SubjectにSchoolオブジェクトをセット
-            test.setSubject(subject);                           // TestにSubjectオブジェクトをセット
+            subject.setSchool(subjectSchool);                       // SubjectにSchoolオブジェクトをセット
+            test.setSubject(subject);                               // TestにSubjectオブジェクトをセット
 
 
             test.setClassNum(rset.getString("test_class_num")); // TESTテーブルのクラス番号 (エイリアスで取得)
@@ -68,12 +68,11 @@ public class TestListSubjectDao extends Dao {
             // Testオブジェクト自身のSchoolをセット
             School testSchool = new School();
             testSchool.setCd(rset.getString("test_school_cd")); // TESTテーブルの学校コード (エイリアスで取得)
-            // もし学校名も必要なら、ここでSchoolDaoを使って学校名を取得し、testSchool.setName() する
             test.setSchool(testSchool);
 
 
-            test.setNo(rset.getInt("no"));
-            test.setPoint(rset.getInt("point"));
+            test.setNo(rset.getInt("no"));    // 試験回数
+            test.setPoint(rset.getInt("point")); // 点数
 
             list.add(test);
         }
@@ -81,7 +80,8 @@ public class TestListSubjectDao extends Dao {
         return list;
     }
 
-    public List<Test> filter(int entYear, String classNum, Subject subject, School school) {
+    // ★★ filterメソッドのシグネチャとPreparedStatementのバインドを修正します ★★
+    public List<Test> filter(int entYear, String classNum, Subject subject, int num, School school) {
         List<Test> result = new ArrayList<>();
 
         try (Connection con = getConnection();
@@ -89,14 +89,16 @@ public class TestListSubjectDao extends Dao {
 
             stmt.setInt(1, entYear);
             stmt.setString(2, classNum);
-            stmt.setString(3, subject.getCd()); // Subjectオブジェクトからコードを取得
-            stmt.setString(4, school.getCd());   // Schoolオブジェクトからコードを取得
+            stmt.setString(3, subject.getCd());
+            stmt.setInt(4, num); // ★★ ここで 'num' をバインドする ★★
+            stmt.setString(5, school.getCd());
 
             ResultSet rset = stmt.executeQuery();
             result = postFilter(rset);
 
         } catch (Exception e) {
             e.printStackTrace();
+            // エラー時に適切なメッセージをセットしたり、再スローを検討することも重要です
         }
 
         return result;
@@ -116,7 +118,7 @@ public class TestListSubjectDao extends Dao {
             stmt.setString(2, test.getClassNum());
             stmt.setString(3, test.getSubject().getCd()); // Subjectオブジェクトから科目コードを取得
             stmt.setString(4, test.getSchool().getCd());  // Schoolオブジェクトから学校コードを取得
-            stmt.setInt(5, test.getNo());
+            stmt.setInt(5, test.getNo()); // 試験回数
             stmt.setInt(6, test.getPoint());
 
             int rowsAffected = stmt.executeUpdate();
