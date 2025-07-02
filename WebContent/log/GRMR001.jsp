@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -207,7 +208,6 @@
         .form-group.student-search .search-button {
             margin-left: 20px;
         }
-
     </style>
 </head>
 <body>
@@ -235,7 +235,8 @@
             <div class="section">
                 <div class="section-title">成績参照</div>
 
-                <form action="#" method="post">
+                <%-- フォームのactionをTestList.actionに修正 --%>
+                <form action="TestList.action" method="get">
                     <div class="form-group">
                         <span class="sub-section-label">科目情報</span>
                     </div>
@@ -243,25 +244,28 @@
                         <label for="year">入学年度</label>
                         <select id="year" name="year">
                             <option value="">------</option>
-                            <option value="2025">2025</option>
-                            <option value="2024">2024</option>
-                            <option value="2023">2023</option>
+                            <%-- Servletから渡される entYears リストをJSTLでループ --%>
+                            <c:forEach var="yearOption" items="${entYears}">
+                                <option value="${yearOption}" <c:if test="${param.year eq yearOption}">selected</c:if>>${yearOption}</option>
+                            </c:forEach>
                         </select>
 
                         <label for="class">クラス</label>
                         <select id="class" name="class">
                             <option value="">------</option>
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                            <option value="C">C</option>
+                            <%-- Servletから渡される classNums リストをJSTLでループ --%>
+                            <c:forEach var="classOption" items="${classNums}">
+                                <option value="${classOption}" <c:if test="${param.class eq classOption}">selected</c:if>>${classOption}</option>
+                            </c:forEach>
                         </select>
 
                         <label for="subject">科目</label>
                         <select id="subject" name="subject">
                             <option value="">------</option>
-                            <option value="math">数学</option>
-                            <option value="japanese">国語</option>
-                            <option value="english">英語</option>
+                            <%-- Servletから渡される subjects リストをJSTLでループ --%>
+                            <c:forEach var="subjectOption" items="${subjects}">
+                                <option value="${subjectOption.subjectCd}" <c:if test="${param.subject eq subjectOption.subjectCd}">selected</c:if>>${subjectOption.subjectName}</option>
+                            </c:forEach>
                         </select>
 
                         <button type="submit" class="search-button">検索</button>
@@ -272,13 +276,17 @@
                     </div>
                     <div class="form-group student-search">
                         <label for="studentId">学生番号</label>
-                        <input type="text" id="studentId" name="studentId" placeholder="学生番号を入力してください">
+                        <input type="text" id="studentId" name="studentId" placeholder="学生番号を入力してください" value="${param.studentId}">
                         <button type="submit" class="search-button">検索</button>
                     </div>
                 </form>
 
                 <div class="info-message">
-                    科目情報を選択または学生情報を入力して検索ボタンをクリックしてください
+                    <c:choose>
+                        <%-- Servletからmessageが渡されていれば表示、そうでなければデフォルトメッセージ --%>
+                        <c:when test="${not empty message}">${message}</c:when>
+                        <c:otherwise>科目情報を選択または学生情報を入力して検索ボタンをクリックしてください</c:otherwise>
+                    </c:choose>
                 </div>
             </div>
         </div>

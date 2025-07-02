@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
@@ -44,6 +44,13 @@
         .menu li a { display: block; padding: 8px 0; text-decoration: none; color: #007bff; }
         .menu li a:hover { text-decoration: underline; }
         .content { margin-left: 17%; }
+
+        /* メッセージ表示用のスタイル */
+        .message {
+            color: red;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -57,9 +64,10 @@
         <ul>
             <li><a href="MMNU001.jsp">メニュー</a></li>
             <li><a href="STDM001.jsp">学生管理</a></li>
-            <li><a>成績管理</a></li>
+            <li><a>成績管理</a></li> <%-- この「成績管理」はリンクになっていません --%>
             <li><a href="GRMR001.jsp">成績参照</a></li>
-            <li><a href="GRMU001.jsp">成績登録</a></li>
+            <%-- ★★ メニューの「成績登録」リンクの修正 ★★ --%>
+            <li><a href="${pageContext.request.contextPath}/TestListSubjectExecute.action">成績登録</a></li>
             <li><a href="SBJM001.jsp">科目管理</a></li>
         </ul>
     </div>
@@ -67,36 +75,52 @@
     <div class="content">
         <h2>成績管理</h2>
 
+        <%-- Controllerから渡されたメッセージがあれば表示 --%>
+        <c:if test="${not empty message}">
+            <p class="message">${message}</p>
+        </c:if>
+
         <div class="search-form">
-            <form action="Test_list_studentServlet" method="get">
+            <%-- ★★ 検索フォームの action 属性の修正 ★★ --%>
+            <form action="${pageContext.request.contextPath}/TestListSubjectExecute.action" method="get">
                 <table>
                     <tr>
                         <th>入学年度</th><th>クラス</th><th>科目</th><th>回数</th><th></th>
                     </tr>
                     <tr>
                         <td>
-                            <select name="enrollmentYear">
-                                <option value="2023">2023</option>
-                                <option value="2024">2024</option>
-                                <option value="2025">2025</option>
+                            <select name="year"> <%-- name属性を "year" に修正 --%>
+                                <option value="">選択してください</option> <%-- 初期値として空の選択肢を追加 --%>
+                                <c:forEach var="entYearOption" items="${entYears}">
+                                    <option value="${entYearOption}" ${selectedEntYear == entYearOption ? 'selected' : ''}>${entYearOption}</option>
+                                </c:forEach>
                             </select>
                         </td>
                         <td>
-                            <select name="classId">
-                                <option value="131" selected>131</option>
+                            <select name="class"> <%-- name属性を "class" に修正 --%>
+                                <option value="">選択してください</option> <%-- 初期値として空の選択肢を追加 --%>
+                                <c:forEach var="classOption" items="${classNums}">
+                                    <option value="${classOption}" ${selectedClassNum == classOption ? 'selected' : ''}>${classOption}</option>
+                                </c:forEach>
                             </select>
                         </td>
                         <td>
-                            <select name="subject">
-                                <option value="Python1" selected>Python1</option>
-                                <option value="Java2">Java2</option>
-                                <option value="Database">Database</option>
+                            <select name="subject"> <%-- name属性を "subject" に修正 --%>
+                                <option value="">選択してください</option> <%-- 初期値として空の選択肢を追加 --%>
+                                <c:forEach var="subjectOption" items="${subjects}">
+                                    <option value="${subjectOption.cd}" ${selectedSubjectCd == subjectOption.cd ? 'selected' : ''}>${subjectOption.name}</option>
+                                </c:forEach>
                             </select>
                         </td>
                         <td>
-                            <select name="attemptNo">
-                                <option value="1" selected>1</option>
-                                <option value="2">2</option>
+                             <%-- TestListSubjectExecuteControllerでは回数(num)をパラメータとして受け取っていませんが、
+                                  もし必要であればここでname="num"として送信するようにします。
+                                  現時点ではJSPのみに存在し、Controllerで処理されていません。
+                                  一旦、固定の選択肢を残しておきますが、Controllerの仕様に合わせて調整が必要です。
+                             --%>
+                            <select name="num"> <%-- name属性を "num" に修正 (Controllerで使うなら) --%>
+                                <option value="1" ${param.num == '1' ? 'selected' : ''}>1</option>
+                                <option value="2" ${param.num == '2' ? 'selected' : ''}>2</option>
                             </select>
                         </td>
                         <td>
@@ -107,12 +131,14 @@
             </form>
         </div>
 
-        <!-- 成績表示は検索後だけ表示 -->
-        <c:if test="${not empty scoreList}">
+        <%-- testsリストはTestListSubjectExecuteControllerから渡される想定 --%>
+        <c:if test="${not empty tests}">
             <div class="grade-input-area">
-                <h3>科目: ${param.subject}（${param.attemptNo}回）</h3>
+                <%-- Controllerから渡されたsubjectオブジェクトの情報を表示 --%>
+                <h3>科目: ${selectedSubjectCd}（${param.num}回）</h3> <%-- 表示内容を修正 --%>
 
-                <form action="registerGrades" method="post">
+                <%-- 成績登録用のフォーム。actionは別途成績登録処理用のサーブレットになる想定 --%>
+                <form action="registerGrades" method="post"> <%-- "registerGrades" は仮のURL、適切なサーブレットURLに変更してください --%>
                     <table>
                         <thead>
                             <tr>
@@ -124,19 +150,24 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <c:forEach var="score" items="${scoreList}">
+                            <%-- Testオブジェクトのリストをループして表示 --%>
+                            <c:forEach var="test" items="${tests}">
                                 <tr>
-                                    <td>${score.entYear}</td>
-                                    <td>${score.classNum}</td>
-                                    <td>${score.studentNo}</td>
-                                    <td>${score.name}</td>
-                                    <td><input type="number" name="score_${score.studentNo}" value="${score.point}" min="0" max="100"></td>
+                                    <td>${test.student.entYear}</td>
+                                    <td>${test.classNum}</td>
+                                    <td>${test.student.no}</td>
+                                    <td>${test.student.name}</td>
+                                    <td>
+                                        <%-- 点数入力フィールドのname属性はユニークになるように studentNo を含める --%>
+                                        <input type="number" name="score_${test.student.no}" value="${test.point}" min="0" max="100">
+                                    </td>
                                 </tr>
                             </c:forEach>
                         </tbody>
                     </table>
                     <div class="register-button" style="text-align: left;">
-                        <input type="submit" value="登録して終了" formaction="GRMU002.jsp" class="gray-button">
+                        <%-- このボタンのformactionは適切なサーブレットURLに変更してください --%>
+                        <input type="submit" value="登録して終了" formaction="${pageContext.request.contextPath}/RegisterGradesExecute.action" class="gray-button"> <%-- 仮のサーブレット名を指定 --%>
                     </div>
                 </form>
             </div>
