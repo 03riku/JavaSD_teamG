@@ -167,7 +167,7 @@
                 conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
                 // 3. SQLクエリの準備
-                String sql = "SELECT SUBJECT_CD, SUBJECT_NAME FROM SUBJECT ORDER BY SUBJECT_CD";
+                String sql = "SELECT SCHOOL_CD, CD, NAME FROM SUBJECT";
                 pstmt = conn.prepareStatement(sql);
 
                 // 4. クエリの実行
@@ -176,8 +176,8 @@
                 // 5. 結果の取得
                 while (rs.next()) {
                     Map<String, String> subject = new HashMap<>();
-                    subject.put("code", rs.getString("SUBJECT_CD"));
-                    subject.put("name", rs.getString("SUBJECT_NAME"));
+                    subject.put("code", rs.getString("CD"));
+                    subject.put("name", rs.getString("NAME"));
                     subjects.add(subject);
                 }
 

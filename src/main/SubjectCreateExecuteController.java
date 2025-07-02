@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import Bean.Subject;
+import Bean.Teacher;
 import dao.SubjectDao;
 
 @WebServlet("/SBJM003")
@@ -19,34 +20,47 @@ public class SubjectCreateExecuteController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        System.out.println("==== SubjectCreateExecuteController ====");
+
         request.setCharacterEncoding("UTF-8");
 
+        // リクエストパラメータ取得
         String cd = request.getParameter("cd");
         String name = request.getParameter("name");
 
-        Subject subject = new Subject();
-        subject.setCd(cd);
-        subject.setName(name);
+        // 入力バリデーション例（必須チェック）
+        if (cd == null || cd.trim().isEmpty() || name == null || name.trim().isEmpty()) {
+            request.setAttribute("errorMessage", "コード・名称は必須項目です。");
+            request.getRequestDispatcher("/log/ERRO001.jsp").forward(request, response);
+            return;
+        }
 
+        Subject subject = new Subject();
+        subject.setCd(cd.trim());
+        subject.setName(name.trim());
+
+        // セッションからTeacherを取得
         HttpSession session = request.getSession(false);
         if (session == null) {
-            showError(request, response, "セッションが存在しません。再ログインしてください。");
+            showError(request, response, "セッションが有効ではありません。再度ログインしてください。");
             return;
         }
 
-        Subject teacher = (Subject) session.getAttribute("subject");
+        Teacher teacher = (Teacher) session.getAttribute("teacher");
         if (teacher == null || teacher.getSchool() == null) {
-            showError(request, response, "セッションに教師情報または学校情報がありません。");
+            showError(request, response, "セッションに教師情報または学校情報が存在しません。");
             return;
         }
 
+        // school_cd を SUBJECT OBJECTにセット
         subject.setSchool(teacher.getSchool());
 
+        // 登録
         SubjectDao dao = new SubjectDao();
         try {
             boolean ok = dao.save(subject);
             if (!ok) {
-                showError(request, response, "科目の登録に失敗しました。");
+                showError(request, response, "科目の登録または更新に失敗しました。");
                 return;
             }
         } catch (Exception e) {
@@ -55,13 +69,12 @@ public class SubjectCreateExecuteController extends HttpServlet {
             return;
         }
 
-        // PRG パターン: 登録後に GET 先にリダイレクト
-        HttpSession s2 = request.getSession();
-        s2.setAttribute("message", "科目情報が正常に登録されました。");
-        response.sendRedirect(request.getContextPath() + "/SBJM003OK"); // 完了ページへリダイレクト
+        // 登録成功：リダイレクト（PRGパターン）
+        session.setAttribute("successMessage", "科目が正常に登録されました。（school_cd="
+            + teacher.getSchool().getCd() + "）");
+        response.sendRedirect(request.getContextPath() + "/log/SBJM003.jsp");
     }
 
-    /** エラーメッセージを ERRO001.jsp に転送 */
     private void showError(HttpServletRequest req, HttpServletResponse res, String msg)
             throws ServletException, IOException {
         req.setAttribute("errorMessage", msg);
