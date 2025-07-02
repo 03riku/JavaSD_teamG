@@ -10,56 +10,58 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            display: flex; /* Use flexbox for overall layout */
-            flex-direction: column; /* Stack header and main content area vertically */
-            min-height: 100vh; /* Ensure body takes full viewport height */
-            background-color: #f4f4f4; /* Light background for the whole page */
         }
 
         /* Header Styles */
-        .header-table {
+        .header {
             width: 100%;
-            padding: 10px;
-            background-color: #e0e0e0; /* Light gray background for header */
-            border-bottom: 1px solid #c0c0c0; /* Subtle separator line */
-            box-sizing: border-box; /* Include padding in width */
-            margin-bottom: 0; /* Remove default table margin */
+            padding: 10px 20px;
+            border-bottom: 1px solid #ccc; /* ヘッダー下の線 */
+            box-sizing: border-box; /* パディングを幅に含める */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f8f8; /* ヘッダーの背景色 */
+
         }
 
-        .header-table td {
-            vertical-align: middle;
-            padding: 5px 15px; /* Add some padding to table cells */
+        .header h1 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #333;
+
         }
 
-        .header-table td:first-child {
+        .header h1:first-child {
             font-weight: bold;
-            font-size: 1.1em;
+            font-size: 1.5em;
             color: #333;
         }
 
-        .header-table a {
-            color: #007bff; /* Standard link blue */
+        .header a {
             text-decoration: none;
+            color: #007bff;
+            font-size: 0.9em;
+
         }
 
-        .header-table a:hover {
+        .header a:hover {
             text-decoration: underline;
         }
 
         /* Main Layout Container for Navigation and Content */
         .main-container {
-            display: flex; /* Use flexbox for side-by-side layout */
-            flex: 1; /* Allow container to take remaining height */
-            width: 100%; /* Ensure it spans full width */
+            display: flex;
+            height: calc(100vh - 50px); /* ヘッダーの高さ分を引く */
+
         }
 
         /* Left Navigation Bar */
         .nav-sidebar {
-            width: 200px; /* Fixed width for navigation */
-            background-color: #34495e; /* Dark blue/gray background */
-            color: white;
+            width: 180px; /* Fixed width for navigation */
+            background-color: #f0f0f0; /* Dark blue/gray background */
             padding: 20px 0; /* Vertical padding */
-            border-right: 2px solid #2c3e50; /* Darker border for separation */
+            border-right: 1px solid #ccc; /* Darker border for separation */
             box-sizing: border-box;
         }
 
@@ -70,16 +72,16 @@
         }
 
         .nav-sidebar li {
-            margin-bottom: 5px; /* Space between list items */
+            margin-bottom: 10px; /* Space between list items */
         }
 
         .nav-sidebar a,
         .nav-sidebar label {
-            display: block; /* Make links and labels take full width */
-            padding: 10px 20px; /* Padding for text inside nav items */
-            color: white;
             text-decoration: none;
-            transition: background-color 0.2s ease; /* Smooth hover effect */
+            color: #333;
+            display: block;
+            padding: 5px 0;
+            font-size: 0.95em;
         }
 
         .nav-sidebar a:hover {
@@ -88,21 +90,23 @@
 
         .nav-sidebar label {
             font-weight: bold; /* Make labels bold */
-            cursor: default; /* Indicate it's not a clickable link */
+            color: #007bff; /* 現在のページを強調 */
+
         }
 
         /* Main Content Area */
         .main-content {
-            flex: 1; /* Allows main content to take remaining space */
-            padding: 20px 30px; /* More padding for main content */
-            background-color: white; /* White background for main content */
-            box-shadow: 0 0 10px rgba(0,0,0,0.05); /* Subtle shadow for depth */
+            flex-grow: 1; /* 残りのスペースを埋める */
+            padding: 20px 30px; /* 左右のパディングを増やす */
+            background-color: #fff;
+
         }
 
         h2 {
+        	font-size: 1.8em;
             color: #333;
             margin-top: 0; /* Remove default top margin */
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             border-bottom: 1px solid #eee; /* Subtle line under title */
             padding-bottom: 10px;
         }
@@ -169,14 +173,18 @@
         }
 
         .back-link {
-            display: block; /* Make it a block element to control spacing */
-            margin-top: 25px; /* Space above the "戻る" link */
-            color: #007bff;
+            display: inline-block; /* aタグをボタンのように見せる */
+            padding: 10px 25px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            color: #333;
             text-decoration: none;
+            background-color: #f0f0f0;
         }
 
         .back-link:hover {
-            text-decoration: underline;
+            background-color: #e0e0e0;
         }
 
         /* Clear floats if used (though flexbox mitigates need for this often) */
@@ -188,18 +196,10 @@
     </style>
 </head>
 <body>
-    <table class="header-table" cellpadding="5" cellspacing="0">
-        <tr>
-            <td align="left">得点管理システム</td>
-            <td align="right">
-                <%-- ユーザー情報とログアウトリンクの表示 --%>
-                <c:if test="${not empty teacher}">
-                    ${teacher.school.name} ${teacher.name}様&nbsp;
-                </c:if>
-                <a href="LOGO001.jsp">ログアウト</a>
-            </td>
-        </tr>
-    </table>
+    <div class="header">
+        <h1>得点管理システム</h1>
+        <a href="LOGO001.jsp">ログアウト</a>
+    </div>
 
     <div class="main-container">
         <div class="nav-sidebar">
@@ -222,7 +222,7 @@
                 <div class="success-message">${successMessage}</div>
             </c:if>
 
-            <form action="../SBJM003" method="post"> <%-- サーブレット名を適宜変更してください (StudentRegisterServlet -> SubjectRegisterServlet) --%>
+            <form action="SBJM003.jsp" method="post"> <%-- サーブレット名を適宜変更してください (StudentRegisterServlet -> SubjectRegisterServlet) --%>
                 <label for="subjectCd">科目コード</label> <input type="text" id="subjectCd" name="cd" value="${subject.cd}" placeholder="科目コードを入力してください" required />
                 <%-- 科目コード関連のエラーメッセージ --%>
                 <c:if test="${not empty errorSubjectCdEmpty}">
@@ -240,15 +240,12 @@
                 </c:if>
                 <br>
 
-                <div style="margin-left: 125px; margin-top: 10px;">
+                <div class="button-group">
                     <button type="submit" name="execute">登録</button>
+                    <a href="SBJM001.jsp" class="back-link">戻る</a>
                 </div>
             </form>
-
-            <a href="SBJM001.jsp" class="back-link">戻る</a>
-
         </div>
     </div>
 </body>
 </html>
-l
