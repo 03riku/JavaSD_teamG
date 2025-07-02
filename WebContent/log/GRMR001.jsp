@@ -251,11 +251,11 @@
                         </select>
 
                         <label for="class">クラス</label>
-                        <select id="class" name="class">
+                        <select id="class" name="class_num"> <%-- name属性をclass_numに変更 --%>
                             <option value="">------</option>
                             <%-- Servletから渡される classNums リストをJSTLでループ --%>
                             <c:forEach var="classOption" items="${classNums}">
-                                <option value="${classOption}" <c:if test="${param.class eq classOption}">selected</c:if>>${classOption}</option>
+                                <option value="${classOption}" <c:if test="${param.class_num eq classOption}">selected</c:if>>${classOption}</option> <%-- param.class_numに修正 --%>
                             </c:forEach>
                         </select>
 

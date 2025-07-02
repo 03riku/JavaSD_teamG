@@ -92,14 +92,16 @@
                             <select name="year"> <%-- name属性を "year" に修正 --%>
                                 <option value="">選択してください</option> <%-- 初期値として空の選択肢を追加 --%>
                                 <c:forEach var="entYearOption" items="${entYears}">
+                                    <%-- Controllerから渡されたselectedEntYearと一致する場合にselected属性を付与 --%>
                                     <option value="${entYearOption}" ${selectedEntYear == entYearOption ? 'selected' : ''}>${entYearOption}</option>
                                 </c:forEach>
                             </select>
                         </td>
                         <td>
-                            <select name="class"> <%-- name属性を "class" に修正 --%>
+                            <select name="class_num"> <%-- ★★ name属性を "class_num" に修正 ★★ --%>
                                 <option value="">選択してください</option> <%-- 初期値として空の選択肢を追加 --%>
                                 <c:forEach var="classOption" items="${classNums}">
+                                    <%-- Controllerから渡されたselectedClassNumと一致する場合にselected属性を付与 --%>
                                     <option value="${classOption}" ${selectedClassNum == classOption ? 'selected' : ''}>${classOption}</option>
                                 </c:forEach>
                             </select>
@@ -108,19 +110,15 @@
                             <select name="subject"> <%-- name属性を "subject" に修正 --%>
                                 <option value="">選択してください</option> <%-- 初期値として空の選択肢を追加 --%>
                                 <c:forEach var="subjectOption" items="${subjects}">
+                                    <%-- Controllerから渡されたselectedSubjectCdと一致する場合にselected属性を付与 --%>
                                     <option value="${subjectOption.cd}" ${selectedSubjectCd == subjectOption.cd ? 'selected' : ''}>${subjectOption.name}</option>
                                 </c:forEach>
                             </select>
                         </td>
                         <td>
-                             <%-- TestListSubjectExecuteControllerでは回数(num)をパラメータとして受け取っていませんが、
-                                  もし必要であればここでname="num"として送信するようにします。
-                                  現時点ではJSPのみに存在し、Controllerで処理されていません。
-                                  一旦、固定の選択肢を残しておきますが、Controllerの仕様に合わせて調整が必要です。
-                             --%>
                             <select name="num"> <%-- name属性を "num" に修正 (Controllerで使うなら) --%>
-                                <option value="1" ${param.num == '1' ? 'selected' : ''}>1</option>
-                                <option value="2" ${param.num == '2' ? 'selected' : ''}>2</option>
+                                <option value="1" ${selectedNum == '1' ? 'selected' : ''}>1</option>
+                                <option value="2" ${selectedNum == '2' ? 'selected' : ''}>2</option>
                             </select>
                         </td>
                         <td>
@@ -135,7 +133,7 @@
         <c:if test="${not empty tests}">
             <div class="grade-input-area">
                 <%-- Controllerから渡されたsubjectオブジェクトの情報を表示 --%>
-                <h3>科目: ${selectedSubjectCd}（${param.num}回）</h3> <%-- 表示内容を修正 --%>
+                <h3>科目: ${selectedSubjectCd}（${selectedNum}回）</h3> <%-- 表示内容を修正 --%>
 
                 <%-- 成績登録用のフォーム。actionは別途成績登録処理用のサーブレットになる想定 --%>
                 <form action="registerGrades" method="post"> <%-- "registerGrades" は仮のURL、適切なサーブレットURLに変更してください --%>
