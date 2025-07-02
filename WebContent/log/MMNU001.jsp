@@ -60,11 +60,11 @@
 
   <div class="sidebar">
 <ul>
-<li><a href="STDM001.jsp">学生管理</a></li>
+<li><a href="${pageContext.request.contextPath}/log/STDM001.jsp">学生管理</a></li>
 <li>成績管理</li> <%-- ここはリンクなしのテキスト --%>
 <li><a href="${pageContext.request.contextPath}/TestListSubjectExecute.action">成績登録</a></li>
 <li><a href="${pageContext.request.contextPath}/TestListSubjectExecute.action">成績参照</a></li>
-<li><a href="SBJM001.jsp">科目管理</a></li>
+<li><a href="${pageContext.request.contextPath}/log/SBJM001.jsp">科目管理</a></li>
 </ul>
 </div>
 
@@ -81,7 +81,7 @@
 </div>
 
       <div class="box box-blue">
-<a href="SBJM001.jsp"> 科目管理</a>
+<a href="${pageContext.request.contextPath}/log/SBJM001.jsp"> 科目管理</a>
 </div>
 </div>
 </div>

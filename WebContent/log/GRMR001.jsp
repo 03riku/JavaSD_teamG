@@ -215,19 +215,19 @@
     <div class="header">
         <h1>得点管理システム</h1>
         <div class="user-info">
-            大原 太郎様 <a href="LOGO001.jsp">ログアウト</a>
+            大原 太郎様 <a href="${pageContext.request.contextPath}/log/LOGO001.jsp">ログアウト</a>
         </div>
     </div>
 
     <div class="container">
         <div class="menu">
             <ul>
-                <li><a href="MMNU001.jsp">メニュー</a></li>
-                <li><a href="STDM001.jsp">学生管理</a></li>
+                <li><a href="${pageContext.request.contextPath}/log/MMNU001.jsp">メニュー</a></li>
+                <li><a href="${pageContext.request.contextPath}/log/STDM001.jsp">学生管理</a></li>
                 <li><a>成績管理</a></li>
-                <li><a href="GRMU001.jsp" class="active">成績参照</a></li>
-                <li><a href="GRMR001.jsp">成績登録</a></li>
-                <li><a href="SBJM002.jsp">科目管理</a></li>
+                <li><a href="${pageContext.request.contextPath}/log/GRMU001.jsp" class="active">成績参照</a></li>
+                <li><a href="${pageContext.request.contextPath}/log/GRMR001.jsp">成績登録</a></li>
+                <li><a href="${pageContext.request.contextPath}/log/SBJM002.jsp">科目管理</a></li>
             </ul>
         </div>
 
@@ -236,7 +236,7 @@
                 <div class="section-title">成績参照</div>
 
                 <%-- フォームのactionをTestList.actionに修正 --%>
-                <form action="TestList.action" method="get">
+                <form action="${pageContext.request.contextPath}/TestListSubjectExecute.action" method="get"> <%-- フォームアクションも絶対パスに修正 --%>
                     <div class="form-group">
                         <span class="sub-section-label">科目情報</span>
                     </div>
@@ -251,11 +251,11 @@
                         </select>
 
                         <label for="class">クラス</label>
-                        <select id="class" name="class_num"> <%-- name属性をclass_numに変更 --%>
+                        <select id="class" name="class_num">
                             <option value="">------</option>
                             <%-- Servletから渡される classNums リストをJSTLでループ --%>
                             <c:forEach var="classOption" items="${classNums}">
-                                <option value="${classOption}" <c:if test="${param.class_num eq classOption}">selected</c:if>>${classOption}</option> <%-- param.class_numに修正 --%>
+                                <option value="${classOption}" <c:if test="${param.class_num eq classOption}">selected</c:if>>${classOption}</option>
                             </c:forEach>
                         </select>
 
