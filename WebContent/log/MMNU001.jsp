@@ -63,7 +63,7 @@
 <li><a href="${pageContext.request.contextPath}/log/STDM001.jsp">学生管理</a></li>
 <li>成績管理</li> <%-- ここはリンクなしのテキスト --%>
 <li><a href="${pageContext.request.contextPath}/TestListSubjectExecute.action">成績登録</a></li>
-<li><a href="${pageContext.request.contextPath}/TestListSubjectExecute.action">成績参照</a></li>
+<li><a href="${pageContext.request.contextPath}//log/GRMR001.jsp">成績参照</a></li>
 <li><a href="${pageContext.request.contextPath}/log/SBJM001.jsp">科目管理</a></li>
 </ul>
 </div>
@@ -77,7 +77,7 @@
       <div class="box box-green">
 <div> 成績管理</div> <%-- この"成績管理"は元々リンクではないテキスト --%>
 <a href="${pageContext.request.contextPath}/TestListSubjectExecute.action"> 成績登録</a>
-<a href="${pageContext.request.contextPath}/TestListSubjectExecute.action"> 成績参照</a>
+<a href="${pageContext.request.contextPath}/log/GRMR001.jsp"> 成績参照</a>
 </div>
 
       <div class="box box-blue">
