@@ -70,8 +70,6 @@ public class SubjectCreateExecuteController extends HttpServlet {
         }
 
         // 登録成功：リダイレクト（PRGパターン）
-        session.setAttribute("successMessage", "科目が正常に登録されました。（school_cd="
-            + teacher.getSchool().getCd() + "）");
         response.sendRedirect(request.getContextPath() + "/log/SBJM003.jsp");
     }
 
