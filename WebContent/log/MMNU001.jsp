@@ -53,48 +53,42 @@
 </style>
 </head>
 <body>
-<!-- ① ヘッダー -->
 <div class="header">
 <div><strong>得点管理システム</strong></div>
-<div><a href="LOGO001.jsp">ログアウト</a></div>
+<div><a href="${pageContext.request.contextPath}/LOGO001.jsp">ログアウト</a></div>
 </div>
 
-  <!-- サイドバー -->
-<div class="sidebar">
+  <div class="sidebar">
 <ul>
-<li><a href="STDM001.jsp">学生管理</a></li>
-<li><label>成績管理</label></li>
-<li><a href="GRMU001.jsp">成績登録</a><br></li>
-<li><a href="GRMR001.jsp">成績検索</a></li>
-<li><a href="SBJM001.jsp">科目管理</a></li>
+<li><a href="${pageContext.request.contextPath}/STDM001.jsp">学生管理</a></li>
+<li>成績管理</li> <%-- ここはリンクなしのテキスト --%>
+<li><a href="${pageContext.request.contextPath}/log/GRMU001.jsp">成績登録</a></li> <%-- GRMU001.jspも絶対パスに修正 --%>
+<li><a href="${pageContext.request.contextPath}/TestListSubjectExecute.action">成績参照</a></li> <%-- ここをControllerへの絶対パスに修正 --%>
+<li><a href="${pageContext.request.contextPath}/SBJM001.jsp">科目管理</a></li>
 </ul>
 </div>
 
-  <!-- メインコンテンツ -->
-<div class="content">
-<h2>メニュー</h2> <!-- ① -->
-
-    <div class="menu-box">
-<!-- ② -->
+  <div class="content">
+<h2>メニュー</h2> <div class="menu-box">
 <div class="box box-red">
-<a href="STDM001.jsp"> 学生管理</a>
+<a href="${pageContext.request.contextPath}/STDM001.jsp"> 学生管理</a>
 </div>
 
-      <!-- ③～⑤ -->
-<div class="box box-green">
-<div> 成績管理</div>
-<a href="GRMU001.jsp"> 成績登録</a>
-<a href="GRMR001.jsp"> 成績参照</a>
+      <div class="box box-green">
+<div> 成績管理</div> <%-- この"成績管理"は元々リンクではないテキスト --%>
+<a href="${pageContext.request.contextPath}/log/GRMU001.jsp"> 成績登録</a> <%-- こちらも絶対パスに修正 --%>
+<a href="${pageContext.request.contextPath}/TestListSubjectExecute.action"> 成績参照</a> <%-- ここをControllerへの絶対パスに修正 --%>
 </div>
 
-      <!-- ⑥ -->
-<div class="box box-blue">
-<a href="SBJM001.jsp"> 科目管理</a>
+      <div class="box box-blue">
+<a href="${pageContext.request.contextPath}/SBJM001.jsp"> 科目管理</a>
 </div>
 </div>
 </div>
 
-  <!-- フッター -->
+  <%-- <footer>
+    <small>Copyright &copy; 2025.</small>
+</footer> --%>
 
 </body>
 </html>

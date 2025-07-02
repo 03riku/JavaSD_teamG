@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import Bean.School;
 import Bean.Subject;
 import Bean.Test;
-import dao.StudentDao; // ★★ StudentDaoをインポート ★★
+import dao.StudentDao;
 import dao.SubjectDao;
 import dao.TestListSubjectDao;
 
@@ -37,7 +37,7 @@ public class TestListSubjectExecuteController extends HttpServlet {
 
         // ★★ ここからDAOを使ったデータ取得 ★★
         SubjectDao subjectDao = new SubjectDao();
-        StudentDao studentDao = new StudentDao(); // ★★ StudentDaoのインスタンス化 ★★
+        StudentDao studentDao = new StudentDao();
         List<Integer> entYears = new ArrayList<>();
         List<String> classNumsList = new ArrayList<>();
         List<Subject> subjects = new ArrayList<>();
@@ -55,6 +55,12 @@ public class TestListSubjectExecuteController extends HttpServlet {
             testNums.add(1);
             testNums.add(2);
 
+            // ★★ 追加したデバッグログ ★★
+            System.out.println("DEBUG (Controller): entYears list size: " + entYears.size());
+            System.out.println("DEBUG (Controller): classNums list size: " + classNumsList.size());
+            System.out.println("DEBUG (Controller): subjects list size: " + subjects.size());
+            // ★★ ここまで追加 ★★
+
             request.setAttribute("entYears", entYears);
             request.setAttribute("classNums", classNumsList);
             request.setAttribute("subjects", subjects);
@@ -70,6 +76,8 @@ public class TestListSubjectExecuteController extends HttpServlet {
 
 
         // 初期表示時（パラメータが全くない場合）の処理は、上記のデータ取得後に行う
+        // この if ブロックは、最初のデータ読み込みが完了した後にJSPにフォワードする役割
+        // 検索パラメータがない初回アクセス時にここを通る
         if (yearStr == null && classNum == null && subjectCd == null && numStr == null) {
             request.getRequestDispatcher("log/GRMU001.jsp").forward(request, response);
             return; // 初期表示処理が完了したらここで終了
