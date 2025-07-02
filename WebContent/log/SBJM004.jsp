@@ -264,18 +264,20 @@
 
             <form action="SubjectUpdateExecuteServlet" method="post">
                 <div class="form-group">
-                    <label>科目コード</label>
-                    <span class="readonly-field">${subject.cd}</span>
-                    <input type="hidden" name="cd" value="${subject.cd}">
+                	<label for="no">科目コード</label>
+                	<input type="text" id="no" name="no" value="${no}" placeholder="科目コードを入力してください" required />
+                	<c:if test="${not empty errorStudentEmpty}">
+                		<div class="error-message">${errorStudentNameDuplicate}></div>
+                	</c:if>
                 </div>
 
                 <div class="form-group">
                     <label for="subjectName">科目名</label>
                     <input type="text" id="subjectName" name="name" value="${subject.name}" placeholder="科目名を入力してください" required />
+                    <c:if test="${not empty errorSubjectNameEmpty}">
+                    	<div class="error-message">${errorSubjectNameEmpty}</div>
+                	</c:if>
                 </div>
-                <c:if test="${not empty errorSubjectNameEmpty}">
-                    <div class="error-message">${errorSubjectNameEmpty}</div>
-                </c:if>
 
                 <div class="form-actions">
                     <button type="submit" name="execute">変更</button>
