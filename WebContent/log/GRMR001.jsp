@@ -1,5 +1,23 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false"%>
+<%@ page import="Bean.Subject" %> <%-- ★この行が追加または確認してください★ --%>
+
+<%
+    // Servletから渡される属性の取得
+    java.util.List<Integer> entYears = (java.util.List<Integer>) request.getAttribute("entYears");
+    java.util.List<String> classNums = (java.util.List<String>) request.getAttribute("classNums");
+    // ここは List<Bean.Subject> とするのがより正確です
+    java.util.List<Object> subjects = (java.util.List<Object>) request.getAttribute("subjects"); // Servlet側がList<Object>で渡す場合
+    // もしServlet側で List<Subject> で渡しているなら、以下のようにしても良いです:
+    // java.util.List<Bean.Subject> subjects = (java.util.List<Bean.Subject>) request.getAttribute("subjects");
+
+    String message = (String) request.getAttribute("message");
+
+    // リクエストパラメータの取得
+    String paramYear = request.getParameter("year");
+    String paramClassNum = request.getParameter("class_num");
+    String paramSubjectCd = request.getParameter("subject");
+    String paramStudentId = request.getParameter("studentId");
+%>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -215,19 +233,19 @@
     <div class="header">
         <h1>得点管理システム</h1>
         <div class="user-info">
-            大原 太郎様 <a href="${pageContext.request.contextPath}/log/LOGO001.jsp">ログアウト</a>
+            大原 太郎様 <a href="<%= request.getContextPath() %>/log/LOGO001.jsp">ログアウト</a>
         </div>
     </div>
 
     <div class="container">
         <div class="menu">
             <ul>
-                <li><a href="${pageContext.request.contextPath}/log/MMNU001.jsp">メニュー</a></li>
-                <li><a href="${pageContext.request.contextPath}/log/STDM001.jsp">学生管理</a></li>
+                <li><a href="<%= request.getContextPath() %>/log/MMNU001.jsp">メニュー</a></li>
+                <li><a href="<%= request.getContextPath() %>/log/STDM001.jsp">学生管理</a></li>
                 <li><a>成績管理</a></li>
-                <li><a href="${pageContext.request.contextPath}/log/GRMU001.jsp" class="active">成績参照</a></li>
-                <li><a href="${pageContext.request.contextPath}/log/GRMR001.jsp">成績登録</a></li>
-                <li><a href="${pageContext.request.contextPath}/log/SBJM002.jsp">科目管理</a></li>
+                <li><a href="<%= request.getContextPath() %>/TestListStudentExecute.action" class="active">成績参照</a></li>
+                <li><a href="<%= request.getContextPath() %>/TestListSubjectExecute.action">成績登録</a></li>
+                <li><a href="<%= request.getContextPath() %>/log/SBJM002.jsp">科目管理</a></li>
             </ul>
         </div>
 
@@ -235,8 +253,7 @@
             <div class="section">
                 <div class="section-title">成績参照</div>
 
-                <%-- フォームのactionをTestList.actionに修正 --%>
-                <form action="${pageContext.request.contextPath}/TestListSubjectExecute.action" method="get"> <%-- フォームアクションも絶対パスに修正 --%>
+                <form action="<%= request.getContextPath() %>/GradeReferenceExecute.action" method="get">
                     <div class="form-group">
                         <span class="sub-section-label">科目情報</span>
                     </div>
@@ -244,28 +261,60 @@
                         <label for="year">入学年度</label>
                         <select id="year" name="year">
                             <option value="">------</option>
-                            <%-- Servletから渡される entYears リストをJSTLでループ --%>
-                            <c:forEach var="yearOption" items="${entYears}">
-                                <option value="${yearOption}" <c:if test="${param.year eq yearOption}">selected</c:if>>${yearOption}</option>
-                            </c:forEach>
+                            <%
+                            if (entYears != null) {
+                                for (Integer yearOption : entYears) {
+                                    String selected = "";
+                                    if (paramYear != null && paramYear.equals(String.valueOf(yearOption))) {
+                                        selected = "selected";
+                                    }
+                            %>
+                                    <option value="<%= yearOption %>" <%= selected %>><%= yearOption %></option>
+                            <%
+                                }
+                            }
+                            %>
                         </select>
 
                         <label for="class">クラス</label>
                         <select id="class" name="class_num">
                             <option value="">------</option>
-                            <%-- Servletから渡される classNums リストをJSTLでループ --%>
-                            <c:forEach var="classOption" items="${classNums}">
-                                <option value="${classOption}" <c:if test="${param.class_num eq classOption}">selected</c:if>>${classOption}</option>
-                            </c:forEach>
+                            <%
+                            if (classNums != null) {
+                                for (String classOption : classNums) {
+                                    String selected = "";
+                                    if (paramClassNum != null && paramClassNum.equals(classOption)) {
+                                        selected = "selected";
+                                    }
+                            %>
+                                    <option value="<%= classOption %>" <%= selected %>><%= classOption %></option>
+                            <%
+                                }
+                            }
+                            %>
                         </select>
 
                         <label for="subject">科目</label>
                         <select id="subject" name="subject">
                             <option value="">------</option>
-                            <%-- Servletから渡される subjects リストをJSTLでループ --%>
-                            <c:forEach var="subjectOption" items="${subjects}">
-                                <option value="${subjectOption.cd}" <c:if test="${param.subject eq subjectOption.cd}">selected</c:if>>${subjectOption.name}</option>
-                            </c:forEach>
+                            <%
+                            if (subjects != null) {
+                                for (Object subjectObj : subjects) {
+                                    // ObjectをBean.Subjectにキャスト
+                                    Bean.Subject subjectOption = (Bean.Subject) subjectObj;
+                                    String subjectCd = subjectOption.getCd();
+                                    String subjectName = subjectOption.getName();
+
+                                    String selected = "";
+                                    if (paramSubjectCd != null && paramSubjectCd.equals(subjectCd)) {
+                                        selected = "selected";
+                                    }
+                            %>
+                                    <option value="<%= subjectCd %>" <%= selected %>><%= subjectName %></option>
+                            <%
+                                }
+                            }
+                            %>
                         </select>
 
                         <button type="submit" class="search-button">検索</button>
@@ -276,17 +325,23 @@
                     </div>
                     <div class="form-group student-search">
                         <label for="studentId">学生番号</label>
-                        <input type="text" id="studentId" name="studentId" placeholder="学生番号を入力してください" value="${param.studentId}">
+                        <input type="text" id="studentId" name="studentId" placeholder="学生番号を入力してください" value="<%= (paramStudentId != null ? paramStudentId : "") %>">
                         <button type="submit" class="search-button">検索</button>
                     </div>
                 </form>
 
                 <div class="info-message">
-                    <c:choose>
-                        <%-- Servletからmessageが渡されていれば表示、そうでなければデフォルトメッセージ --%>
-                        <c:when test="${not empty message}">${message}</c:when>
-                        <c:otherwise>科目情報を選択または学生情報を入力して検索ボタンをクリックしてください</c:otherwise>
-                    </c:choose>
+                    <%
+                    if (message != null && !message.isEmpty()) {
+                    %>
+                        <%= message %>
+                    <%
+                    } else {
+                    %>
+                        科目情報を選択または学生情報を入力して検索ボタンをクリックしてください
+                    <%
+                    }
+                    %>
                 </div>
             </div>
         </div>
