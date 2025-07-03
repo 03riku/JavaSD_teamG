@@ -48,11 +48,11 @@
 
     <p>以下の科目を削除します。よろしいですか？</p>
 
-    <form action="SubjectDeleteExecuteServlet" method="post"> <%-- 削除処理を行うサーブレット名を指定 --%>
+    <form action="${pageContext.request.contextPath}/main/subjectdelete_done" method="post"> <%-- 削除処理を行うサーブレット名を指定 --%>
         <div>
             <label>科目コード:</label>
             <%-- 科目コードは表示専用 --%>
-            <span>${subject.cd}</span>
+            <span>${cd}</span>
             <input type="hidden" name="cd" value="${cd}"> <%-- 削除対象の科目を特定するためにhiddenで送信 --%>
         </div>
         <br><br>

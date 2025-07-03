@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import Bean.Teacher;
 
-@WebServlet("/subject_delete")
+@WebServlet(urlPatterns={"/main/subject_delete"})
 public class Subject_deleteServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -32,7 +32,7 @@ public class Subject_deleteServlet extends HttpServlet {
 
         request.setAttribute("cd", cd);
         request.setAttribute("name", name);
-        request.getRequestDispatcher("SBJM006.jsp").forward(request, response);
+        request.getRequestDispatcher("/log/SBJM006.jsp").forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
