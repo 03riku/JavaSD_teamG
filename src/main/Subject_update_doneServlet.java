@@ -33,6 +33,7 @@ public class Subject_update_doneServlet extends HttpServlet {
         String cd = request.getParameter("no");
         String name = request.getParameter("name");
 
+        // バリデーション例
         boolean hasError = false;
         if (cd == null || cd.trim().isEmpty()) {
             request.setAttribute("errorMessage", "科目コードが空です。");
@@ -59,15 +60,15 @@ public class Subject_update_doneServlet extends HttpServlet {
 
         try {
             SubjectDao dao = new SubjectDao();
-            boolean updated = dao.update(subject); // ← save()ではなくupdate()を使う
-
-            if (!updated) {
+            boolean ok = dao.save(subject);
+            if (!ok) {
                 request.setAttribute("errorMessage", "科目の更新に失敗しました。");
                 request.getRequestDispatcher("/log/error.jsp").forward(request, response);
                 return;
             }
 
             request.setAttribute("successMessage", "科目が正常に更新されました。");
+            // 完了表示用に再度 no/name をセット
             request.setAttribute("no", cd);
             request.setAttribute("subject", subject);
             request.getRequestDispatcher("/log/SBJM005.jsp").forward(request, response);
@@ -83,4 +84,3 @@ public class Subject_update_doneServlet extends HttpServlet {
         doPost(request, response);
     }
 }
-
