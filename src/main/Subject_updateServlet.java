@@ -9,11 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import Bean.Subject;
 import Bean.Teacher;
-import dao.SubjectDao;
 
-@WebServlet("/subject_update")
+@WebServlet("/main/subject_update")
 public class Subject_updateServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -24,30 +22,15 @@ public class Subject_updateServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
         Teacher teacher = (session != null) ? (Teacher) session.getAttribute("teacher") : null;
-        if (teacher == null || teacher.getSchool() == null) {
-            request.setAttribute("errorMessage", "ログインが必要です。");
-            request.getRequestDispatcher("LOGO001.jsp").forward(request, response);
-            return;
-        }
+        try{
+        String cd = request.getParameter("cd");
+        String name = request.getParameter("name");
 
-        String cd = request.getParameter("no"); // フォームの name="no" に合わせる
-        if (cd == null || cd.trim().isEmpty()) {
-            request.setAttribute("errorMessage", "科目コードが指定されていません。");
-            request.getRequestDispatcher("/log/error.jsp").forward(request, response);
-            return;
-        }
-
-        try {
-            SubjectDao dao = new SubjectDao();
-            Subject subject = dao.get(cd, teacher.getSchool());
-            if (subject == null) {
-                request.setAttribute("errorMessage", "該当する科目が見つかりませんでした。");
-                request.getRequestDispatcher("/log/error.jsp").forward(request, response);
-                return;
-            }
-
-            request.setAttribute("subject", subject);
-            request.setAttribute("no", subject.getCd());
+            request.setAttribute("cd", cd);
+            request.setAttribute("name", name);
+            System.out.println("##############################");
+            System.out.println(cd);
+            System.out.println(name);
             request.getRequestDispatcher("/log/SBJM004.jsp").forward(request, response);
 
         } catch (Exception e) {

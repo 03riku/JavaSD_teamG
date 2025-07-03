@@ -257,7 +257,8 @@
             <form action="${pageContext.request.contextPath}/subject_update_done" method="post">
                 <div class="form-group">
                 	<label for="no">科目コード</label>
-                	<input type="text" id="no" name="no" value="${no}" placeholder="科目コードを入力してください" required />
+                	<input type="hidden" id="no" name="no" value="${cd}" placeholder="科目コードを入力してください" required />
+                	<p>${cd}</p>
                 	<c:if test="${not empty errorStudentEmpty}">
                 		<div class="error-message">${errorStudentNameDuplicate}></div>
                 	</c:if>
@@ -265,7 +266,7 @@
 
                 <div class="form-group">
                     <label for="subjectName">科目名</label>
-                    <input type="text" id="subjectName" name="name" value="${subject.name}" placeholder="科目名を入力してください" required />
+                    <input type="text" id="subjectName" name="name" value="${name}" placeholder="科目名を入力してください" required />
                     <c:if test="${not empty errorSubjectNameEmpty}">
                     	<div class="error-message">${errorSubjectNameEmpty}</div>
                 	</c:if>

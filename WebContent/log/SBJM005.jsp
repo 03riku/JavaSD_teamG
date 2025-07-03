@@ -43,7 +43,7 @@
         変更が完了しました
     </div> <%-- ② 変更が完了しました --%>
 
-    <a href="SBJM001.jsp">科目一覧</a> <%-- ③ 科目一覧 (画像では「科目一覧」と表示されている) --%>
+    <a href="${pageContext.request.contextPath}/log/SBJM001.jsp">科目一覧</a> <%-- ③ 科目一覧 (画像では「科目一覧」と表示されている) --%>
 
 </body>
 </html>
