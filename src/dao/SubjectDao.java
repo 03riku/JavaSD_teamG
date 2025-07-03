@@ -128,7 +128,7 @@ public class SubjectDao extends Dao {
 
     /** 削除 */
     public boolean delete(Subject subject) throws Exception {
-        String sql = "DELETE FROM SUBJECT WHERE CD = ? AND SCHOOL_CD = ?";
+        String sql = "DELETE FROM SUBJECT WHERE CD = ?";
         // ★★★ デバッグログ追加 ★★★
         System.out.println("DEBUG (SubjectDao.delete): SQL: " + sql);
         System.out.println("DEBUG (SubjectDao.delete): Deleting subject CD: " + subject.getCd() + ", School CD: " + subject.getSchool().getCd());
@@ -137,7 +137,6 @@ public class SubjectDao extends Dao {
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, subject.getCd());
-            ps.setString(2, subject.getSchool().getCd());
             boolean result = ps.executeUpdate() > 0;
             // ★★★ デバッグログ追加 ★★★
             System.out.println("DEBUG (SubjectDao.delete): Delete result: " + result);

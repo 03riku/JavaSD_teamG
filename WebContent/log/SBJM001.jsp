@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page import="java.sql.*" %> <%-- JDBC関連のクラスをインポート --%>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
@@ -176,7 +177,7 @@
                 // 5. 結果の取得
                 while (rs.next()) {
                     Map<String, String> subject = new HashMap<>();
-                    subject.put("code", rs.getString("CD"));
+                    subject.put("cd", rs.getString("CD"));
                     subject.put("name", rs.getString("NAME"));
                     subjects.add(subject);
                 }
@@ -214,10 +215,10 @@
                     for (Map<String, String> subject : subjects) {
                     %>
                     <tr>
-                        <td><%= subject.get("code") %></td>
+                        <td><%= subject.get("cd") %></td>
                         <td><%= subject.get("name") %></td>
-                        <td><a href="../subject_update">変更</a></td>
-                        <td><a href="#">削除</a></td>
+                        <td><a href="${pageContext.request.contextPath}/main/subject_update?cd=<%= subject.get("cd") %>&name=<%= subject.get("name") %>">変更</a></td>
+                        <td><a href="${pageContext.request.contextPath}/main/subject_delete?cd=<%= subject.get("cd") %>&name=<%= subject.get("name") %>">削除</a></td>
                     </tr>
                     <%
                     }

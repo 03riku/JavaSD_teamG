@@ -53,15 +53,15 @@
             <label>科目コード:</label>
             <%-- 科目コードは表示専用 --%>
             <span>${subject.cd}</span>
-            <input type="hidden" name="cd" value="${subject.cd}"> <%-- 削除対象の科目を特定するためにhiddenで送信 --%>
+            <input type="hidden" name="cd" value="${cd}"> <%-- 削除対象の科目を特定するためにhiddenで送信 --%>
         </div>
         <br><br>
 
         <div>
             <label>科目名:</label>
             <%-- 科目名も表示専用 --%>
-            <span>${subject.name}</span>
-            <input type="hidden" name="name" value="${subject.name}"> <%-- 必要であれば科目名もhiddenで送信 --%>
+            <span>${name}</span>
+            <input type="hidden" name="name" value="${name}"> <%-- 必要であれば科目名もhiddenで送信 --%>
         </div>
         <br><br>
 
