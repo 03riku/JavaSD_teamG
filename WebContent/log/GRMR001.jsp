@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false"%>
-<%@ page import="Bean.Subject" %> <%-- ★この行が追加または確認してください★ --%>
+<%@ page import="Bean.Subject" %>
 
 <%
     // Servletから渡される属性の取得
@@ -65,7 +65,7 @@
 
         .container {
             display: flex;
-            min-height: calc(100vh - 41px);
+            min-height: calc(100vh - 41px); /* ヘッダーの高さ(約41px)を考慮 */
             background-color: #fff;
         }
 
@@ -253,7 +253,8 @@
             <div class="section">
                 <div class="section-title">成績参照</div>
 
-                <form action="<%= request.getContextPath() %>/GradeReferenceExecute.action" method="get">
+                <%-- ここが修正されました！ --%>
+                <form action="<%= request.getContextPath() %>/TestListStudentExecute.action" method="get">
                     <div class="form-group">
                         <span class="sub-section-label">科目情報</span>
                     </div>
