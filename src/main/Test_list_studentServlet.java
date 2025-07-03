@@ -50,26 +50,29 @@ public class Test_list_studentServlet extends HttpServlet { // もしクラス�
             // StudentDaoに getEntYears(School school) メソッドがあると仮定
             // もし引数がString schoolCdの場合は、studentDao.getEntYears(schoolCd); に変更
             entYears = studentDao.getEntYears(currentSchool);
-            request.setAttribute("entYearSet", entYears);
+            // 属性名をJSPに合わせるため "entYearSet" から "entYears" に変更
+            request.setAttribute("entYears", entYears);
             System.out.println("DEBUG (" + this.getClass().getSimpleName() + "): entYears list size: " + entYears.size());
 
             // クラス番号のリストを取得
             // ClassNumDaoに filter(String schoolCd) メソッドがあると仮定
             classNums = classNumDao.filter(schoolCd);
-            request.setAttribute("classNumSet", classNums);
+            // 属性名をJSPに合わせるため "classNumSet" から "classNums" に変更
+            request.setAttribute("classNums", classNums);
             System.out.println("DEBUG (" + this.getClass().getSimpleName() + "): classNums list size: " + classNums.size());
 
             // 科目のリストを取得
             // SubjectDaoに filter(School school) メソッドがあると仮定
             // もし引数がString schoolCdの場合は、subjectDao.filter(schoolCd); に変更
             subjects = subjectDao.filter(currentSchool);
-            request.setAttribute("subjectSet", subjects);
+            // 属性名をJSPに合わせるため "subjectSet" から "subjects" に変更
+            request.setAttribute("subjects", subjects);
             System.out.println("DEBUG (" + this.getClass().getSimpleName() + "): subjects list size: " + subjects.size());
 
             // テスト回数 (num) のリストを固定値で設定
             numList.add(1);
             numList.add(2);
-            request.setAttribute("numSet", numList);
+            request.setAttribute("numSet", numList); // この属性はJSPで使用されていないようですが、そのまま維持
             System.out.println("DEBUG (" + this.getClass().getSimpleName() + "): numList size: " + numList.size());
 
             // 取得したデータをGRMR001.jspにフォワード

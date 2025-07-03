@@ -13,11 +13,11 @@ public class ClassNumDao extends Dao {
 
         List<String> classNums = new ArrayList<>();
 
-        // ★★★ 修正箇所: テーブル名を CLASS_NUM から STUDENT に戻す ★★★
+        // テーブル名を STUDENT にしており、SCHOOL_CD でフィルタリングする
         String sql = "SELECT DISTINCT CLASS_NUM FROM STUDENT WHERE SCHOOL_CD = ? ORDER BY CLASS_NUM";
 
-        System.out.println("DEBUG (ClassNumDao.filter): SQL: " + sql); // デバッグログ追加
-        System.out.println("DEBUG (ClassNumDao.filter): Parameter School CD: " + schoolCd); // デバッグログ追加
+        System.out.println("DEBUG (ClassNumDao.filter): SQL: " + sql);
+        System.out.println("DEBUG (ClassNumDao.filter): Parameter School CD: " + schoolCd);
 
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -26,19 +26,19 @@ public class ClassNumDao extends Dao {
 
             ResultSet rs = pstmt.executeQuery();
 
-            System.out.println("DEBUG (ClassNumDao.filter): Query executed successfully. Fetching results..."); // デバッグログ追加
+            System.out.println("DEBUG (ClassNumDao.filter): Query executed successfully. Fetching results...");
 
             while (rs.next()) {
                 String classNum = rs.getString("CLASS_NUM");
                 classNums.add(classNum);
-                System.out.println("DEBUG (ClassNumDao.filter): Found ClassNum: " + classNum); // デバッグログ追加
+                System.out.println("DEBUG (ClassNumDao.filter): Found ClassNum: " + classNum);
             }
 
-            System.out.println("DEBUG (ClassNumDao.filter): Total ClassNums found: " + classNums.size()); // デバッグログ追加
+            System.out.println("DEBUG (ClassNumDao.filter): Total ClassNums found: " + classNums.size());
 
         } catch (SQLException e) {
             e.printStackTrace();
-            System.err.println("ERROR (ClassNumDao.filter): SQLException occurred: " + e.getMessage()); // エラーログ追加
+            System.err.println("ERROR (ClassNumDao.filter): SQLException occurred: " + e.getMessage());
             throw new Exception("クラス番号の取得中にデータベースエラーが発生しました。", e);
         }
 
