@@ -56,19 +56,24 @@
 <body>
     <div class="header">
         <h1>得点管理システム</h1>
-        <p style="text-align: right;"> <a href="LOGO001.jsp">ログアウト</a></p>
+        <%-- LOGO001.jsp も log ディレクトリにあるため、絶対パスに修正 --%>
+        <p style="text-align: right;"> <a href="${pageContext.request.contextPath}/log/LOGO001.jsp">ログアウト</a></p>
         <hr/>
     </div>
 
     <div class="menu">
         <ul>
-            <li><a href="MMNU001.jsp">メニュー</a></li>
-            <li><a href="STDM001.jsp">学生管理</a></li>
+            <%-- MMNU001.jsp も log ディレクトリにあるため、絶対パスに修正 --%>
+            <li><a href="${pageContext.request.contextPath}/log/MMNU001.jsp">メニュー</a></li>
+            <%-- STDM001.jsp も log ディレクトリにあるため、絶対パスに修正 --%>
+            <li><a href="${pageContext.request.contextPath}/log/STDM001.jsp">学生管理</a></li>
             <li><a>成績管理</a></li> <%-- この「成績管理」はリンクになっていません --%>
-            <li><a href="GRMR001.jsp">成績参照</a></li>
-            <%-- ★★ メニューの「成績登録」リンクの修正 ★★ --%>
+            <%-- GRMR001.jsp も log ディレクトリにあるため、絶対パスに修正 --%>
+            <li><a href="${pageContext.request.contextPath}/log/GRMR001.jsp">成績参照</a></li>
+            <%-- TestListSubjectExecute.action はサーブレットなので変更なし --%>
             <li><a href="${pageContext.request.contextPath}/TestListSubjectExecute.action">成績登録</a></li>
-            <li><a href="SBJM001.jsp">科目管理</a></li>
+            <%-- SBJM001.jsp も log ディレクトリにあるため、絶対パスに修正 --%>
+            <li><a href="${pageContext.request.contextPath}/log/SBJM001.jsp">科目管理</a></li>
         </ul>
     </div>
 
@@ -81,7 +86,7 @@
         </c:if>
 
         <div class="search-form">
-            <%-- ★★ 検索フォームの action 属性の修正 ★★ --%>
+            <%-- 検索フォームの action 属性はサーブレットなので変更なし --%>
             <form action="${pageContext.request.contextPath}/TestListSubjectExecute.action" method="get">
                 <table>
                     <tr>
@@ -98,7 +103,7 @@
                             </select>
                         </td>
                         <td>
-                            <select name="class_num"> <%-- ★★ name属性を "class_num" に修正 ★★ --%>
+                            <select name="class_num"> <%-- name属性を "class_num" に修正 --%>
                                 <option value="">選択してください</option> <%-- 初期値として空の選択肢を追加 --%>
                                 <c:forEach var="classOption" items="${classNums}">
                                     <%-- Controllerから渡されたselectedClassNumと一致する場合にselected属性を付与 --%>
@@ -136,7 +141,7 @@
                 <h3>科目: ${selectedSubjectCd}（${selectedNum}回）</h3> <%-- 表示内容を修正 --%>
 
                 <%-- 成績登録用のフォーム。actionは別途成績登録処理用のサーブレットになる想定 --%>
-                <form action="registerGrades" method="post"> <%-- "registerGrades" は仮のURL、適切なサーブレットURLに変更してください --%>
+                <form action="${pageContext.request.contextPath}/RegisterGradesExecute.action" method="post"> <%-- actionを絶対パスに修正 --%>
                     <table>
                         <thead>
                             <tr>
@@ -157,6 +162,7 @@
                                     <td>${test.student.name}</td>
                                     <td>
                                         <%-- 点数入力フィールドのname属性はユニークになるように studentNo を含める --%>
+                                        <input type="hidden" name="studentNo" value="${test.student.no}"> <%-- 学生番号をhiddenで送信 --%>
                                         <input type="number" name="score_${test.student.no}" value="${test.point}" min="0" max="100">
                                     </td>
                                 </tr>
@@ -164,8 +170,7 @@
                         </tbody>
                     </table>
                     <div class="register-button" style="text-align: left;">
-                        <%-- このボタンのformactionは適切なサーブレットURLに変更してください --%>
-                        <input type="submit" value="登録して終了" formaction="${pageContext.request.contextPath}/RegisterGradesExecute.action" class="gray-button"> <%-- 仮のサーブレット名を指定 --%>
+                        <input type="submit" value="登録して終了" class="gray-button">
                     </div>
                 </form>
             </div>

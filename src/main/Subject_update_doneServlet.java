@@ -1,9 +1,7 @@
-// src/main/java/servlet/SubjectDeleteDoneServlet.java
 package main;
 
 import java.io.IOException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,41 +9,78 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import Bean.Teacher; // Teacher Beanもセッションから取得すると仮定
+import Bean.Subject;
+import Bean.Teacher;
+import dao.SubjectDao;
 
-@WebServlet("/SBJM007") // このURLにアクセスするとこのサーブレットが実行されます
+@WebServlet("/subject_update_done")
 public class Subject_update_doneServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
 
-        request.setCharacterEncoding("UTF-8"); // リクエストのエンコーディングを設定
-
-        HttpSession session = request.getSession();
-        Teacher teacher = (Teacher) session.getAttribute("teacher"); // セッションから先生情報を取得
-
-        // ログインしていない場合はログインページへリダイレクト
-        // 削除完了画面では特に学校情報が必要ないかもしれないが、システムの整合性のためチェック
+        HttpSession session = request.getSession(false);
+        Teacher teacher = (session != null) ? (Teacher) session.getAttribute("teacher") : null;
         if (teacher == null || teacher.getSchool() == null) {
             request.setAttribute("errorMessage", "ログインが必要です。");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("LOGO001.jsp"); // ログインページへリダイレクト
-            dispatcher.forward(request, response);
+            request.getRequestDispatcher("LOGO001.jsp").forward(request, response);
             return;
         }
 
-        // 特に処理は不要。単に削除完了JSPにフォワードするだけ。
-        // もし、削除された科目の情報などをJSPに表示したい場合は、
-        // ここでリクエストスコープにsetAttributeする。
-        // 例: request.setAttribute("deletedSubjectName", "削除された科目名");
+        String cd = request.getParameter("no");
+        String name = request.getParameter("name");
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher("SBJM007.jsp");
-        dispatcher.forward(request, response);
+        // バリデーション例
+        boolean hasError = false;
+        if (cd == null || cd.trim().isEmpty()) {
+            request.setAttribute("errorMessage", "科目コードが空です。");
+            hasError = true;
+        }
+        if (name == null || name.trim().isEmpty()) {
+            request.setAttribute("errorSubjectNameEmpty", "科目名を入力してください。");
+            hasError = true;
+        }
+        if (hasError) {
+            request.setAttribute("no", cd);
+            Subject s = new Subject();
+            s.setCd(cd);
+            s.setName(name);
+            request.setAttribute("subject", s);
+            request.getRequestDispatcher("/log/SBJM004.jsp").forward(request, response);
+            return;
+        }
+
+        Subject subject = new Subject();
+        subject.setCd(cd);
+        subject.setName(name);
+        subject.setSchool(teacher.getSchool());
+
+        try {
+            SubjectDao dao = new SubjectDao();
+            boolean ok = dao.save(subject);
+            if (!ok) {
+                request.setAttribute("errorMessage", "科目の更新に失敗しました。");
+                request.getRequestDispatcher("/log/error.jsp").forward(request, response);
+                return;
+            }
+
+            request.setAttribute("successMessage", "科目が正常に更新されました。");
+            // 完了表示用に再度 no/name をセット
+            request.setAttribute("no", cd);
+            request.setAttribute("subject", subject);
+            request.getRequestDispatcher("/log/SBJM005.jsp").forward(request, response);
+
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
     }
 
-    // もしPOSTでこのサーブレットが呼ばれる可能性があるなら、doPostも実装する
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doGet(request, response); // POSTでもGETと同じ処理を行う
+        doPost(request, response);
     }
 }

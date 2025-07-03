@@ -18,89 +18,71 @@ public class StudentDao extends Dao {
         this.basesql = "SELECT NO,NAME,ENT_YEAR,CLASS_NUM,IS_ATTEND,SCHOOL_CD FROM STUDENT";
     }
 
-    // ★★ ここから追加するメソッド ★★
-
-    // 例: 全ての入学年度を取得するメソッド
+    // 全ての入学年度を取得するメソッド (デバッグ用：SCHOOL_CDフィルタリングなし)
     public List<Integer> getEntYears(School school) throws Exception {
         List<Integer> entYears = new ArrayList<>();
         // DISTINCTを使って重複しない入学年度を取得し、昇順に並べ替える
-        String sql = "SELECT DISTINCT ENT_YEAR FROM STUDENT WHERE SCHOOL_CD = ? ORDER BY ENT_YEAR";
+        // ★修正点1: WHERE SCHOOL_CD = ? を削除
+        String sql = "SELECT DISTINCT ENT_YEAR FROM STUDENT ORDER BY ENT_YEAR";
 
-        // ★★★ 追加するデバッグログ ★★★
         System.out.println("DEBUG (StudentDao.getEntYears): SQL: " + sql);
-        System.out.println("DEBUG (StudentDao.getEntYears): Parameter School CD: " + (school != null ? school.getCd() : "null"));
-        // ★★★ ここまで ★★★
+        // ★修正点2: パラメータのバインドも不要になるため、対応する行を削除
+        // System.out.println("DEBUG (StudentDao.getEntYears): Parameter School CD: " + (school != null ? school.getCd() : "null"));
 
         try (Connection con = getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, school.getCd());
+            // ps.setString(1, school.getCd()); // この行は削除またはコメントアウト
+
             try (ResultSet rs = ps.executeQuery()) {
-                // ★★★ 追加するデバッグログ ★★★
                 System.out.println("DEBUG (StudentDao.getEntYears): Query executed successfully. Fetching results...");
-                // ★★★ ここまで ★★★
                 while (rs.next()) {
                     int year = rs.getInt("ENT_YEAR");
                     entYears.add(year);
-                    // ★★★ 追加するデバッグログ ★★★
                     System.out.println("DEBUG (StudentDao.getEntYears): Found ENT_YEAR: " + year);
-                    // ★★★ ここまで ★★★
                 }
-                // ★★★ 追加するデバッグログ ★★★
                 System.out.println("DEBUG (StudentDao.getEntYears): Total years found: " + entYears.size());
-                // ★★★ ここまで ★★★
             }
         } catch (SQLException e) {
             e.printStackTrace(); // エラーログ出力
-            // ★★★ 追加するデバッグログ ★★★
             System.err.println("ERROR (StudentDao.getEntYears): SQLException occurred: " + e.getMessage());
-            // ★★★ ここまで ★★★
             throw new Exception("入学年度の取得中にデータベースエラーが発生しました。", e); // 例外をラップして再スロー
         }
         return entYears;
     }
 
-    // 例: 全てのクラス番号を取得するメソッド
+    // 全てのクラス番号を取得するメソッド (デバッグ用：SCHOOL_CDフィルタリングなし)
     public List<String> getClassNums(School school) throws Exception {
         List<String> classNums = new ArrayList<>();
         // DISTINCTを使って重複しないクラス番号を取得し、昇順に並べ替える
-        String sql = "SELECT DISTINCT CLASS_NUM FROM STUDENT WHERE SCHOOL_CD = ? ORDER BY CLASS_NUM";
+        // ★修正点3: WHERE SCHOOL_CD = ? を削除
+        String sql = "SELECT DISTINCT CLASS_NUM FROM STUDENT ORDER BY CLASS_NUM";
 
-        // ★★★ 追加するデバッグログ ★★★
         System.out.println("DEBUG (StudentDao.getClassNums): SQL: " + sql);
-        System.out.println("DEBUG (StudentDao.getClassNums): Parameter School CD: " + (school != null ? school.getCd() : "null"));
-        // ★★★ ここまで ★★★
+        // ★修正点4: パラメータのバインドも不要になるため、対応する行を削除
+        // System.out.println("DEBUG (StudentDao.getClassNums): Parameter School CD: " + (school != null ? school.getCd() : "null"));
 
         try (Connection con = getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, school.getCd());
+            // ps.setString(1, school.getCd()); // この行は削除またはコメントアウト
+
             try (ResultSet rs = ps.executeQuery()) {
-                // ★★★ 追加するデバッグログ ★★★
                 System.out.println("DEBUG (StudentDao.getClassNums): Query executed successfully. Fetching results...");
-                // ★★★ ここまで ★★★
                 while (rs.next()) {
                     String classNum = rs.getString("CLASS_NUM");
                     classNums.add(classNum);
-                    // ★★★ 追加するデバッグログ ★★★
                     System.out.println("DEBUG (StudentDao.getClassNums): Found CLASS_NUM: " + classNum);
-                    // ★★★ ここまで ★★★
                 }
-                // ★★★ 追加するデバッグログ ★★★
                 System.out.println("DEBUG (StudentDao.getClassNums): Total class numbers found: " + classNums.size());
-                // ★★★ ここまで ★★★
             }
         } catch (SQLException e) {
             e.printStackTrace(); // エラーログ出力
-            // ★★★ 追加するデバッグログ ★★★
             System.err.println("ERROR (StudentDao.getClassNums): SQLException occurred: " + e.getMessage());
-            // ★★★ ここまで ★★★
             throw new Exception("クラス番号の取得中にデータベースエラーが発生しました。", e); // 例外をラップして再スロー
         }
         return classNums;
     }
-
-    // ★★ ここまで追加するメソッド ★★
 
     // 学生を no で取得
     public Student get(String no) throws Exception {

@@ -128,26 +128,20 @@ public class SubjectDao extends Dao {
 
     /** 削除 */
     public boolean delete(Subject subject) throws Exception {
+    	boolean flag = false;
         String sql = "DELETE FROM SUBJECT WHERE CD = ? AND SCHOOL_CD = ?";
-        // ★★★ デバッグログ追加 ★★★
-        System.out.println("DEBUG (SubjectDao.delete): SQL: " + sql);
-        System.out.println("DEBUG (SubjectDao.delete): Deleting subject CD: " + subject.getCd() + ", School CD: " + subject.getSchool().getCd());
-        // ★★★ ここまで ★★★
-        try (Connection con = getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
 
+        try (Connection con = getConnection()) {
+            PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, subject.getCd());
             ps.setString(2, subject.getSchool().getCd());
-            boolean result = ps.executeUpdate() > 0;
-            // ★★★ デバッグログ追加 ★★★
-            System.out.println("DEBUG (SubjectDao.delete): Delete result: " + result);
-            // ★★★ ここまで ★★★
-            return result;
+            ps.executeUpdate();
+             flag =true ;
+
+            return flag;
         } catch (SQLException e) {
             e.printStackTrace();
-            // ★★★ エラーログ追加 ★★★
-            System.err.println("ERROR (SubjectDao.delete): SQLException occurred: " + e.getMessage());
-            // ★★★ ここまで ★★★
+
             throw new Exception("科目の削除中にデータベースエラーが発生しました。", e);
         }
     }

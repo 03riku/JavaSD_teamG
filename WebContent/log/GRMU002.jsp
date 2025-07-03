@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -107,26 +108,26 @@
     <div class="header">
         <h1>得点管理システム</h1>
         <div class="user-info">
-            大原 太郎様 <a href="LOGO001.jsp">ログアウト</a>
+            大原 太郎様 <a href="LOGO001.jsp">ログアウト</a> <%-- LOGO001.jspがlogフォルダにある場合、href="log/LOGO001.jsp" に変更 --%>
         </div>
     </div>
 
     <div class="container">
         <div class="menu">
-            <a href="MMNU001.jsp">メニュー</a>
-            <a href="STDM001.jsp">学生管理</a>
+            <a href="MMNU001.jsp">メニュー</a> <%-- MMNU001.jspがlogフォルダにある場合、href="log/MMNU001.jsp" に変更 --%>
+            <a href="STDM001.jsp">学生管理</a> <%-- STDM001.jspがlogフォルダにある場合、href="log/STDM001.jsp" に変更 --%>
             <div>成績管理</div>
-            <a href="GRMR001.jsp">成績参照</a>
-            <a href="GRMU001.jsp">成績登録</a>
-            <a href="SBJM001.jsp">科目管理</a>
+            <a href="log/GRMR001.jsp">成績参照</a> <%-- 修正 --%>
+            <a href="log/GRMU001.jsp">成績登録</a> <%-- 修正 --%>
+            <a href="SBJM001.jsp">科目管理</a> <%-- SBJM001.jspがlogフォルダにある場合、href="log/SBJM001.jsp" に変更 --%>
         </div>
 
         <div class="main-content">
             <div class="title-box">成績管理</div>
-            <div class="message-box">登録が完了しました</div>
+            <div class="message-box"><c:out value="${message}" /></div> <%-- Controllerからのメッセージ表示に修正 --%>
             <div class="bottom-links">
-                <a href="GRMU001.jsp">戻る</a>
-                <a href="GRMR001.jsp">成績参照</a>
+                <a href="log/GRMU001.jsp">戻る</a> <%-- 修正 --%>
+                <a href="log/GRMR001.jsp">成績参照</a> <%-- 修正 --%>
             </div>
         </div>
     </div>

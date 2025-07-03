@@ -9,12 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import Bean.School;
-import Bean.Subject;
 import Bean.Teacher;
-import dao.SubjectDao;
 
-@WebServlet("/SBJM006")
+@WebServlet(urlPatterns={"/main/subject_delete"})
 public class Subject_deleteServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -28,31 +25,14 @@ public class Subject_deleteServlet extends HttpServlet {
             return;
         }
 
-        String cd = request.getParameter("cd"); // 削除対象の科目コード
+        String cd = request.getParameter("cd");// 削除対象の科目コード
+        String name = request.getParameter("name");
 
-        SubjectDao subjectDao = new SubjectDao();
-        School school = teacher.getSchool();
-        Subject subject = null;
-        String errorMessage = null;
 
-        try {
-            subject = subjectDao.get(cd, school); // 科目コードと学校で科目を取得
-            if (subject.getName() == null) { // 科目が見つからない場合
-                errorMessage = "指定された科目が見つかりません。";
-            }
-        } catch (Exception e) {
-            errorMessage = "科目データの取得中にエラーが発生しました: " + e.getMessage();
-            e.printStackTrace();
-        }
 
-        if (errorMessage != null) {
-            request.setAttribute("errorMessage", errorMessage);
-            request.getRequestDispatcher("SBJM001.jsp").forward(request, response); // エラーの場合は一覧に戻る
-            return;
-        }
-
-        request.setAttribute("subject", subject);
-        request.getRequestDispatcher("SBJM006.jsp").forward(request, response);
+        request.setAttribute("cd", cd);
+        request.setAttribute("name", name);
+        request.getRequestDispatcher("/log/SBJM006.jsp").forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
