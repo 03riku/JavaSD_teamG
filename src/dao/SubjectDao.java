@@ -185,7 +185,7 @@ public class SubjectDao extends Dao {
     }
 
     /** 更新処理 */
-    private boolean update(Subject subject) throws Exception {
+    public boolean update(Subject subject) throws Exception {
         String sql = "UPDATE SUBJECT SET NAME = ? WHERE CD = ? AND SCHOOL_CD = ?";
         // ★★★ デバッグログ追加 ★★★
         System.out.println("DEBUG (SubjectDao.update): SQL: " + sql);

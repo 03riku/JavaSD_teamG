@@ -254,7 +254,7 @@
                 <div class="success-message">${successMessage}</div>
             </c:if>
 
-            <form action="SubjectUpdateExecuteServlet" method="post">
+            <form action="${pageContext.request.contextPath}/subject_update_done" method="post">
                 <div class="form-group">
                 	<label for="no">科目コード</label>
                 	<input type="text" id="no" name="no" value="${no}" placeholder="科目コードを入力してください" required />

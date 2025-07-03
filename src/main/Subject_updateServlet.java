@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import Bean.Subject;
+import Bean.Teacher;
 import dao.SubjectDao;
 
 @WebServlet("/subject_update")
@@ -19,35 +20,44 @@ public class Subject_updateServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
 
-        // パラメータ（科目コード）取得
-        String cd = request.getParameter("cd");
+        HttpSession session = request.getSession(false);
+        Teacher teacher = (session != null) ? (Teacher) session.getAttribute("teacher") : null;
+        if (teacher == null || teacher.getSchool() == null) {
+            request.setAttribute("errorMessage", "ログインが必要です。");
+            request.getRequestDispatcher("LOGO001.jsp").forward(request, response);
+            return;
+        }
+
+        String cd = request.getParameter("no"); // フォームの name="no" に合わせる
+        if (cd == null || cd.trim().isEmpty()) {
+            request.setAttribute("errorMessage", "科目コードが指定されていません。");
+            request.getRequestDispatcher("/log/error.jsp").forward(request, response);
+            return;
+        }
 
         try {
-            // 科目情報取得
             SubjectDao dao = new SubjectDao();
-            // School 情報は別途取得が必要なので仮に null を渡す前提ではなく
-            // Teacher セッションなどで渡してください
-            HttpSession session = request.getSession(false);
-            Bean.Teacher teacher = (session != null) ? (Bean.Teacher) session.getAttribute("teacher") : null;
-            Bean.School school = (teacher != null) ? teacher.getSchool() : null;
-
-            Subject subject = dao.get(cd, school);
-
+            Subject subject = dao.get(cd, teacher.getSchool());
             if (subject == null) {
-                request.setAttribute("error", "該当する科目が見つかりませんでした。");
+                request.setAttribute("errorMessage", "該当する科目が見つかりませんでした。");
                 request.getRequestDispatcher("/log/error.jsp").forward(request, response);
                 return;
             }
 
-            // 取得した科目情報をリクエストスコープに保存
             request.setAttribute("subject", subject);
-
-            // フォーム表示JSPへフォワード
+            request.setAttribute("no", subject.getCd());
             request.getRequestDispatcher("/log/SBJM004.jsp").forward(request, response);
 
         } catch (Exception e) {
             throw new ServletException(e);
         }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doGet(request, response);
     }
 }
