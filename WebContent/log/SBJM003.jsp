@@ -9,7 +9,7 @@
 <body>
 
 <!-- ヘッダー -->
-    <table width="100%" cellpadding="5" cellspacing="0" border="0" bgcolor="#e0e0ff">
+    <table width="100%" cellpadding="10" cellspacing="0" border="0" bgcolor="#e0e0ff">
         <tr>
             <td><b>得点管理システム</b></td>
             <td align="right">
@@ -22,15 +22,15 @@
         </tr>
     </table>
 
-    <table wigth="100%" border="0">
+    <table width="100%" border="0">
     	<tr valign="top">
-        	<td wigth="180" style="padding: 10px;">
-            	<a href="MMNU001.jsp">メニュー</a>
-            	<a href="STDM001.jsp">学生管理</a>
+        	<td width="180" style="padding: 10px;">
+            	<a href="${pageContext.request.contextPath}/log/MMNU001.jsp">メニュー</a><br><br>
+            	<a href="${pageContext.request.contextPath}/log/STDM001.jsp">学生管理</a><br>
             	<a>成績管理</a><br>
-            	<a href="GRMU001.jsp">成績登録</a><br>
-            	<a href="GRMR001.jsp">成績検索</a>
-            	<a href="SBJM001.jsp">科目管理</a>
+            	<a href="${pageContext.request.contextPath}/log/GRMU001.jsp">成績登録</a><br>
+            	<a href="${pageContext.request.contextPath}/log/GRMR001.jsp">成績検索</a><br>
+            	<a href="${pageContext.request.contextPath}/log/SBJM001.jsp">科目管理</a><br>
         	</td>
 
     		<%-- メインコンテンツのタイトル --%>
@@ -40,14 +40,14 @@
     			<%-- 登録完了メッセージ --%>
     			<table width="60%" cellpadding="10" cellspacing="0" corder="1" bgcolor="#ccffcc">
     				<tr>
-    					<td align="center">登録がかんりょうしました</td>
+    					<td align="center">登録が完了しました</td>
     				</tr>
     			</table>
     			<br>
 
-    			<a href="SBJM002.jsp">戻る</a> <%-- ③ 戻る --%>
+    			<a href="${pageContext.request.contextPath}/log/SBJM002.jsp">戻る</a> <%-- ③ 戻る --%>
     			&nbsp;
-    			<a href="SBJM001.jsp">科目一覧</a> <%-- ④ 科目一覧 (仮のリンク先) --%>
+    			<a href="${pageContext.request.contextPath}/log/SBJM001.jsp">科目一覧</a> <%-- ④ 科目一覧 (仮のリンク先) --%>
 			</td>
 		</tr>
 	</table>
