@@ -284,9 +284,9 @@ body {
                     <%-- クラスを選択。Student Beanの値に応じてselectedを設定。name属性をclass_numに変更 --%>
                     <select id="classNum" name="class_num" required>
                         <option value="">選択してください</option>
-                        <option value="131" <%= (student.getClassNum() != null && student.getClassNum().equals("301")) ? "selected" : "" %>>301</option>
-                        <option value="132" <%= (student.getClassNum() != null && student.getClassNum().equals("302")) ? "selected" : "" %>>302</option>
-                        <option value="133" <%= (student.getClassNum() != null && student.getClassNum().equals("303")) ? "selected" : "" %>>303</option>
+                        <option value="131" <%= (student.getClassNum() != null && student.getClassNum().equals("131")) ? "selected" : "" %>>301</option>
+                        <option value="132" <%= (student.getClassNum() != null && student.getClassNum().equals("132")) ? "selected" : "" %>>302</option>
+                        <option value="133" <%= (student.getClassNum() != null && student.getClassNum().equals("133")) ? "selected" : "" %>>303</option>
                         <%-- 必要に応じて他のクラスオプションを追加 --%>
                     </select>
                 </div>
