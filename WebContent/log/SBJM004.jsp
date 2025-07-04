@@ -10,25 +10,28 @@
     <style>
         /* ここからCSSの記述 */
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-
+            font-family: sans-serif;
+		    margin: 0;
+		    display: flex;
+		    flex-direction: column;
+		    min-height: 100vh;
+		    background-color: #f4f4f4; /* 全体の背景色を追加 */
         }
 
         /* Header Styles - Applied to the table */
         .header {
-            width: 100%;
-            padding: 10px;
-            background-color: #e0e0e0; /* Light gray background for header */
-            border-bottom: 1px solid #c0c0c0; /* Subtle separator line */
-            box-sizing: border-box; /* Include padding in width */
-            margin-bottom: 0;
+            background-color: #ffffff; /* 白背景 */
+		    padding: 10px 20px;
+		    display: flex;
+		    justify-content: space-between;
+		    align-items: center;
+		    border-bottom: 1px solid #ddd; /* 境界線 */
+		    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* 軽い影 */
         }
 
         .header h1 {
             margin: 0;
-            font-size: 1.5em;
+            font-size: 24em;
             color: #333;
 
         }
@@ -50,6 +53,19 @@
             text-decoration: underline;
         }
 
+        .user-info {
+        	font-size: 14px;
+    		color: #555;
+        }
+        .user-info a {
+        	color: #007bff;
+		    text-decoration: none;
+		    margin-left: 10px;
+        }
+        .user-info a:hover {
+    		text-decoration: underline;
+		}
+
         /* Main Layout Container for Navigation and Content */
         .main-container {
             display: flex;
@@ -58,12 +74,20 @@
 
         /* Left Navigation Bar */
         .nav-sidebar {
-            width: 180px; /* Fixed width for navigation */
-            background-color: #f0f0f0; /* Dark blue/gray background */
-            padding: 20px 0; /* Vertical padding */
-            border-right: 1px solid #ccc;
-            box-sizing: border-box;
+            width: 200px;
+		    background-color: #ffffff; /* 白背景 */
+		    padding: 20px 0; /* 上下左右のパディング調整 */
+		    border-right: 1px solid #ddd;
+		    box-shadow: 2px 0 4px rgba(0,0,0,0.05); /* 軽い影 */
         }
+        .sidebar h3 {
+		    margin-top: 0;
+		    padding: 0 20px; /* パディング */
+		    color: #444;
+		    border-bottom: 1px solid #eee;
+		    padding-bottom: 10px;
+		    margin-bottom: 15px;
+		}
 
         .nav-sidebar ul {
             list-style: none;
@@ -72,44 +96,44 @@
         }
 
         .nav-sidebar li {
-            margin-bottom: 0px;
+            margin-bottom: 5px;
         }
 
-        .nav-sidebar a,
-        .nav-sidebar label {
-            display: block;
-            padding: 10px 20px;
-            color: white;
+        .nav-sidebar a{
             text-decoration: none;
-            transition: background-color 0.2s ease;
+		    color: #333;
+		    display: block;
+		    padding: 10px 20px; /* パディング */
+		    transition: background-color 0.3s ease; /* ホバーアニメーション */
+
         }
 
         .nav-sidebar a:hover {
-            background-color: #2c3e50;
-        }
-
-        .nav-sidebar label {
-            font-weight: bold;
-            cursor: default; /* Indicate it's not a clickable link */
+            background-color: #e9e9e9;
+    		color: #007bff;
         }
 
         /* Main Content Area */
         .main-content {
-            flex: 1; /* Allows main content to take remaining space */
-            padding: 20px 30px;
-            background-color: white; /* White background */
-            box-shadow: 0 0 10px rgba(0,0,0,0.05); /* Subtle shadow */
+            flex-grow: 1;
+		    padding: 20px;
+		    background-color: #ffffff; /* 白背景 */
+		    margin-left: 10px; /* サイドバーとの間に少しスペース */
+		    border-radius: 8px; /* 角を丸くする */
+		    box-shadow: 0 0 10px rgba(0,0,0,0.05); /* 軽い影 */
+
         }
 
-        h2 {
-            color: #333;
+        .main-content h2 {
             margin-top: 0;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #007bff; /* Blue underline */
-            color: #333;
-            margin-bottom: 25px;
-            font-size: 28px;
+		    padding-bottom: 15px;
+		    border-bottom: 2px solid #007bff; /* 青い下線 */
+		    color: #333;
+		    margin-bottom: 25px;
+		    font-size: 28px;
+
         }
+
 
         .form-group {
             margin-bottom: 20px;
@@ -229,24 +253,26 @@
 <body>
     <div class="header">
         <h1>得点管理システム</h1>
-        <a href="LOGU001.jsp">ログアウト</a>
+        <div class="user-info">
+        	<a href="${pageContext.request.contextPath}/log/LOGU001.jsp">ログアウト</a>
+        </div>
     </div>
 
     <div class="main-container">
         <div class="nav-sidebar">
-            <ul>
-                <li><a href="MMNU001.jsp">メニュー</a></li>
-                <li><a href="STDM001.jsp">学生管理</a></li>
+        	<h3>メニュー</h3>
+        	<ul>
+                <li><a href="${pageContext.request.contextPath}/log/STDM001.jsp">学生管理</a></li>
                 <li><label>成績管理</label></li>
-                <li><a href="GRMU001.jsp">成績登録</a></li>
-                <li><a href="GRMR001.jsp">成績検索</a></li>
-                <li><a href="SRJM002.jsp">科目管理</a></li>
+                <li><a href="${pageContext.request.contextPath}/log/GRMU001.jsp">成績登録</a></li>
+                <li><a href="${pageContext.request.contextPath}/log/GRMR001.jsp">成績検索</a></li>
+                <li><a href="${pageContext.request.contextPath}/log/SRJM002.jsp">科目管理</a></li>
             </ul>
         </div>
 
         <div class="main-content">
             <h2>科目情報変更</h2>
-
+            <%-- エラーメッセージがあれば表示 --%>
             <c:if test="${not empty errorMessage}">
                 <div class="error-message">${errorMessage}</div>
             </c:if>
