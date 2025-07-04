@@ -346,7 +346,8 @@
                             %>
                         </select>
 
-                        <button type="submit" class="search-button">検索</button>
+                        <%-- ★修正点：科目情報検索ボタンにname="searchSubject"を追加★ --%>
+                        <button type="submit" name="searchSubject" class="search-button">検索</button>
                     </div>
 
                     <div class="form-group" style="margin-top: 15px;">
@@ -355,7 +356,8 @@
                     <div class="form-group student-search">
                         <label for="studentId">学生番号</label>
                         <input type="text" id="studentId" name="studentId" placeholder="学生番号を入力してください" value="<%= paramStudentId %>">
-                        <button type="submit" class="search-button">検索</button>
+                        <%-- ★修正点：学生情報検索ボタンにname="searchStudent"を追加★ --%>
+                        <button type="submit" name="searchStudent" class="search-button">検索</button>
                     </div>
                 </form>
 
