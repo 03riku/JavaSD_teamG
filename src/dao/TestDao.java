@@ -7,136 +7,187 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import Bean.School;
+import Bean.School; // School Beanをインポート
 import Bean.Student;
 import Bean.Subject;
 import Bean.Test;
 
-public class TestDao extends Dao { // BaseDaoからDaoに変更されている点に注意
+public class TestDao extends Dao {
 
-    // Test BeanにResultSetのデータをセットするヘルパーメソッド
-    private Test setTestFromResultSet(ResultSet rSet, School school) throws SQLException {
-        Test test = new Test();
-        Student student = new Student();
-        Subject subject = new Subject();
-
-        // 学生情報
-        student.setNo(rSet.getString("student_no"));
-        student.setName(rSet.getString("student_name")); // JOINで取得
-        student.setEntYear(rSet.getInt("ent_year"));     // JOINで取得
-        student.setClassNum(rSet.getString("class_num")); // JOINで取得
-        student.setAttend(rSet.getBoolean("is_attend")); // JOINで取得
-
-        // ここを修正します
-        String studentSchoolCd = rSet.getString("school_cd");
-        School studentSchool = new School();
-        studentSchool.setCd(studentSchoolCd);
-        // 必要であれば、ここでSchoolDaoを使って学校名などを取得し、studentSchoolにセットするロジックを追加
-        // 例: SchoolDao schoolDao = new SchoolDao(); School fullSchool = schoolDao.get(studentSchoolCd); student.setSchool(fullSchool);
-        student.setSchool(studentSchool); // 生成したSchoolオブジェクトをセット
-
-
-        // 科目情報
-        subject.setCd(rSet.getString("subject_cd"));
-        subject.setName(rSet.getString("subject_name")); // JOINで取得
-
-        // ここも修正します
-        String subjectSchoolCd = rSet.getString("school_cd"); // subjectの学校コード
-        School subjectSchool = new School();
-        subjectSchool.setCd(subjectSchoolCd);
-        // 必要であれば、ここでSchoolDaoを使って学校名などを取得し、subjectSchoolにセットするロジックを追加
-        subject.setSchool(subjectSchool); // 生成したSchoolオブジェクトをセット
-
-
-        test.setStudent(student);
-        test.setSubject(subject);
-        test.setNo(rSet.getInt("no")); // 試験回数
-        test.setPoint(rSet.getInt("point"));
-        test.setClassNum(rSet.getString("class_num_test")); // TESTテーブルのclass_num
-        test.setSchool(school); // Test Bean自身のSchoolオブジェクトは引数で受け取ったものをセット
-
-        return test;
-    }
-
-
-    /**
-     * 指定された条件でテスト結果を検索します。
-     * @param entYear   入学年度 (null の場合、条件に含めない)
-     * @param classNum  クラス番号 (null または空の場合、条件に含めない)
-     * @param subjectCd 科目コード (null または空の場合、条件に含めない)
-     * @param schoolCd  学校コード (必須)
-     * @return 検索されたTestオブジェクトのリスト
-     * @throws Exception SQLエラーまたはデータ取得エラー
-     */
+    // 科目情報でフィルタリングするメソッド (引数にschoolCdを追加)
     public List<Test> filter(Integer entYear, String classNum, String subjectCd, String schoolCd) throws Exception {
         List<Test> tests = new ArrayList<>();
         Connection con = null;
-        PreparedStatement pStmt = null;
-        ResultSet rSet = null;
-
+        PreparedStatement st = null;
         try {
-            con = getConnection(); // DaoからConnectionを取得 (BaseDaoからDaoに名前が変わった場合)
-
+            con = getConnection();
             StringBuilder sql = new StringBuilder();
-            sql.append("SELECT ");
-            sql.append("    T.STUDENT_NO, S.NAME AS student_name, S.ENT_YEAR, S.CLASS_NUM, S.IS_ATTEND, S.SCHOOL_CD, "); // S.SCHOOL_CD を追加
-            sql.append("    T.SUBJECT_CD, SUB.NAME AS subject_name, SUB.SCHOOL_CD AS subject_school_cd, "); // SUB.SCHOOL_CD を追加しエイリアスを付ける
-            sql.append("    T.NO, T.POINT, T.CLASS_NUM AS class_num_test ");
-            sql.append("FROM TEST AS T ");
-            sql.append("JOIN STUDENT AS S ON T.STUDENT_NO = S.NO AND T.SCHOOL_CD = S.SCHOOL_CD ");
-            sql.append("JOIN SUBJECT AS SUB ON T.SUBJECT_CD = SUB.CD AND T.SCHOOL_CD = SUB.SCHOOL_CD ");
-            sql.append("WHERE T.SCHOOL_CD = ? ");
+            sql.append("SELECT test.student_no, student.name, student.ent_year, student.class_num, test.subject_cd, subject.name AS subject_name, test.no, test.point ");
+            sql.append("FROM test ");
+            sql.append("JOIN student ON test.student_no = student.no AND student.school_cd = ? "); // 学校コードで結合
+            sql.append("JOIN subject ON test.subject_cd = subject.cd AND subject.school_cd = ? "); // 学校コードで結合
+            sql.append("WHERE 1=1 "); // 後続の条件のためにダミー条件
 
-            List<Object> paramList = new ArrayList<>();
-            paramList.add(schoolCd);
+            List<Object> params = new ArrayList<>();
+            params.add(schoolCd);
+            params.add(schoolCd); // subjectも同じ学校コード
 
             if (entYear != null) {
-                sql.append("AND S.ENT_YEAR = ? ");
-                paramList.add(entYear);
+                sql.append("AND student.ent_year = ? ");
+                params.add(entYear);
             }
             if (classNum != null && !classNum.isEmpty()) {
-                sql.append("AND T.CLASS_NUM = ? ");
-                paramList.add(classNum);
+                sql.append("AND student.class_num = ? ");
+                params.add(classNum);
             }
             if (subjectCd != null && !subjectCd.isEmpty()) {
-                sql.append("AND T.SUBJECT_CD = ? ");
-                paramList.add(subjectCd);
+                sql.append("AND test.subject_cd = ? ");
+                params.add(subjectCd);
             }
 
-            sql.append("ORDER BY S.NO, SUB.CD, T.NO");
+            sql.append("ORDER BY student.no, test.no");
 
-            pStmt = con.prepareStatement(sql.toString());
+            st = con.prepareStatement(sql.toString());
 
-            for (int i = 0; i < paramList.size(); i++) {
-                pStmt.setObject(i + 1, paramList.get(i));
+            for (int i = 0; i < params.size(); i++) {
+                st.setObject(i + 1, params.get(i));
             }
 
-            rSet = pStmt.executeQuery();
+            ResultSet rs = st.executeQuery();
 
-            // School Bean (Test BeanでSchoolを持つ場合)
-            // このschoolはTestオブジェクトのschoolフィールドにセットされる。
-            // StudentやSubjectにセットするSchoolとは異なる場合があるので注意。
-            // 必要であれば、ここでSchoolDaoを使って学校名なども取得し、より完全なSchoolオブジェクトを生成する
-            School schoolObjectForTestBean = new School();
-            schoolObjectForTestBean.setCd(schoolCd);
-            // 例: schoolObjectForTestBean.setName(new SchoolDao().get(schoolCd).getName());
+            while (rs.next()) {
+                Test test = new Test();
+                Student student = new Student();
+                Subject subject = new Subject();
 
-            while (rSet.next()) {
-                tests.add(setTestFromResultSet(rSet, schoolObjectForTestBean));
+                student.setNo(rs.getString("student_no"));
+                student.setName(rs.getString("name"));
+                student.setEntYear(rs.getInt("ent_year"));
+                student.setClassNum(rs.getString("class_num"));
+
+                subject.setCd(rs.getString("subject_cd"));
+                subject.setName(rs.getString("subject_name"));
+
+                test.setStudent(student);
+                test.setSubject(subject);
+                test.setNo(rs.getInt("no")); // 試験回数
+                test.setPoint(rs.getInt("point"));
+
+                tests.add(test);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new Exception("データベースからのテスト結果取得中にエラーが発生しました。", e);
+            throw new Exception("データベースエラーが発生しました。", e);
         } finally {
-            try {
-                if (rSet != null) rSet.close();
-                if (pStmt != null) pStmt.close();
-                if (con != null) con.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            if (st != null) try { st.close(); } catch (SQLException e) { /* ignore */ }
+            if (con != null) try { con.close(); } catch (SQLException e) { /* ignore */ }
         }
         return tests;
+    }
+
+    // ★学生番号でフィルタリングする新しいメソッド (引数にschoolCdを追加)★
+    public List<Test> filterByStudentId(String studentNo, String schoolCd) throws Exception {
+        List<Test> tests = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement st = null;
+        try {
+            con = getConnection();
+            String sql = "SELECT test.student_no, student.name, student.ent_year, student.class_num, test.subject_cd, subject.name AS subject_name, test.no, test.point " +
+                         "FROM test " +
+                         "JOIN student ON test.student_no = student.no AND student.school_cd = ? " + // 学校コードで結合
+                         "JOIN subject ON test.subject_cd = subject.cd AND subject.school_cd = ? " + // 学校コードで結合
+                         "WHERE test.student_no = ? ORDER BY test.subject_cd, test.no";
+            st = con.prepareStatement(sql);
+            st.setString(1, schoolCd);
+            st.setString(2, schoolCd);
+            st.setString(3, studentNo);
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                Test test = new Test();
+                Student student = new Student();
+                Subject subject = new Subject();
+
+                student.setNo(rs.getString("student_no"));
+                student.setName(rs.getString("name"));
+                student.setEntYear(rs.getInt("ent_year"));
+                student.setClassNum(rs.getString("class_num"));
+
+                subject.setCd(rs.getString("subject_cd"));
+                subject.setName(rs.getString("subject_name"));
+
+                test.setStudent(student);
+                test.setSubject(subject);
+                test.setNo(rs.getInt("no"));
+                test.setPoint(rs.getInt("point"));
+
+                tests.add(test);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new Exception("データベースエラーが発生しました。", e);
+        } finally {
+            if (st != null) try { st.close(); } catch (SQLException e) { /* ignore */ }
+            if (con != null) try { con.close(); } catch (SQLException e) { /* ignore */ }
+        }
+        return tests;
+    }
+
+    // 必要に応じて、StudentDaoやSubjectDaoにあるべきメソッドをここに移動したり、
+    // TestDaoから呼び出すように修正してください。
+
+    // StudentDaoに存在するはずのメソッドですが、参考としてTestDaoに仮で記述
+    public List<Integer> getEntYears(School school) throws Exception {
+        List<Integer> entYears = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try {
+            con = getConnection();
+            // 学校コードでフィルタリング
+            st = con.prepareStatement("SELECT DISTINCT ent_year FROM student WHERE school_cd = ? ORDER BY ent_year");
+            st.setString(1, school.getCd());
+            rs = st.executeQuery();
+            while (rs.next()) {
+                entYears.add(rs.getInt("ent_year"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new Exception("入学年度の取得中にエラーが発生しました。", e);
+        } finally {
+            if (rs != null) try { rs.close(); } catch (SQLException e) { /* ignore */ }
+            if (st != null) try { st.close(); } catch (SQLException e) { /* ignore */ }
+            if (con != null) try { con.close(); } catch (SQLException e) { /* ignore */ }
+        }
+        return entYears;
+    }
+
+    // SubjectDaoに存在するはずのメソッドですが、参考としてTestDaoに仮で記述
+    public Subject get(String cd, School school) throws Exception {
+        Subject subject = null;
+        Connection con = null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try {
+            con = getConnection();
+            st = con.prepareStatement("SELECT * FROM subject WHERE cd = ? AND school_cd = ?");
+            st.setString(1, cd);
+            st.setString(2, school.getCd());
+            rs = st.executeQuery();
+            if (rs.next()) {
+                subject = new Subject();
+                subject.setCd(rs.getString("cd"));
+                subject.setName(rs.getString("name"));
+                subject.setSchool(school); // Schoolオブジェクトもセット
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new Exception("科目の取得中にエラーが発生しました。", e);
+        } finally {
+            if (rs != null) try { rs.close(); } catch (SQLException e) { /* ignore */ }
+            if (st != null) try { st.close(); } catch (SQLException e) { /* ignore */ }
+            if (con != null) try { con.close(); } catch (SQLException e) { /* ignore */ }
+        }
+        return subject;
     }
 }

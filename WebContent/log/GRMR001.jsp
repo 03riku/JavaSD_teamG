@@ -1,22 +1,30 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false"%>
 <%@ page import="Bean.Subject" %>
+<%@ page import="Bean.Test" %>
+<%@ page import="Bean.Student" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%
     // Servletから渡される属性の取得
     java.util.List<Integer> entYears = (java.util.List<Integer>) request.getAttribute("entYears");
     java.util.List<String> classNums = (java.util.List<String>) request.getAttribute("classNums");
-    // ここは List<Bean.Subject> とするのがより正確です
-    java.util.List<Object> subjects = (java.util.List<Object>) request.getAttribute("subjects"); // Servlet側がList<Object>で渡す場合
-    // もしServlet側で List<Subject> で渡しているなら、以下のようにしても良いです:
-    // java.util.List<Bean.Subject> subjects = (java.util.List<Bean.Subject>) request.getAttribute("subjects");
+    java.util.List<Bean.Subject> subjects = (java.util.List<Bean.Subject>) request.getAttribute("subjects");
+    java.util.List<Bean.Test> testResults = (java.util.List<Bean.Test>) request.getAttribute("testResults");
 
+    // メッセージはJSTLで表示するため、スクリプトレットでの取得は必須ではありませんが、あれば利用します
     String message = (String) request.getAttribute("message");
 
-    // リクエストパラメータの取得
-    String paramYear = request.getParameter("year");
-    String paramClassNum = request.getParameter("class_num");
-    String paramSubjectCd = request.getParameter("subject");
-    String paramStudentId = request.getParameter("studentId");
+    // リクエストパラメータの取得（JSTLで表示する場合は不要ですが、スクリプトレットで利用するため維持）
+    String paramYear = (String) request.getAttribute("paramYear");
+    String paramClassNum = (String) request.getAttribute("paramClassNum");
+    String paramSubjectCd = (String) request.getAttribute("paramSubjectCd");
+    String paramStudentId = (String) request.getAttribute("paramStudentId");
+
+    // JSPスクリプトレットでselectのselected属性を設定する場合の処理
+    if(paramYear == null) paramYear = "";
+    if(paramClassNum == null) paramClassNum = "";
+    if(paramSubjectCd == null) paramSubjectCd = "";
+    if(paramStudentId == null) paramStudentId = "";
 %>
 <!DOCTYPE html>
 <html lang="ja">
@@ -24,6 +32,7 @@
     <meta charset="UTF-8">
     <title>得点管理システム - 成績参照</title>
     <style>
+        /* スタイルは変更なし */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -226,6 +235,28 @@
         .form-group.student-search .search-button {
             margin-left: 20px;
         }
+
+        /* 検索結果テーブルのスタイル */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+        .table-bordered {
+            border: 1px solid #ddd;
+        }
     </style>
 </head>
 <body>
@@ -253,7 +284,6 @@
             <div class="section">
                 <div class="section-title">成績参照</div>
 
-                <%-- ここが修正されました！ --%>
                 <form action="<%= request.getContextPath() %>/TestListStudentExecute.action" method="get">
                     <div class="form-group">
                         <span class="sub-section-label">科目情報</span>
@@ -300,9 +330,7 @@
                             <option value="">------</option>
                             <%
                             if (subjects != null) {
-                                for (Object subjectObj : subjects) {
-                                    // ObjectをBean.Subjectにキャスト
-                                    Bean.Subject subjectOption = (Bean.Subject) subjectObj;
+                                for (Bean.Subject subjectOption : subjects) {
                                     String subjectCd = subjectOption.getCd();
                                     String subjectName = subjectOption.getName();
 
@@ -318,7 +346,8 @@
                             %>
                         </select>
 
-                        <button type="submit" class="search-button">検索</button>
+                        <%-- ★修正点：科目情報検索ボタンにname="searchSubject"を追加★ --%>
+                        <button type="submit" name="searchSubject" class="search-button">検索</button>
                     </div>
 
                     <div class="form-group" style="margin-top: 15px;">
@@ -326,24 +355,90 @@
                     </div>
                     <div class="form-group student-search">
                         <label for="studentId">学生番号</label>
-                        <input type="text" id="studentId" name="studentId" placeholder="学生番号を入力してください" value="<%= (paramStudentId != null ? paramStudentId : "") %>">
-                        <button type="submit" class="search-button">検索</button>
+                        <input type="text" id="studentId" name="studentId" placeholder="学生番号を入力してください" value="<%= paramStudentId %>">
+                        <%-- ★修正点：学生情報検索ボタンにname="searchStudent"を追加★ --%>
+                        <button type="submit" name="searchStudent" class="search-button">検索</button>
                     </div>
                 </form>
 
                 <div class="info-message">
-                    <%
-                    if (message != null && !message.isEmpty()) {
-                    %>
-                        <%= message %>
-                    <%
-                    } else {
-                    %>
-                        科目情報を選択または学生情報を入力して検索ボタンをクリックしてください
-                    <%
-                    }
-                    %>
+                    <c:choose>
+                        <c:when test="${not empty message}">
+                            ${message}
+                        </c:when>
+                        <c:otherwise>
+                            科目情報を選択または学生情報を入力して検索ボタンをクリックしてください
+                        </c:otherwise>
+                    </c:choose>
                 </div>
+
+                <%-- ★ここから検索結果の表示セクションを分岐させる★ --%>
+                <div class="section" style="margin-top: 20px;">
+                    <h2>検索結果</h2>
+
+                    <c:choose>
+                        <c:when test="${not empty testResults}">
+                            <c:choose>
+                                <c:when test="${searchType eq 'byStudentId'}">
+                                    <%-- 学生IDで検索した場合の表示 --%>
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>学生番号</th>
+                                                <th>氏名</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <c:forEach var="test" items="${testResults}">
+                                                <tr>
+                                                    <td>${test.student.no}</td>
+                                                    <td>${test.student.name}</td>
+                                                </tr>
+                                            </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </c:when>
+                                <c:when test="${searchType eq 'bySubject'}">
+                                    <%-- 科目情報で検索した場合の表示 (既存のフル情報表示) --%>
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>入学年度</th>
+                                                <th>クラス番号</th>
+                                                <th>学生番号</th>
+                                                <th>氏名</th>
+                                                <th>科目名</th>
+                                                <th>受験回数</th>
+                                                <th>得点</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <c:forEach var="test" items="${testResults}">
+                                                <tr>
+                                                    <td>${test.student.entYear}</td>
+                                                    <td>${test.student.classNum}</td>
+                                                    <td>${test.student.no}</td>
+                                                    <td>${test.student.name}</td>
+                                                    <td>${test.subject.name}</td>
+                                                    <td>${test.no}</td>
+                                                    <td>${test.point}</td>
+                                                </tr>
+                                            </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </c:when>
+                                <c:otherwise>
+                                    <%-- searchTypeが"initial"の場合など、テーブル表示は行わない --%>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:when>
+                        <c:otherwise>
+                            <%-- testResults が空の場合、テーブルは表示しない (メッセージは上記info-messageで表示) --%>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+                <%-- ★ここまで検索結果の表示セクション --%>
+
             </div>
         </div>
     </div>
