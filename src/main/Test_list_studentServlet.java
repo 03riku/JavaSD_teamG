@@ -47,7 +47,7 @@ public class Test_list_studentServlet extends HttpServlet {
         // 検索結果を格納するリストとメッセージ
         List<Test> testResults = new ArrayList<>();
         String message = "";
-        String selectedSubjectName = ""; // 科目名表示用 (TestListSubjectExecute.action にも必要かも)
+        String searchType = "initial"; // ★検索タイプを初期化: "initial" (初期表示), "bySubject" (科目検索), "byStudentId" (学生ID検索)
 
         try {
             // --- ドロップダウンリストデータの取得 (常に必要) ---
@@ -73,7 +73,7 @@ public class Test_list_studentServlet extends HttpServlet {
             String paramYearStr = request.getParameter("year");
             String paramClassNum = request.getParameter("class_num");
             String paramSubjectCd = request.getParameter("subject");
-            String paramStudentId = request.getParameter("studentId"); // 学生ID
+            String paramStudentId = request.getParameter("studentId");
 
 
             // 検索パラメータをJSPに送り返し、選択状態を維持する
@@ -95,7 +95,8 @@ public class Test_list_studentServlet extends HttpServlet {
             if (paramStudentId != null && !paramStudentId.isEmpty()) {
                 // 学生番号が入力されている場合（学生IDによる検索を優先）
                 System.out.println("DEBUG (" + this.getClass().getSimpleName() + "): Searching by student ID: " + paramStudentId);
-                testResults = testDao.filterByStudentId(paramStudentId, schoolCd); // schoolCdも渡すように変更
+                testResults = testDao.filterByStudentId(paramStudentId, schoolCd);
+                searchType = "byStudentId"; // ★検索タイプを設定
 
                 if (testResults.isEmpty()) {
                     message = "該当する学生の成績データが見つかりませんでした。";
@@ -109,27 +110,25 @@ public class Test_list_studentServlet extends HttpServlet {
                 System.out.println("DEBUG (" + this.getClass().getSimpleName() + "): Searching by year, class, subject.");
                 Integer year = Integer.parseInt(paramYearStr);
                 testResults = testDao.filter(year, paramClassNum, paramSubjectCd, schoolCd);
+                searchType = "bySubject"; // ★検索タイプを設定
 
                 if (testResults.isEmpty()) {
                     message = "指定された科目条件の成績は見つかりませんでした。";
                 } else {
-                    // 選択された科目名を取得してJSPに渡す（もしあれば）
-                    Subject selectedSubject = subjectDao.get(paramSubjectCd, currentSchool); // getメソッドにSchoolを渡す想定
-                    if (selectedSubject != null) {
-                        selectedSubjectName = selectedSubject.getName();
-                    }
-                    request.setAttribute("selectedSubjectName", selectedSubjectName); // GRML001.jsp向けに必要？
                     message = "検索結果が見つかりました。";
                 }
             } else {
                 // どの検索条件も指定されていない、または条件が不完全な場合
                 message = "科目情報を選択または学生情報を入力して検索ボタンをクリックしてください";
+                searchType = "initial"; // ★検索タイプを設定
                 System.out.println("DEBUG (" + this.getClass().getSimpleName() + "): No complete search parameters provided.");
             }
             // ★ここまで検索ロジックの修正★
 
+            // 検索結果とメッセージ、検索タイプをJSPに設定
             request.setAttribute("testResults", testResults);
             request.setAttribute("message", message);
+            request.setAttribute("searchType", searchType); // ★searchTypeをセット
 
             request.getRequestDispatcher("/log/GRMR001.jsp").forward(request, response);
 

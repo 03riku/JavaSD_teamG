@@ -2,27 +2,25 @@
 <%@ page import="Bean.Subject" %>
 <%@ page import="Bean.Test" %>
 <%@ page import="Bean.Student" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> <%-- ★JSTLのインポートを追加 --%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%
     // Servletから渡される属性の取得
     java.util.List<Integer> entYears = (java.util.List<Integer>) request.getAttribute("entYears");
     java.util.List<String> classNums = (java.util.List<String>) request.getAttribute("classNums");
-    java.util.List<Bean.Subject> subjects = (java.util.List<Bean.Subject>) request.getAttribute("subjects"); // ★Subjectsのキャストを修正
-    java.util.List<Bean.Test> testResults = (java.util.List<Bean.Test>) request.getAttribute("testResults"); // ★testResultsを追加
+    java.util.List<Bean.Subject> subjects = (java.util.List<Bean.Subject>) request.getAttribute("subjects");
+    java.util.List<Bean.Test> testResults = (java.util.List<Bean.Test>) request.getAttribute("testResults");
 
     // メッセージはJSTLで表示するため、スクリプトレットでの取得は必須ではありませんが、あれば利用します
     String message = (String) request.getAttribute("message");
 
     // リクエストパラメータの取得（JSTLで表示する場合は不要ですが、スクリプトレットで利用するため維持）
-    // Servlet側で 'paramYear' などの属性名でセットされている場合は、request.getAttributeを使う方が堅牢です
     String paramYear = (String) request.getAttribute("paramYear");
     String paramClassNum = (String) request.getAttribute("paramClassNum");
     String paramSubjectCd = (String) request.getAttribute("paramSubjectCd");
     String paramStudentId = (String) request.getAttribute("paramStudentId");
 
     // JSPスクリプトレットでselectのselected属性を設定する場合の処理
-    // paramYearがnullの場合は空文字列を代入
     if(paramYear == null) paramYear = "";
     if(paramClassNum == null) paramClassNum = "";
     if(paramSubjectCd == null) paramSubjectCd = "";
@@ -34,6 +32,7 @@
     <meta charset="UTF-8">
     <title>得点管理システム - 成績参照</title>
     <style>
+        /* スタイルは変更なし */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -297,7 +296,6 @@
                             if (entYears != null) {
                                 for (Integer yearOption : entYears) {
                                     String selected = "";
-                                    // Servletが 'paramYear' 属性をセットしていることを前提
                                     if (paramYear != null && paramYear.equals(String.valueOf(yearOption))) {
                                         selected = "selected";
                                     }
@@ -332,7 +330,7 @@
                             <option value="">------</option>
                             <%
                             if (subjects != null) {
-                                for (Bean.Subject subjectOption : subjects) { // ★キャストをBean.Subjectに修正
+                                for (Bean.Subject subjectOption : subjects) {
                                     String subjectCd = subjectOption.getCd();
                                     String subjectName = subjectOption.getName();
 
@@ -362,7 +360,6 @@
                 </form>
 
                 <div class="info-message">
-                    <%-- ★JSTLを使ってメッセージを表示。スクリプトレットのメッセージも併用可能だが、JSTLが推奨 --%>
                     <c:choose>
                         <c:when test="${not empty message}">
                             ${message}
@@ -373,38 +370,65 @@
                     </c:choose>
                 </div>
 
-                <%-- ★ここから検索結果の表示セクションを追加 --%>
+                <%-- ★ここから検索結果の表示セクションを分岐させる★ --%>
                 <div class="section" style="margin-top: 20px;">
                     <h2>検索結果</h2>
 
                     <c:choose>
                         <c:when test="${not empty testResults}">
-                            <table class="table table-bordered table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>入学年度</th>
-                                        <th>クラス番号</th>
-                                        <th>学生番号</th>
-                                        <th>氏名</th>
-                                        <th>科目名</th>
-                                        <th>受験回数</th>
-                                        <th>得点</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <c:forEach var="test" items="${testResults}">
-                                        <tr>
-                                            <td>${test.student.entYear}</td>
-                                            <td>${test.student.classNum}</td>
-                                            <td>${test.student.no}</td>
-                                            <td>${test.student.name}</td>
-                                            <td>${test.subject.name}</td>
-                                            <td>${test.no}</td> <%-- Test Beanの試験回数を想定 (setNoで設定) --%>
-                                            <td>${test.point}</td>
-                                        </tr>
-                                    </c:forEach>
-                                </tbody>
-                            </table>
+                            <c:choose>
+                                <c:when test="${searchType eq 'byStudentId'}">
+                                    <%-- 学生IDで検索した場合の表示 --%>
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>学生番号</th>
+                                                <th>氏名</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <c:forEach var="test" items="${testResults}">
+                                                <tr>
+                                                    <td>${test.student.no}</td>
+                                                    <td>${test.student.name}</td>
+                                                </tr>
+                                            </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </c:when>
+                                <c:when test="${searchType eq 'bySubject'}">
+                                    <%-- 科目情報で検索した場合の表示 (既存のフル情報表示) --%>
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>入学年度</th>
+                                                <th>クラス番号</th>
+                                                <th>学生番号</th>
+                                                <th>氏名</th>
+                                                <th>科目名</th>
+                                                <th>受験回数</th>
+                                                <th>得点</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <c:forEach var="test" items="${testResults}">
+                                                <tr>
+                                                    <td>${test.student.entYear}</td>
+                                                    <td>${test.student.classNum}</td>
+                                                    <td>${test.student.no}</td>
+                                                    <td>${test.student.name}</td>
+                                                    <td>${test.subject.name}</td>
+                                                    <td>${test.no}</td>
+                                                    <td>${test.point}</td>
+                                                </tr>
+                                            </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </c:when>
+                                <c:otherwise>
+                                    <%-- searchTypeが"initial"の場合など、テーブル表示は行わない --%>
+                                </c:otherwise>
+                            </c:choose>
                         </c:when>
                         <c:otherwise>
                             <%-- testResults が空の場合、テーブルは表示しない (メッセージは上記info-messageで表示) --%>
