@@ -1,22 +1,32 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false"%>
 <%@ page import="Bean.Subject" %>
+<%@ page import="Bean.Test" %>
+<%@ page import="Bean.Student" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> <%-- ★JSTLのインポートを追加 --%>
 
 <%
     // Servletから渡される属性の取得
     java.util.List<Integer> entYears = (java.util.List<Integer>) request.getAttribute("entYears");
     java.util.List<String> classNums = (java.util.List<String>) request.getAttribute("classNums");
-    // ここは List<Bean.Subject> とするのがより正確です
-    java.util.List<Object> subjects = (java.util.List<Object>) request.getAttribute("subjects"); // Servlet側がList<Object>で渡す場合
-    // もしServlet側で List<Subject> で渡しているなら、以下のようにしても良いです:
-    // java.util.List<Bean.Subject> subjects = (java.util.List<Bean.Subject>) request.getAttribute("subjects");
+    java.util.List<Bean.Subject> subjects = (java.util.List<Bean.Subject>) request.getAttribute("subjects"); // ★Subjectsのキャストを修正
+    java.util.List<Bean.Test> testResults = (java.util.List<Bean.Test>) request.getAttribute("testResults"); // ★testResultsを追加
 
+    // メッセージはJSTLで表示するため、スクリプトレットでの取得は必須ではありませんが、あれば利用します
     String message = (String) request.getAttribute("message");
 
-    // リクエストパラメータの取得
-    String paramYear = request.getParameter("year");
-    String paramClassNum = request.getParameter("class_num");
-    String paramSubjectCd = request.getParameter("subject");
-    String paramStudentId = request.getParameter("studentId");
+    // リクエストパラメータの取得（JSTLで表示する場合は不要ですが、スクリプトレットで利用するため維持）
+    // Servlet側で 'paramYear' などの属性名でセットされている場合は、request.getAttributeを使う方が堅牢です
+    String paramYear = (String) request.getAttribute("paramYear");
+    String paramClassNum = (String) request.getAttribute("paramClassNum");
+    String paramSubjectCd = (String) request.getAttribute("paramSubjectCd");
+    String paramStudentId = (String) request.getAttribute("paramStudentId");
+
+    // JSPスクリプトレットでselectのselected属性を設定する場合の処理
+    // paramYearがnullの場合は空文字列を代入
+    if(paramYear == null) paramYear = "";
+    if(paramClassNum == null) paramClassNum = "";
+    if(paramSubjectCd == null) paramSubjectCd = "";
+    if(paramStudentId == null) paramStudentId = "";
 %>
 <!DOCTYPE html>
 <html lang="ja">
@@ -226,6 +236,28 @@
         .form-group.student-search .search-button {
             margin-left: 20px;
         }
+
+        /* 検索結果テーブルのスタイル */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+        .table-bordered {
+            border: 1px solid #ddd;
+        }
     </style>
 </head>
 <body>
@@ -253,7 +285,6 @@
             <div class="section">
                 <div class="section-title">成績参照</div>
 
-                <%-- ここが修正されました！ --%>
                 <form action="<%= request.getContextPath() %>/TestListStudentExecute.action" method="get">
                     <div class="form-group">
                         <span class="sub-section-label">科目情報</span>
@@ -266,6 +297,7 @@
                             if (entYears != null) {
                                 for (Integer yearOption : entYears) {
                                     String selected = "";
+                                    // Servletが 'paramYear' 属性をセットしていることを前提
                                     if (paramYear != null && paramYear.equals(String.valueOf(yearOption))) {
                                         selected = "selected";
                                     }
@@ -300,9 +332,7 @@
                             <option value="">------</option>
                             <%
                             if (subjects != null) {
-                                for (Object subjectObj : subjects) {
-                                    // ObjectをBean.Subjectにキャスト
-                                    Bean.Subject subjectOption = (Bean.Subject) subjectObj;
+                                for (Bean.Subject subjectOption : subjects) { // ★キャストをBean.Subjectに修正
                                     String subjectCd = subjectOption.getCd();
                                     String subjectName = subjectOption.getName();
 
@@ -326,24 +356,63 @@
                     </div>
                     <div class="form-group student-search">
                         <label for="studentId">学生番号</label>
-                        <input type="text" id="studentId" name="studentId" placeholder="学生番号を入力してください" value="<%= (paramStudentId != null ? paramStudentId : "") %>">
+                        <input type="text" id="studentId" name="studentId" placeholder="学生番号を入力してください" value="<%= paramStudentId %>">
                         <button type="submit" class="search-button">検索</button>
                     </div>
                 </form>
 
                 <div class="info-message">
-                    <%
-                    if (message != null && !message.isEmpty()) {
-                    %>
-                        <%= message %>
-                    <%
-                    } else {
-                    %>
-                        科目情報を選択または学生情報を入力して検索ボタンをクリックしてください
-                    <%
-                    }
-                    %>
+                    <%-- ★JSTLを使ってメッセージを表示。スクリプトレットのメッセージも併用可能だが、JSTLが推奨 --%>
+                    <c:choose>
+                        <c:when test="${not empty message}">
+                            ${message}
+                        </c:when>
+                        <c:otherwise>
+                            科目情報を選択または学生情報を入力して検索ボタンをクリックしてください
+                        </c:otherwise>
+                    </c:choose>
                 </div>
+
+                <%-- ★ここから検索結果の表示セクションを追加 --%>
+                <div class="section" style="margin-top: 20px;">
+                    <h2>検索結果</h2>
+
+                    <c:choose>
+                        <c:when test="${not empty testResults}">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>入学年度</th>
+                                        <th>クラス番号</th>
+                                        <th>学生番号</th>
+                                        <th>氏名</th>
+                                        <th>科目名</th>
+                                        <th>受験回数</th>
+                                        <th>得点</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach var="test" items="${testResults}">
+                                        <tr>
+                                            <td>${test.student.entYear}</td>
+                                            <td>${test.student.classNum}</td>
+                                            <td>${test.student.no}</td>
+                                            <td>${test.student.name}</td>
+                                            <td>${test.subject.name}</td>
+                                            <td>${test.no}</td> <%-- Test Beanの試験回数を想定 (setNoで設定) --%>
+                                            <td>${test.point}</td>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+                        </c:when>
+                        <c:otherwise>
+                            <%-- testResults が空の場合、テーブルは表示しない (メッセージは上記info-messageで表示) --%>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+                <%-- ★ここまで検索結果の表示セクション --%>
+
             </div>
         </div>
     </div>
