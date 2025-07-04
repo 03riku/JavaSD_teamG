@@ -36,17 +36,18 @@ public class Test_list_studentServlet extends HttpServlet {
         StudentDao studentDao = new StudentDao();
         ClassNumDao classNumDao = new ClassNumDao();
         SubjectDao subjectDao = new SubjectDao();
-        TestDao testDao = new TestDao(); // TestDaoをインスタンス化
+        TestDao testDao = new TestDao();
 
         // ドロップダウンリスト用のデータを格納するリスト
         List<Integer> entYears = new ArrayList<>();
         List<String> classNums = new ArrayList<>();
         List<Subject> subjects = new ArrayList<>();
-        List<Integer> numList = new ArrayList<>(); // テスト回数用
+        List<Integer> numList = new ArrayList<>(); // テスト回数用 (JSPで使用しない場合は削除可能)
 
         // 検索結果を格納するリストとメッセージ
         List<Test> testResults = new ArrayList<>();
         String message = "";
+        String selectedSubjectName = ""; // 科目名表示用 (TestListSubjectExecute.action にも必要かも)
 
         try {
             // --- ドロップダウンリストデータの取得 (常に必要) ---
@@ -62,18 +63,17 @@ public class Test_list_studentServlet extends HttpServlet {
             request.setAttribute("subjects", subjects);
             System.out.println("DEBUG (" + this.getClass().getSimpleName() + "): subjects list size: " + subjects.size());
 
-            // テスト回数リスト (仮に1回, 2回を設定)
+            // テスト回数リスト (JSPで使用しない場合は削除可)
             numList.add(1);
             numList.add(2);
             request.setAttribute("numSet", numList);
-            System.out.println("DEBUG (" + this.getClass().getSimpleName() + "): numList size: " + numList.size());
 
 
-            // --- リクエストパラメータの取得 (検索ボタンが押された場合) ---
+            // --- リクエストパラメータの取得 ---
             String paramYearStr = request.getParameter("year");
             String paramClassNum = request.getParameter("class_num");
             String paramSubjectCd = request.getParameter("subject");
-            String paramStudentId = request.getParameter("studentId"); // JSPからの学生IDは取得するが、TestDaoには渡さない
+            String paramStudentId = request.getParameter("studentId"); // 学生ID
 
 
             // 検索パラメータをJSPに送り返し、選択状態を維持する
@@ -81,54 +81,56 @@ public class Test_list_studentServlet extends HttpServlet {
             request.setAttribute("paramClassNum", paramClassNum);
             request.setAttribute("paramSubjectCd", paramSubjectCd);
             request.setAttribute("paramStudentId", paramStudentId);
-            // request.setAttribute("paramNum", paramNumStr);
 
 
             // デバッグ出力 - 取得したパラメータを確認
             System.out.println("DEBUG (" + this.getClass().getSimpleName() + "): Retrieved Parameters:");
-            System.out.println("DEBUG (" + this.getClass().getSimpleName() + "):   year: " + paramYearStr);
-            System.out.println("DEBUG (" + this.getClass().getSimpleName() + "):   class_num: " + paramClassNum);
-            System.out.println("DEBUG (" + this.getClass().getSimpleName() + "):   subject: " + paramSubjectCd);
-            System.out.println("DEBUG (" + this.getClass().getSimpleName() + "):   studentId: " + paramStudentId);
+            System.out.println("DEBUG (" + this.getClass().getSimpleName() + "):    year: " + paramYearStr);
+            System.out.println("DEBUG (" + this.getClass().getSimpleName() + "):    class_num: " + paramClassNum);
+            System.out.println("DEBUG (" + this.getClass().getSimpleName() + "):    subject: " + paramSubjectCd);
+            System.out.println("DEBUG (" + this.getClass().getSimpleName() + "):    studentId: " + paramStudentId);
 
 
-            // 検索条件が指定されているかチェック
-            // TestDao.filterに渡せる引数のみを条件に含める
-            if ((paramYearStr != null && !paramYearStr.isEmpty()) ||
-                (paramClassNum != null && !paramClassNum.isEmpty()) ||
-                (paramSubjectCd != null && !paramSubjectCd.isEmpty())) { // ★学生IDはここでは条件に含めない
-
-                System.out.println("DEBUG (" + this.getClass().getSimpleName() + "): Entering search logic (excluding studentId if present)...");
-
-                Integer year = null;
-                if (paramYearStr != null && !paramYearStr.isEmpty()) {
-                    year = Integer.parseInt(paramYearStr);
-                }
-
-                // ★ここを修正！ TestDao.filterメソッドを、現在のTestDaoに存在する4つの引数で呼び出す
-                // paramStudentId はこの呼び出しでは使用しない
-                testResults = testDao.filter(year, paramClassNum, paramSubjectCd, schoolCd);
-
+            // ★ここから検索ロジックの修正★
+            if (paramStudentId != null && !paramStudentId.isEmpty()) {
+                // 学生番号が入力されている場合（学生IDによる検索を優先）
+                System.out.println("DEBUG (" + this.getClass().getSimpleName() + "): Searching by student ID: " + paramStudentId);
+                testResults = testDao.filterByStudentId(paramStudentId, schoolCd); // schoolCdも渡すように変更
 
                 if (testResults.isEmpty()) {
-                    message = "指定された条件の成績は見つかりませんでした。";
+                    message = "該当する学生の成績データが見つかりませんでした。";
                 } else {
+                    message = "学生番号: " + testResults.get(0).getStudent().getNo() + " の成績を表示しています。";
+                }
+            } else if ((paramYearStr != null && !paramYearStr.isEmpty()) &&
+                       (paramClassNum != null && !paramClassNum.isEmpty()) &&
+                       (paramSubjectCd != null && !paramSubjectCd.isEmpty())) {
+                // 入学年度、クラス、科目が全て選択されている場合
+                System.out.println("DEBUG (" + this.getClass().getSimpleName() + "): Searching by year, class, subject.");
+                Integer year = Integer.parseInt(paramYearStr);
+                testResults = testDao.filter(year, paramClassNum, paramSubjectCd, schoolCd);
+
+                if (testResults.isEmpty()) {
+                    message = "指定された科目条件の成績は見つかりませんでした。";
+                } else {
+                    // 選択された科目名を取得してJSPに渡す（もしあれば）
+                    Subject selectedSubject = subjectDao.get(paramSubjectCd, currentSchool); // getメソッドにSchoolを渡す想定
+                    if (selectedSubject != null) {
+                        selectedSubjectName = selectedSubject.getName();
+                    }
+                    request.setAttribute("selectedSubjectName", selectedSubjectName); // GRML001.jsp向けに必要？
                     message = "検索結果が見つかりました。";
                 }
-                System.out.println("DEBUG (" + this.getClass().getSimpleName() + "): Search results size: " + testResults.size());
-
             } else {
-                // 検索条件が何も指定されていない場合の初期表示メッセージ
-                // 学生IDが入力されているが、他の条件がない場合もここに含まれる
+                // どの検索条件も指定されていない、または条件が不完全な場合
                 message = "科目情報を選択または学生情報を入力して検索ボタンをクリックしてください";
-                System.out.println("DEBUG (" + this.getClass().getSimpleName() + "): No search parameters or studentId only. Displaying initial message.");
+                System.out.println("DEBUG (" + this.getClass().getSimpleName() + "): No complete search parameters provided.");
             }
+            // ★ここまで検索ロジックの修正★
 
-            // 検索結果とメッセージをJSPに設定
             request.setAttribute("testResults", testResults);
             request.setAttribute("message", message);
 
-            // GRMR001.jsp にフォワード
             request.getRequestDispatcher("/log/GRMR001.jsp").forward(request, response);
 
         } catch (Exception e) {
