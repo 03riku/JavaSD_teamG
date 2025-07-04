@@ -34,12 +34,22 @@
       color: #777;
       font-size: 0.9rem;
     }
+    .error-message {
+    	display: none;
+    }
   </style>
 </head>
 <body>
   <div class="login-container">
     <div class="logo">得点管理システム</div>
-    <form action="MMNU001" method="post">
+
+    <%-- エラーメッセージ表示部分 --%>
+    <%-- このdivはJavaScriptによって表示/非表示が切り替えられます --%>
+    <div id="loginError" class="alert alert-danger error-message" role="alert">
+        IDまたはパスワードが正しくありません。
+    </div>
+
+    <form id="loginForm" action="MMNU001" method="post">
       <div class="mb-3">
         <label for="id" class="form-label">ID</label>
         <input type="text" class="form-control" id="id" name="id"
@@ -59,6 +69,29 @@
     </form>
     <footer>
     </footer>
+
+    <script>
+        // フォームが送信されたときの処理
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            // ここで本来はサーバーサイドにデータを送信し、結果を受け取る
+            // JSP単体で完結させるため、今回は常にエラーメッセージを表示する
+
+            var errorMessageDiv = document.getElementById('loginError');
+            errorMessageDiv.style.display = 'block'; // エラーメッセージを表示
+
+            // 実際の認証ではないため、フォームの送信を一旦停止
+            // サーバーサイドでの認証後にリダイレクトさせる場合は、event.preventDefault()を削除する
+            event.preventDefault();
+        });
+
+        // ページロード時や、ID/パスワード入力欄が変更されたらエラーメッセージを非表示にする（オプション）
+        document.getElementById('id').addEventListener('input', function() {
+            document.getElementById('loginError').style.display = 'none';
+        });
+        document.getElementById('password').addEventListener('input', function() {
+            document.getElementById('loginError').style.display = 'none';
+        });
+    </script>
   </div>
 </body>
 </html>
