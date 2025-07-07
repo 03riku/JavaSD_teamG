@@ -184,7 +184,7 @@
 
             <div class="filter-form">
                 <%-- studentManagement.jsp はJSPファイルへの直接アクセスなので、サーブレットにするのが一般的です --%>
-                <form action="studentManagement.jsp" method="get"> <%-- ここもサーブレットへのURLに変更推奨 --%>
+                <form action="/StudentSearch" method="get"> <%-- ここもサーブレットへのURLに変更推奨 --%>
                     <label for="entYear">入学年度</label>
                     <select id="entYear" name="entYear">
                         <option value="">----</option>
@@ -207,7 +207,7 @@
                         <option value="">------</option>
                         <%
                             // 仮のクラスリスト。実際はDBから取得するか、設定ファイルから読み込む
-                            String[] classNums = {"101", "102", "131", "201", "202", "301"};
+                            String[] classNums = {"131", "132", "133",};
                             String selectedClassNum = request.getParameter("classNum");
                             for (String cn : classNums) {
                                 String selected = (selectedClassNum != null && selectedClassNum.equals(cn)) ? "selected" : "";
@@ -291,7 +291,7 @@
                     student.put("name", rs.getString("NAME"));
                     student.put("entYear", String.valueOf(rs.getInt("ENT_YEAR")));
                     student.put("classNum", rs.getString("CLASS_NUM"));
-                    student.put("isAttend", rs.getString("IS_ATTEND"));
+                    student.put("isAttend", String.valueOf(rs.getBoolean("IS_ATTEND")));
                     students.add(student);
                 }
                 studentCount = students.size();
@@ -348,7 +348,7 @@
                         <td><%= student.get("no") %></td>
                         <td><%= student.get("name") %></td>
                         <td><%= student.get("classNum") %></td>
-                        <td><%= "O".equals(student.get("isAttend")) ? "◯" : "×" %></td>
+                        <td><%= "true".equals(student.get("isAttend")) ? "◯" : "×" %></td>
                         <%-- 「変更」リンクは維持 --%>
                         <td><a href="${pageContext.request.contextPath}/student_update?no=<%= student.get("no") %>">変更</a></td>
                         <%-- 削除リンクを削除 --%>
