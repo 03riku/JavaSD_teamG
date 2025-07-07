@@ -71,18 +71,7 @@
     </footer>
 
     <script>
-        // フォームが送信されたときの処理
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            // ここで本来はサーバーサイドにデータを送信し、結果を受け取る
-            // JSP単体で完結させるため、今回は常にエラーメッセージを表示する
 
-            var errorMessageDiv = document.getElementById('loginError');
-            errorMessageDiv.style.display = 'block'; // エラーメッセージを表示
-
-            // 実際の認証ではないため、フォームの送信を一旦停止
-            // サーバーサイドでの認証後にリダイレクトさせる場合は、event.preventDefault()を削除する
-            event.preventDefault();
-        });
 
         // ページロード時や、ID/パスワード入力欄が変更されたらエラーメッセージを非表示にする（オプション）
         document.getElementById('id').addEventListener('input', function() {
